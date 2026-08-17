@@ -1,0 +1,1805 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>翰墨书阁 · 浏览馆藏</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;500;600;700;900&family=Noto+Sans+SC:wght@300;400;500&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --parchment: #F0E6CE;
+  --parchment-light: #F7F0DD;
+  --parchment-dark: #E0D3B4;
+  --ink: #2A1F17;
+  --ink-soft: #4A3B2D;
+  --oxblood: #6B2737;
+  --oxblood-light: #8B3A4A;
+  --moss: #3A5A40;
+  --moss-light: #5A7A60;
+  --gilt: #A67C3A;
+  --gilt-light: #C49B52;
+  --sepia: #7A6A52;
+  --shelf-wood: #4A3520;
+  --shelf-wood-light: #5C4429;
+  --shelf-shadow: rgba(42, 31, 23, 0.25);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Noto Serif SC', 'Cormorant Garamond', serif;
+  background: var(--parchment);
+  color: var(--ink);
+  line-height: 1.7;
+  overflow-x: hidden;
+}
+
+/* Paper texture overlay */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.04' numOctaves='3'/%3E%3CfeColorMatrix values='0 0 0 0 0.16 0 0 0 0 0.12 0 0 0 0 0.09 0 0 0 0.05 0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.6;
+}
+
+/* ============ Navigation ============ */
+.nav-bar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 48px;
+  background: rgba(240, 230, 206, 0.85);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(166, 124, 58, 0.2);
+  transition: padding 0.3s ease;
+}
+
+.nav-logo {
+  font-family: 'Noto Serif SC', serif;
+  font-weight: 700;
+  font-size: 1.5rem;
+  color: var(--ink);
+  letter-spacing: 0.15em;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.nav-logo span {
+  color: var(--oxblood);
+  font-size: 1.1rem;
+}
+
+.nav-links {
+  display: flex;
+  gap: 36px;
+  list-style: none;
+}
+
+.nav-links a {
+  font-family: 'Noto Sans SC', sans-serif;
+  font-weight: 400;
+  font-size: 0.9rem;
+  color: var(--ink-soft);
+  text-decoration: none;
+  letter-spacing: 0.08em;
+  position: relative;
+  padding: 4px 0;
+  transition: color 0.3s ease;
+}
+
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 50%;
+  width: 0;
+  height: 1px;
+  background: var(--oxblood);
+  transition: all 0.3s ease;
+  transform: translateX(-50%);
+}
+
+.nav-links a:hover {
+  color: var(--oxblood);
+}
+
+.nav-links a:hover::after {
+  width: 100%;
+}
+
+.nav-search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 16px;
+  background: rgba(255,255,255,0.3);
+  border: 1px solid rgba(166, 124, 58, 0.3);
+  border-radius: 2px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.nav-search:hover {
+  background: rgba(255,255,255,0.5);
+  border-color: var(--gilt);
+}
+
+.nav-search svg {
+  width: 16px; height: 16px;
+  stroke: var(--ink-soft);
+}
+
+.nav-search span {
+  font-family: 'Noto Sans SC', sans-serif;
+  font-size: 0.82rem;
+  color: var(--sepia);
+}
+
+/* ============ Hero ============ */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  position: relative;
+  padding: 120px 24px 80px;
+  overflow: hidden;
+}
+
+/* Window light effect */
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -10%; left: 50%;
+  transform: translateX(-50%);
+  width: 600px; height: 800px;
+  background: radial-gradient(ellipse at center top, rgba(255,245,220,0.5) 0%, transparent 65%);
+  pointer-events: none;
+}
+
+.hero::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 200px;
+  background: linear-gradient(to bottom, transparent, var(--parchment));
+  pointer-events: none;
+}
+
+.hero-eyebrow {
+  font-family: 'Noto Sans SC', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 400;
+  letter-spacing: 0.4em;
+  color: var(--gilt);
+  margin-bottom: 32px;
+  text-transform: uppercase;
+  opacity: 0;
+  animation: fadeUp 1s ease 0.2s forwards;
+}
+
+.hero h1 {
+  font-family: 'Noto Serif SC', serif;
+  font-weight: 900;
+  font-size: clamp(3rem, 8vw, 6rem);
+  color: var(--ink);
+  line-height: 1.15;
+  margin-bottom: 28px;
+  letter-spacing: 0.05em;
+  opacity: 0;
+  animation: fadeUp 1.2s ease 0.4s forwards;
+}
+
+.hero h1 .accent {
+  color: var(--oxblood);
+  font-style: italic;
+  font-weight: 700;
+}
+
+.hero-sub {
+  font-family: 'Cormorant Garamond', 'Noto Serif SC', serif;
+  font-style: italic;
+  font-size: clamp(1.1rem, 2.2vw, 1.4rem);
+  color: var(--ink-soft);
+  max-width: 580px;
+  margin-bottom: 48px;
+  line-height: 1.8;
+  opacity: 0;
+  animation: fadeUp 1.2s ease 0.6s forwards;
+}
+
+.hero-quote {
+  font-family: 'Noto Serif SC', serif;
+  font-size: 0.95rem;
+  color: var(--sepia);
+  max-width: 440px;
+  line-height: 1.9;
+  position: relative;
+  padding: 20px 0;
+  opacity: 0;
+  animation: fadeUp 1.2s ease 0.8s forwards;
+}
+
+.hero-quote::before, .hero-quote::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 1px;
+  background: var(--gilt);
+  opacity: 0.5;
+}
+
+.hero-quote::before { top: 0; }
+.hero-quote::after { bottom: 0; }
+
+.hero-quote cite {
+  display: block;
+  margin-top: 8px;
+  font-size: 0.8rem;
+  font-style: normal;
+  color: var(--gilt);
+  letter-spacing: 0.1em;
+}
+
+.hero-scroll {
+  position: absolute;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: 'Noto Sans SC', sans-serif;
+  font-size: 0.72rem;
+  letter-spacing: 0.3em;
+  color: var(--sepia);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  opacity: 0;
+  animation: fadeUp 1s ease 1.2s forwards;
+}
+
+.hero-scroll .line {
+  width: 1px;
+  height: 40px;
+  background: var(--gilt);
+  animation: scrollLine 2s ease-in-out infinite;
+}
+
+@keyframes scrollLine {
+  0%, 100% { transform: scaleY(0.3); transform-origin: top; opacity: 0.3; }
+  50% { transform: scaleY(1); transform-origin: top; opacity: 1; }
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ============ Section Commons ============ */
+.section {
+  position: relative;
+  z-index: 2;
+  padding: 100px 48px;
+}
+
+.section-header {
+  text-align: center;
+  margin-bottom: 64px;
+}
+
+.section-eyebrow {
+  font-family: 'Noto Sans SC', sans-serif;
+  font-size: 0.75rem;
+  letter-spacing: 0.35em;
+  color: var(--gilt);
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+
+.section-title {
+  font-family: 'Noto Serif SC', serif;
+  font-weight: 700;
+  font-size: clamp(2rem, 4vw, 2.8rem);
+  color: var(--ink);
+  letter-spacing: 0.05em;
+}
+
+.section-desc {
+  font-family: 'Cormorant Garamond', 'Noto Serif SC', serif;
+  font-style: italic;
+  font-size: 1.1rem;
+  color: var(--sepia);
+  max-width: 520px;
+  margin: 16px auto 0;
+  line-height: 1.7;
+}
+
+/* ============ Bookshelf ============ */
+.shelf-section {
+  background: linear-gradient(to bottom, var(--parchment) 0%, var(--parchment-dark) 100%);
+}
+
+.shelf-wrapper {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.shelf-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+  margin-bottom: 48px;
+  flex-wrap: wrap;
+}
+
+.shelf-tab {
+  font-family: 'Noto Serif SC', serif;
+  font-size: 0.95rem;
+  font-weight: 500;
+  padding: 10px 28px;
+  background: transparent;
+  border: 1px solid rgba(166, 124, 58, 0.3);
+  color: var(--ink-soft);
+  cursor: pointer;
+  letter-spacing: 0.1em;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.shelf-tab:hover {
+  border-color: var(--gilt);
+  color: var(--ink);
+}
+
+.shelf-tab.active {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--parchment);
+}
+
+.shelf-tab .en {
+  display: block;
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 0.7rem;
+  font-weight: 400;
+  opacity: 0.6;
+  margin-top: 2px;
+}
+
+/* The Bookshelf */
+.bookshelf {
+  position: relative;
+  perspective: 1200px;
+  margin: 0 auto;
+  max-width: 1100px;
+}
+
+.shelf-row {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 3px;
+  padding: 0 20px;
+  min-height: 240px;
+  position: relative;
+}
+
+.shelf-plank {
+  height: 14px;
+  background: linear-gradient(to bottom, var(--shelf-wood-light) 0%, var(--shelf-wood) 50%, #3a2818 100%);
+  margin: 0 -20px;
+  position: relative;
+  box-shadow: 0 4px 12px var(--shelf-shadow);
+  border-radius: 2px 2px 0 0;
+}
+
+.shelf-plank::before {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 6px;
+  background: linear-gradient(to bottom, transparent, rgba(0,0,0,0.2));
+}
+
+/* Book spine */
+.book {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transform-origin: bottom center;
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.4s ease;
+  border-radius: 1px 1px 0 0;
+  box-shadow: 2px 0 4px rgba(0,0,0,0.15), inset -2px 0 4px rgba(0,0,0,0.1);
+  flex-shrink: 0;
+}
+
+.book:hover {
+  transform: translateY(-12px) rotateZ(-2deg);
+  box-shadow: 4px 4px 20px rgba(0,0,0,0.25), inset -2px 0 4px rgba(0,0,0,0.1);
+  z-index: 10;
+}
+
+.book-spine-text {
+  writing-mode: vertical-rl;
+  text-orientation: upright;
+  font-family: 'Noto Serif SC', serif;
+  font-weight: 600;
+  font-size: 0.78rem;
+  letter-spacing: 0.15em;
+  color: rgba(255, 245, 220, 0.9);
+  white-space: nowrap;
+  padding: 16px 0;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+}
+
+.book .call-num {
+  position: absolute;
+  bottom: 6px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 0.55rem;
+  color: rgba(255,245,220,0.4);
+  letter-spacing: 0.05em;
+}
+
+.book .gilt-band {
+  position: absolute;
+  top: 8px; left: 0; right: 0;
+  height: 2px;
+  background: var(--gilt-light);
+  opacity: 0.6;
+}
+
+.book .gilt-band-2 {
+  position: absolute;
+  bottom: 20px; left: 0; right: 0;
+  height: 1px;
+  background: var(--gilt-light);
+  opacity: 0.4;
+}
+
+/* Book color variants */
+.book.b-oxblood { background: linear-gradient(to right, #5a1f2c, #6B2737, #5a1f2c); }
+.book.b-moss { background: linear-gradient(to right, #2e4a35, #3A5A40, #2e4a35); }
+.book.b-ink { background: linear-gradient(to right, #1f1610, #2A1F17, #1f1610); }
+.book.b-gilt { background: linear-gradient(to right, #8a6528, #A67C3A, #8a6528); }
+.book.b-navy { background: linear-gradient(to right, #1a2840, #2a3a55, #1a2840); }
+.book.b-claret { background: linear-gradient(to right, #4a1a25, #6b2d3a, #4a1a25); }
+.book.b-olive { background: linear-gradient(to right, #4a4a28, #5a5a35, #4a4a28); }
+.book.b-teal { background: linear-gradient(to right, #1a4a4a, #2a5a5a, #1a4a4a); }
+
+/* Book detail card (appears on hover) */
+.book-detail {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-10px);
+  width: 240px;
+  background: var(--parchment-light);
+  border: 1px solid var(--gilt);
+  padding: 16px 20px;
+  box-shadow: 0 8px 32px rgba(42, 31, 23, 0.2);
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.3s ease;
+  z-index: 50;
+}
+
+.book:hover .book-detail {
+  opacity: 1;
+  transform: translateX(-50%) translateY(-16px);
+}
+
+.book-detail::after {
+  content: '';
+  position: absolute;
+  bottom: -6px; left: 50%;
+  transform: translateX(-50%) rotate(45deg);
+  width: 10px; height: 10px;
+  background: var(--parchment-light);
+  border-right: 1px solid var(--gilt);
+  border-bottom: 1px solid var(--gilt);
+}
+
+.book-detail h4 {
+  font-family: 'Noto Serif SC', serif;
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--ink);
+  margin-bottom: 4px;
+}
+
+.book-detail .author {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 0.85rem;
+  color: var(--sepia);
+  margin-bottom: 8px;
+}
+
+.book-detail .desc {
+  font-family: 'Noto Sans SC', sans-serif;
+  font-size: 0.78rem;
+  color: var(--ink-soft);
+  line-height: 1.5;
+}
+
+.book-detail .meta {
+  display: flex;
+  gap: 12px;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(166, 124, 58, 0.2);
+  font-family: 'Noto Sans SC', sans-serif;
+  font-size: 0.7rem;
+  color: var(--gilt);
+}
+
+/* ============ Curated Picks ============ */
+.curated-section {
+  background: var(--parchment);
+}
+
+.curated-grid {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px;
+}
+
+.curated-card {
+  position: relative;
+  background: var(--parchment-light);
+  border: 1px solid rgba(166, 124, 58, 0.15);
+  padding: 40px 32px;
+  transition: all 0.4s ease;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.curated-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 3px;
+  height: 100%;
+  background: var(--oxblood);
+  transform: scaleY(0);
+  transform-origin: top;
+  transition: transform 0.4s ease;
+}
+
+.curated-card:hover {
+  box-shadow: 0 12px 40px rgba(42, 31, 23, 0.12);
+  transform: translateY(-4px);
+}
+
+.curated-card:hover::before {
+  transform: scaleY(1);
+}
+
+.curated-num {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 2.5rem;
+  font-weight: 300;
+  color: var(--gilt);
+  opacity: 0.5;
+  margin-bottom: 16px;
+  display: block;
+}
+
+.curated-card h3 {
+  font-family: 'Noto Serif SC', serif;
+  font-weight: 700;
+  font-size: 1.4rem;
+  color: var(--ink);
+  margin-bottom: 8px;
+  letter-spacing: 0.03em;
+}
+
+.curated-card .en-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 0.85rem;
+  color: var(--sepia);
+  margin-bottom: 16px;
+  display: block;
+}
+
+.curated-card p {
+  font-family: 'Noto Sans SC', sans-serif;
+  font-size: 0.88rem;
+  color: var(--ink-soft);
+  line-height: 1.7;
+  margin-bottom: 20px;
+}
+
+.curated-tag {
+  display: inline-block;
+  font-family: 'Noto Sans SC', sans-serif;
+  font-size: 0.72rem;
+  padding: 4px 12px;
+  background: rgba(166, 124, 58, 0.1);
+  color: var(--gilt);
+  letter-spacing: 0.08em;
+  border-radius: 2px;
+}
+
+/* ============ Reading Rooms ============ */
+.rooms-section {
+  background: var(--ink);
+  color: var(--parchment);
+  position: relative;
+  overflow: hidden;
+}
+
+.rooms-section::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: radial-gradient(ellipse at 30% 20%, rgba(166, 124, 58, 0.08) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+.rooms-section .section-title {
+  color: var(--parchment);
+}
+
+.rooms-section .section-eyebrow {
+  color: var(--gilt-light);
+}
+
+.rooms-section .section-desc {
+  color: rgba(240, 230, 206, 0.6);
+}
+
+.rooms-grid {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  background: rgba(166, 124, 58, 0.15);
+}
+
+.room-card {
+  background: var(--ink);
+  padding: 48px 40px;
+  position: relative;
+  cursor: pointer;
+  transition: background 0.4s ease;
+  overflow: hidden;
+}
+
+.room-card:hover {
+  background: #1f1610;
+}
+
+.room-card::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--gilt);
+  transition: width 0.5s ease;
+}
+
+.room-card:hover::after {
+  width: 100%;
+}
+
+.room-icon {
+  width: 40px;
+  height: 40px;
+  margin-bottom: 20px;
+  opacity: 0.7;
+  transition: opacity 0.3s ease;
+}
+
+.room-card:hover .room-icon {
+  opacity: 1;
+}
+
+.room-card h3 {
+  font-family: 'Noto Serif SC', serif;
+  font-weight: 700;
+  font-size: 1.5rem;
+  margin-bottom: 6px;
+  letter-spacing: 0.05em;
+}
+
+.room-card .room-en {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 0.85rem;
+  color: var(--gilt-light);
+  opacity: 0.6;
+  margin-bottom: 16px;
+  display: block;
+}
+
+.room-card p {
+  font-family: 'Noto Sans SC', sans-serif;
+  font-weight: 300;
+  font-size: 0.85rem;
+  color: rgba(240, 230, 206, 0.55);
+  line-height: 1.7;
+  max-width: 380px;
+}
+
+.room-card .room-count {
+  position: absolute;
+  top: 40px; right: 40px;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2rem;
+  font-weight: 300;
+  color: rgba(166, 124, 58, 0.3);
+}
+
+/* ============ Quote Section ============ */
+.quote-section {
+  background: var(--parchment-dark);
+  text-align: center;
+  padding: 120px 48px;
+  position: relative;
+  overflow: hidden;
+}
+
+.quote-mark {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 8rem;
+  color: var(--gilt);
+  opacity: 0.15;
+  line-height: 1;
+  margin-bottom: -30px;
+}
+
+.quote-text {
+  font-family: 'Noto Serif SC', serif;
+  font-weight: 500;
+  font-size: clamp(1.5rem, 3vw, 2.2rem);
+  color: var(--ink);
+  max-width: 720px;
+  margin: 0 auto;
+  line-height: 1.8;
+  letter-spacing: 0.05em;
+}
+
+.quote-author {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 1.1rem;
+  color: var(--oxblood);
+  margin-top: 32px;
+  letter-spacing: 0.1em;
+}
+
+.quote-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin: 32px auto 0;
+  max-width: 200px;
+}
+
+.quote-divider .line {
+  flex: 1;
+  height: 1px;
+  background: var(--gilt);
+  opacity: 0.4;
+}
+
+.quote-divider .dot {
+  width: 6px; height: 6px;
+  background: var(--gilt);
+  border-radius: 50%;
+  opacity: 0.5;
+}
+
+/* ============ CTA ============ */
+.cta-section {
+  text-align: center;
+  padding: 100px 48px;
+  background: var(--parchment);
+}
+
+.cta-content {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.cta-content h2 {
+  font-family: 'Noto Serif SC', serif;
+  font-weight: 700;
+  font-size: clamp(1.8rem, 4vw, 2.5rem);
+  color: var(--ink);
+  margin-bottom: 16px;
+  letter-spacing: 0.05em;
+}
+
+.cta-content p {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 1.15rem;
+  color: var(--sepia);
+  margin-bottom: 40px;
+}
+
+.cta-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 40px;
+  background: var(--ink);
+  color: var(--parchment);
+  font-family: 'Noto Serif SC', serif;
+  font-weight: 500;
+  font-size: 0.95rem;
+  letter-spacing: 0.15em;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  position: relative;
+  overflow: hidden;
+}
+
+.cta-button::before {
+  content: '';
+  position: absolute;
+  top: 0; left: -100%;
+  width: 100%; height: 100%;
+  background: var(--oxblood);
+  transition: left 0.4s ease;
+  z-index: 0;
+}
+
+.cta-button:hover::before {
+  left: 0;
+}
+
+.cta-button span {
+  position: relative;
+  z-index: 1;
+}
+
+.cta-button svg {
+  position: relative;
+  z-index: 1;
+  width: 16px; height: 16px;
+  transition: transform 0.3s ease;
+}
+
+.cta-button:hover svg {
+  transform: translateX(4px);
+}
+
+/* ============ Footer ============ */
+.footer {
+  background: var(--ink);
+  color: rgba(240, 230, 206, 0.5);
+  padding: 60px 48px 32px;
+  border-top: 3px solid var(--gilt);
+}
+
+.footer-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 32px;
+}
+
+.footer-brand {
+  flex: 1;
+  min-width: 250px;
+}
+
+.footer-brand h3 {
+  font-family: 'Noto Serif SC', serif;
+  font-weight: 700;
+  font-size: 1.3rem;
+  color: var(--parchment);
+  margin-bottom: 8px;
+  letter-spacing: 0.1em;
+}
+
+.footer-brand p {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 0.9rem;
+  max-width: 300px;
+  line-height: 1.6;
+}
+
+.footer-links {
+  display: flex;
+  gap: 48px;
+  flex-wrap: wrap;
+}
+
+.footer-col h4 {
+  font-family: 'Noto Sans SC', sans-serif;
+  font-weight: 500;
+  font-size: 0.8rem;
+  color: var(--gilt-light);
+  margin-bottom: 14px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+.footer-col a {
+  display: block;
+  font-family: 'Noto Sans SC', sans-serif;
+  font-size: 0.82rem;
+  color: rgba(240, 230, 206, 0.4);
+  text-decoration: none;
+  margin-bottom: 8px;
+  transition: color 0.3s ease;
+}
+
+.footer-col a:hover {
+  color: var(--gilt-light);
+}
+
+.footer-bottom {
+  max-width: 1200px;
+  margin: 40px auto 0;
+  padding-top: 24px;
+  border-top: 1px solid rgba(166, 124, 58, 0.15);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.footer-bottom p {
+  font-family: 'Noto Sans SC', sans-serif;
+  font-size: 0.75rem;
+  color: rgba(240, 230, 206, 0.3);
+  letter-spacing: 0.05em;
+}
+
+/* ============ Responsive ============ */
+@media (max-width: 900px) {
+  .nav-bar { padding: 14px 20px; }
+  .nav-links { display: none; }
+  .nav-search span { display: none; }
+  .section { padding: 60px 20px; }
+  .curated-grid { grid-template-columns: 1fr; }
+  .rooms-grid { grid-template-columns: 1fr; }
+  .footer-content { flex-direction: column; }
+  .book-spine-text { font-size: 0.65rem; }
+  .shelf-row { gap: 2px; }
+}
+
+@media (max-width: 600px) {
+  .hero { padding: 100px 16px 60px; }
+  .bookshelf { transform: scale(0.85); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Focus styles */
+a:focus-visible, button:focus-visible {
+  outline: 2px solid var(--gilt);
+  outline-offset: 2px;
+}
+</style>
+</head>
+<body>
+
+<!-- Navigation -->
+<nav class="nav-bar">
+  <div class="nav-logo">翰墨<span>·</span>书阁</div>
+  <ul class="nav-links">
+    <li><a href="#shelf">书架</a></li>
+    <li><a href="#curated">馆长荐书</a></li>
+    <li><a href="#rooms">阅览室</a></li>
+    <li><a href="#quote">书语</a></li>
+  </ul>
+  <div class="nav-search">
+    <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+    </svg>
+    <span>检索馆藏</span>
+  </div>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-eyebrow">EST. MMXXVI · 翰墨书阁</div>
+  <h1>在<span class="accent">纸页</span>之间，<br>遇见另一个自己</h1>
+  <p class="hero-sub">
+    这里不是数据库，是一座可以走进去的书房。<br>
+    灯光昏黄，纸墨含香，每一本书都在等一个人翻开它。
+  </p>
+  <div class="hero-quote">
+    "古今之成大事业、大学问者，必经过三种之境界。昨夜西风凋碧树，独上高楼，望尽天涯路。"
+    <cite>—— 王国维 · 人间词话</cite>
+  </div>
+  <div class="hero-scroll">
+    <span>向下翻阅</span>
+    <div class="line"></div>
+  </div>
+</section>
+
+<!-- Bookshelf Section -->
+<section class="section shelf-section" id="shelf">
+  <div class="section-header">
+    <div class="section-eyebrow">THE COLLECTION · 馆藏</div>
+    <h2 class="section-title">书架</h2>
+    <p class="section-desc">将指尖搭上书脊，轻轻抽出——如同在真实的书架前。</p>
+  </div>
+
+  <div class="shelf-wrapper">
+    <div class="shelf-tabs">
+      <button class="shelf-tab active">经部<span class="en">Classics</span></button>
+      <button class="shelf-tab">史部<span class="en">History</span></button>
+      <button class="shelf-tab">子部<span class="en">Philosophy</span></button>
+      <button class="shelf-tab">集部<span class="en">Literature</span></button>
+    </div>
+
+    <div class="bookshelf">
+      <!-- Row 1 -->
+      <div class="shelf-row">
+        <div class="book b-oxblood" style="width: 38px; height: 200px;">
+          <div class="gilt-band"></div>
+          <div class="book-spine-text">论语集注</div>
+          <div class="gilt-band-2"></div>
+          <div class="call-num">经·01</div>
+          <div class="book-detail">
+            <h4>论语集注</h4>
+            <div class="author">朱熹 撰</div>
+            <div class="desc">南宋理学集大成者对《论语》的注释，半部论语治天下。</div>
+            <div class="meta"><span>宋淳熙间刻本</span><span>在馆</span></div>
+          </div>
+        </div>
+        <div class="book b-moss" style="width: 30px; height: 185px;">
+          <div class="gilt-band"></div>
+          <div class="book-spine-text">诗经</div>
+          <div class="call-num">经·02</div>
+          <div class="book-detail">
+            <h4>诗经</h4>
+            <div class="author">佚名 · 毛亨传</div>
+            <div class="desc">中国最早的诗歌总集，风雅颂三百零五篇。</div>
+            <div class="meta"><span>南宋刻本</span><span>在馆</span></div>
+          </div>
+        </div>
+        <div class="book b-ink" style="width: 44px; height: 210px;">
+          <div class="gilt-band"></div>
+          <div class="book-spine-text">周易正义</div>
+          <div class="gilt-band-2"></div>
+          <div class="call-num">经·03</div>
+          <div class="book-detail">
+            <h4>周易正义</h4>
+            <div class="author">孔颖达 疏</div>
+            <div class="desc">唐初《五经正义》之一，阐释易理，穷通变化。</div>
+            <div class="meta"><span>宋刻递修本</span><span>在馆</span></div>
+          </div>
+        </div>
+        <div class="book b-gilt" style="width: 34px; height: 195px;">
+          <div class="gilt-band"></div>
+          <div class="book-spine-text">尚书</div>
+          <div class="call-num">经·04</div>
+          <div class="book-detail">
+            <h4>尚书正义</h4>
+            <div class="author">孔安国 传</div>
+            <div class="desc">上古政事文献汇编，华夏政教之源。</div>
+            <div class="meta"><span>宋刻本</span><span>借出</span></div>
+          </div>
+        </div>
+        <div class="book b-navy" style="width: 28px; height: 175px;">
+          <div class="gilt-band"></div>
+          <div class="book-spine-text">礼记</div>
+          <div class="call-num">经·05</div>
+          <div class="book-detail">
+            <h4>礼记正义</h4>
+            <div class="author">郑玄 注</div>
+            <div class="desc">先秦礼仪制度集大成者，大学中庸出于此。</div>
+            <div class="meta"><span>宋刻本</span><span>在馆</span></div>
+          </div>
+        </div>
+        <div class="book b-claret" style="width: 40px; height: 205px;">
+          <div class="gilt-band"></div>
+          <div class="book-spine-text">春秋左传</div>
+          <div class="gilt-band-2"></div>
+          <div class="call-num">经·06</div>
+          <div class="book-detail">
+            <h4>春秋左传正义</h4>
+            <div class="author">左丘明 撰</div>
+            <div class="desc">编年体史书杰作，文辞精练，叙事生动。</div>
+            <div class="meta"><span>宋刻本</span><span>在馆</span></div>
+          </div>
+        </div>
+        <div class="book b-olive" style="width: 32px; height: 190px;">
+          <div class="gilt-band"></div>
+          <div class="book-spine-text">孟子</div>
+          <div class="call-num">经·07</div>
+          <div class="book-detail">
+            <h4>孟子注疏</h4>
+            <div class="author">赵岐 注</div>
+            <div class="desc">亚圣之言，性善之论，浩然之气。</div>
+            <div class="meta"><span>宋刻本</span><span>在馆</span></div>
+          </div>
+        </div>
+        <div class="book b-teal" style="width: 36px; height: 200px;">
+          <div class="gilt-band"></div>
+          <div class="book-spine-text">孝经</div>
+          <div class="call-num">经·08</div>
+          <div class="book-detail">
+            <h4>孝经注疏</h4>
+            <div class="author">唐玄宗 御注</div>
+            <div class="desc">十三经中最短的一经，以孝治天下。</div>
+            <div class="meta"><span>宋刻本</span><span>在馆</span></div>
+          </div>
+        </div>
+        <div class="book b-oxblood" style="width: 42px; height: 215px;">
+          <div class="gilt-band"></div>
+          <div class="book-spine-text">尔雅义疏</div>
+          <div class="gilt-band-2"></div>
+          <div class="call-num">经·09</div>
+          <div class="book-detail">
+            <h4>尔雅义疏</h4>
+            <div class="author">郝懿行 撰</div>
+            <div class="desc">中国最早的词典，训诂学的基石。</div>
+            <div class="meta"><span>清刻本</span><span>在馆</span></div>
+          </div>
+        </div>
+        <div class="book b-moss" style="width: 30px; height: 180px;">
+          <div class="gilt-band"></div>
+          <div class="book-spine-text">大学</div>
+          <div class="call-num">经·10</div>
+          <div class="book-detail">
+            <h4>大学章句</h4>
+            <div class="author">朱熹 撰</div>
+            <div class="desc">四书之首，格物致知，修齐治平。</div>
+            <div class="meta"><span>宋淳熙本</span><span>在馆</span></div>
+          </div>
+        </div>
+        <div class="book b-ink" style="width: 46px; height: 220px;">
+          <div class="gilt-band"></div>
+          <div class="book-spine-text">中庸章句</div>
+          <div class="gilt-band-2"></div>
+          <div class="call-num">经·11</div>
+          <div class="book-detail">
+            <h4>中庸章句</h4>
+            <div class="author">朱熹 撰</div>
+            <div class="desc">四书之一，天人合一，致中和。</div>
+            <div class="meta"><span>宋淳熙本</span><span>在馆</span></div>
+          </div>
+        </div>
+        <div class="book b-gilt" style="width: 26px; height: 165px;">
+          <div class="gilt-band"></div>
+          <div class="book-spine-text">乐记</div>
+          <div class="call-num">经·12</div>
+          <div class="book-detail">
+            <h4>乐记</h4>
+            <div class="author">公孙尼子 撰</div>
+            <div class="desc">先秦音乐理论专著，礼乐文明的精义。</div>
+            <div class="meta"><span>礼记篇</span><span>在馆</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="shelf-plank"></div>
+
+      <!-- Row 2 -->
+      <div class="shelf-row" style="margin-top: 36px;">
+        <div class="book b-navy" style="width: 50px; height: 225px;">
+          <div class="gilt-band"></div>
+          <div class="book-spine-text">史记三家注</div>
+          <div class="gilt-band-2"></div>
+          <div class="call-num">史·01</div>
+          <div class="book-detail">
+            <h4>史记三家注</h4>
+            <div class="author">司马迁 撰</div>
+            <div class="desc">史家之绝唱，无韵之离骚。三家注合刻。</div>
+            <div class="meta"><span>南宋黄善夫本</span><span>在馆</span></div>
+          </div>
+        </div>
+        <div class="book b-claret" style="width: 38px; height: 200px;">
+          <div class="gilt-band"></div>
+          <div class="book-spine-text">汉书</div>
+          <div class="call-num">史·02</div>
+          <div class="book-detail">
+            <h4>汉书</h4>
+            <div class="author">班固 撰</div>
+            <div class="desc">中国第一部纪传体断代史，文赡事详。</div>
+            <div class="meta"><span>宋刻本</span><span>在馆</span></div>
+          </div>
+        </div>
+        <div class="book b-teal" style="width: 42px; height: 210px;">
+          <div class="gilt-band"></div>
+          <div class="book-spine-text">后汉书</div>
+          <div class="call-num">史·03</div>
+          <div class="book-detail">
+            <h4>后汉书</h4>
+            <div class="author">范晔 撰</div>
+            <div class="desc">纪传体史书，文采斐然，论赞精当。</div>
+            <div class="meta"><span>宋刻本</span><span>在馆</span></div>
+          </div>
+        </div>
+        <div class="book b-olive" style="width: 34px; height: 195px;">
+          <div class="gilt-band"></div>
+          <div class="book-spine-text">三国志</div>
+          <div class="call-num">史·04</div>
+          <div class="book-detail">
+            <h4>三国志</h4>
+            <div class="author">陈寿 撰</div>
+            <div class="desc">三国分立时代的正史，简洁有法。</div>
+            <div class="meta"><span>宋刻本</span><span>借出</span></div>
+          </div>
+        </div>
+        <div class="book b-oxblood" style="width: 48px; height: 218px;">
+          <div class="gilt-band"></div>
+          <div class="book-spine-text">资治通鉴</div>
+          <div class="gilt-band-2"></div>
+          <div class="call-num">史·05</div>
+          <div class="book-detail">
+            <h4>资治通鉴</h4>
+            <div class="author">司马光 编</div>
+            <div class="desc">编年体通史巨著，鉴于往事，有资于治道。</div>
+            <div class="meta"><span>宋刻本</span><span>在馆</span></div>
+          </div>
+        </div>
+        <div class="book b-moss" style="width: 32px; height: 190px;">
+          <div class="gilt-band"></div>
+          <div class="book-spine-text">战国策</div>
+          <div class="call-num">史·06</div>
+          <div class="book-detail">
+            <h4>战国策</h4>
+            <div class="author">刘向 编</div>
+            <div class="desc">纵横家言，辩丽恣肆，波澜壮阔。</div>
+            <div class="meta"><span>宋刻本</span><span>在馆</span></div>
+          </div>
+        </div>
+        <div class="book b-ink" style="width: 36px; height: 202px;">
+          <div class="gilt-band"></div>
+          <div class="book-spine-text">水经注</div>
+          <div class="call-num">史·07</div>
+          <div class="book-detail">
+            <h4>水经注</h4>
+            <div class="author">郦道元 撰</div>
+            <div class="desc">地理名著，亦文亦史，山水清音。</div>
+            <div class="meta"><span>明刻本</span><span>在馆</span></div>
+          </div>
+        </div>
+        <div class="book b-gilt" style="width: 30px; height: 185px;">
+          <div class="gilt-band"></div>
+          <div class="book-spine-text">左传纪事</div>
+          <div class="call-num">史·08</div>
+          <div class="book-detail">
+            <h4>左传纪事本末</h4>
+            <div class="author">高士奇 撰</div>
+            <div class="desc">以事件为纲重新编撰左传，脉络清晰。</div>
+            <div class="meta"><span>清刻本</span><span>在馆</span></div>
+          </div>
+        </div>
+        <div class="book b-navy" style="width: 44px; height: 212px;">
+          <div class="gilt-band"></div>
+          <div class="book-spine-text">通典</div>
+          <div class="gilt-band-2"></div>
+          <div class="call-num">史·09</div>
+          <div class="book-detail">
+            <h4>通典</h4>
+            <div class="author">杜佑 撰</div>
+            <div class="desc">中国第一部典章制度通史，三通之首。</div>
+            <div class="meta"><span>宋刻本</span><span>在馆</span></div>
+          </div>
+        </div>
+        <div class="book b-claret" style="width: 28px; height: 178px;">
+          <div class="gilt-band"></div>
+          <div class="book-spine-text">史通</div>
+          <div class="call-num">史·10</div>
+          <div class="book-detail">
+            <h4>史通</h4>
+            <div class="author">刘知几 撰</div>
+            <div class="desc">中国第一部史学理论专著。</div>
+            <div class="meta"><span>明刻本</span><span>在馆</span></div>
+          </div>
+        </div>
+        <div class="book b-teal" style="width: 40px; height: 206px;">
+          <div class="gilt-band"></div>
+          <div class="book-spine-text">文献通考</div>
+          <div class="call-num">史·11</div>
+          <div class="book-detail">
+            <h4>文献通考</h4>
+            <div class="author">马端临 撰</div>
+            <div class="desc">典章制度通史，三通之一，考证详密。</div>
+            <div class="meta"><span>元刻本</span><span>在馆</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="shelf-plank"></div>
+
+      <!-- Row 3 -->
+      <div class="shelf-row" style="margin-top: 36px;">
+        <div class="book b-moss" style="width: 36px; height: 200px;">
+          <div class="gilt-band"></div>
+          <div class="book-spine-text">道德经</div>
+          <div class="call-num">子·01</div>
+          <div class="book-detail">
+            <h4>道德经</h4>
+            <div class="author">老子 撰</div>
+            <div class="desc">五千言道尽天地至理，无为而无不为。</div>
+            <div class="meta"><span>河上公注本</span><span>在馆</span></div>
+          </div>
+        </div>
+        <div class="book b-ink" style="width: 52px; height: 225px;">
+          <div class="gilt-band"></div>
+          <div class="book-spine-text">庄子集释</div>
+          <div class="gilt-band-2"></div>
+          <div class="call-num">子·02</div>
+          <div class="book-detail">
+            <h4>庄子集释</h4>
+            <div class="author">郭庆藩 撰</div>
+            <div class="desc">逍遥游于无何有之乡，汪洋恣肆。</div>
+            <div class="meta"><span>清刻本</span><span>在馆</span></div>
+          </div>
+        </div>
+        <div class="book b-oxblood" style="width: 32px; height: 192px;">
+          <div class="gilt-band"></div>
+          <div class="book-spine-text">墨子</div>
+          <div class="call-num">子·03</div>
+          <div class="book-detail">
+            <h4>墨子间诂</h4>
+            <div class="author">孙诒让 撰</div>
+            <div class="desc">兼爱非攻，墨家十论，逻辑严密。</div>
+            <div class="meta"><span>清刻本</span><span>在馆</span></div>
+          </div>
+        </div>
+        <div class="book b-gilt" style="width: 40px; height: 205px;">
+          <div class="gilt-band"></div>
+          <div class="book-spine-text">荀子集解</div>
+          <div class="call-num">子·04</div>
+          <div class="book-detail">
+            <h4>荀子集解</h4>
+            <div class="author">王先谦 撰</div>
+            <div class="desc">性恶论与劝学篇，先秦儒家殿军。</div>
+            <div class="meta"><span>清刻本</span><span>在馆</span></div>
+          </div>
+        </div>
+        <div class="book b-navy" style="width: 38px; height: 198px;">
+          <div class="gilt-band"></div>
+          <div class="book-spine-text">韩非子</div>
+          <div class="call-num">子·05</div>
+          <div class="book-detail">
+            <h4>韩非子集解</h4>
+            <div class="author">王先慎 撰</div>
+            <div class="desc">法家集大成者，法术势三者并用。</div>
+            <div class="meta"><span>清刻本</span><span>借出</span></div>
+          </div>
+        </div>
+        <div class="book b-claret" style="width: 34px; height: 195px;">
+          <div class="gilt-band"></div>
+          <div class="book-spine-text">孙子兵法</div>
+          <div class="call-num">子·06</div>
+          <div class="book-detail">
+            <h4>孙子十家注</h4>
+            <div class="author">孙武 撰</div>
+            <div class="desc">兵学圣典，知己知彼，百战不殆。</div>
+            <div class="meta"><span>宋刻本</span><span>在馆</span></div>
+          </div>
+        </div>
+        <div class="book b-teal" style="width: 46px; height: 216px;">
+          <div class="gilt-band"></div>
+          <div class="book-spine-text">黄帝内经</div>
+          <div class="gilt-band-2"></div>
+          <div class="call-num">子·07</div>
+          <div class="book-detail">
+            <h4>黄帝内经</h4>
+            <div class="author">佚名</div>
+            <div class="desc">中医理论渊薮，阴阳五行，脏腑经络。</div>
+            <div class="meta"><span>明刻本</span><span>在馆</span></div>
+          </div>
+        </div>
+        <div class="book b-olive" style="width: 30px; height: 185px;">
+          <div class="gilt-band"></div>
+          <div class="book-spine-text">鬼谷子</div>
+          <div class="call-num">子·08</div>
+          <div class="book-detail">
+            <h4>鬼谷子</h4>
+            <div class="author">佚名</div>
+            <div class="desc">纵横捭阖之术，揣摩反应之篇。</div>
+            <div class="meta"><span>明刻本</span><span>在馆</span></div>
+          </div>
+        </div>
+        <div class="book b-oxblood" style="width: 42px; height: 210px;">
+          <div class="gilt-band"></div>
+          <div class="book-spine-text">淮南鸿烈</div>
+          <div class="call-num">子·09</div>
+          <div class="book-detail">
+            <h4>淮南子</h4>
+            <div class="author">刘安 编</div>
+            <div class="desc">集道家之大成，兼收百家之言。</div>
+            <div class="meta"><span>明刻本</span><span>在馆</span></div>
+          </div>
+        </div>
+        <div class="book b-moss" style="width: 28px; height: 175px;">
+          <div class="gilt-band"></div>
+          <div class="book-spine-text">坛经</div>
+          <div class="call-num">子·10</div>
+          <div class="book-detail">
+            <h4>六祖坛经</h4>
+            <div class="author">惠能 述</div>
+            <div class="desc">禅宗根本经典，明心见性，顿悟成佛。</div>
+            <div class="meta"><span>明刻本</span><span>在馆</span></div>
+          </div>
+        </div>
+        <div class="book b-ink" style="width: 36px; height: 200px;">
+          <div class="gilt-band"></div>
+          <div class="book-spine-text">梦溪笔谈</div>
+          <div class="call-num">子·11</div>
+          <div class="book-detail">
+            <h4>梦溪笔谈</h4>
+            <div class="author">沈括 撰</div>
+            <div class="desc">北宋科学百科全书，天文地理无所不包。</div>
+            <div class="meta"><span>明刻本</span><span>在馆</span></div>
+          </div>
+        </div>
+        <div class="book b-gilt" style="width: 26px; height: 168px;">
+          <div class="gilt-band"></div>
+          <div class="book-spine-text">茶经</div>
+          <div class="call-num">子·12</div>
+          <div class="book-detail">
+            <h4>茶经</h4>
+            <div class="author">陆羽 撰</div>
+            <div class="desc">世界第一部茶叶专著，从采到饮。</div>
+            <div class="meta"><span>明刻本</span><span>在馆</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="shelf-plank"></div>
+
+      <!-- Row 4 -->
+      <div class="shelf-row" style="margin-top: 36px;">
+        <div class="book b-navy" style="width: 50px; height: 220px;">
+          <div class="gilt-band"></div>
+          <div class="book-spine-text">楚辞集注</div>
+          <div class="gilt-band-2"></div>
+          <div class="call-num">集·01</div>
+          <div class="book-detail">
+            <h4>楚辞集注</h4>
+            <div class="author">朱熹 撰</div>
+            <div class="desc">屈原赋二十五篇，浪漫主义之源。</div>
+            <div class="meta"><span>宋刻本</span><span>在馆</span></div>
+          </div>
+        </div>
+        <div class="book b-claret" style="width: 44px; height: 210px;">
+          <div class="gilt-band"></div>
+          <div class="book-spine-text">昭明文选</div>
+          <div class="call-num">集·02</div>
+          <div class="book-detail">
+            <h4>昭明文选</h4>
+            <div class="author">萧统 编</div>
+            <div class="desc">中国最早的诗文总集，选文七十家。</div>
+            <div class="meta"><span>宋刻本</span><span>在馆</span></div>
+          </div>
+        </div>
+        <div class="book b-teal" style="width: 38px; height: 200px;">
+          <div class="gilt-band"></div>
+          <div class="book-spine-text">李太白集</div>
+          <div class="call-num">集·03</div>
+          <div class="book-detail">
+            <h4>李太白全集</h4>
+            <div class="author">李白 著</div>
+            <div class="desc">诗仙千古绝唱，豪放飘逸，清水出芙蓉。</div>
+            <div class="meta"><span>宋刻本</span><span>在馆</span></div>
+          </div>
+        </div>
+        <div class="book b-olive" style="width: 46px; height: 218px;">
+          <div class="gilt-band"></div>
+          <div class="book-spine-text">杜工部集</div>
+          <div class="gilt-band-2"></div>
+          <div class="call-num">集·04</div>
+          <div class="book-detail">
+            <h4>杜工部集</h4>
+            <div class="author">杜甫 著</div>
+            <div class="desc">诗史沉郁顿挫，忧国忧民。</div>
+            <div class="meta"><span>宋刻本</span><span>在馆</span></div>
+          </div>
+        </div>
+        <div class="book b-oxblood" style="width: 40px; height: 205px;">
+          <div class="gilt-band"></div>
+          <div class="book-spine-text">东坡乐府</div>
+          <div class="call-num">集·05</div>
+          <div class="book-detail">
+            <h4>东坡乐府</h4>
+            <div class="author">苏轼 著</div>
+            <div class="desc">豪放词宗，大江东去，一蓑烟雨。</div>
+            <div class="meta"><span>宋刻本</span><span>在馆</span></div>
+          </div>
+        </div>
+        <div class="book b-moss" style="width: 34px; height: 195px;">
+          <div class="gilt-band"></div>
+          <div class="book-spine-text">稼轩词</div>
+          <div class="call-num">集·06</div>
+          <div class="book-detail">
+            <h4>稼轩长短句</h4>
+            <div class="author">辛弃疾 著</div>
+            <div class="desc">豪放悲壮，金戈铁马，气吞万里。</div>
+            <div class="meta"><span>元刻本</span><span>借出</span></div>
+          </div>
+        </div>
+        <div class="book b-ink" style="width: 52px; height: 225px;">
+          <div class="gilt-band"></div>
+          <div class="book-spine-text">红楼梦脂评</div>
+          <div class="gilt-band-2"></div>
+          <div class="call-num">集·07</div>
+          <div class="book-detail">
+            <h4>红楼梦（脂砚斋评）</h4>
+            <div class="author">曹雪芹 著</div>
+            <div class="desc">满纸荒唐言，一把辛酸泪。四大名著之首。</div>
+            <div class="meta"><span>清抄本</span><span>在馆</span></div>
+          </div>
+        </div>
+        <div class="book b-gilt" style="width: 36px; height: 200px;">
+          <div class="gilt-band"></div>
+          <div class="book-spine-text">聊斋志异</div>
+          <div class="call-num">集·08</div>
+          <div class="book-detail">
+            <h4>聊斋志异</h4>
+            <div class="author">蒲松龄 著</div>
+            <div class="desc">写鬼写妖高人一等，刺贪刺虐入骨三分。</div>
+            <div class="meta"><span>清刻本</span><span>在馆</span></div>
+          </div>
+        </div>
+        <div class="book b-navy" style="width: 32px; height: 190px;">
+          <div class="gilt-band"></div>
+          <div class="book-spine-text">人间词话</div>
+          <div class="call-num">集·09</div>
+          <div class="book-detail">
+            <h4>人间词话</h4>
+            <div class="author">王国维 著</div>
+            <div class="desc">境界说开新面，三重境界论词。</div>
+            <div class="meta"><span>清刻本</span><span>在馆</span></div>
+          </div>
+        </div>
+        <div class="book b-claret" style="width: 42px; height: 208px;">
+          <div class="gilt-band"></div>
+          <div class="book-spine-text">唐诗三百首</div>
+          <div class="call-num">集·10</div>
+          <div class="book-detail">
+            <h4>唐诗三百首</h4>
+            <div class="author">蘅塘退士 编</div>
+            <div class="desc">家弦户诵之编，风雅正声之选。</div>
+            <div class="meta"><span>清刻本</span><span>在馆</span></div>
+          </div>
+        </div>
+        <div class="book b-teal" style="width: 28px; height: 178px;">
+          <div class="gilt-band"></div>
+          <div class="book-spine-text">宋词选</div>
+          <div class="call-num">集·11</div>
+          <div class="book-detail">
+            <h4>宋词三百首</h4>
+            <div class="author">朱孝臧 编</div>
+            <div class="desc">词苑精华，豪放婉约兼收。</div>
+            <div class="meta"><span>清刻本</span><span>在馆</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="shelf-plank"></div>
+    </div>
+  </div>
+</section>
+
+<!-- Curated Picks -->
+<section class="section curated-section" id="curated">
+  <div class="section-header">
+    <div class="section-eyebrow">CURATED · 馆长荐书</div>
+    <h2 class="section-title">本月精选</h2>
+    <p class="section-desc">每月由馆长亲选三部，或为时令所宜，或为心境所契。</p>
+  </div>
+
+  <div class="curated-grid">
+    <div class="curated-card">
+      <span class="curated-num">壹</span>
+      <h3>秋夜读庄子</h3>
+      <span class="en-title">Reading Zhuangzi on an Autumn Night</span>
+      <p>立秋之后，暑气渐消，正是读逍遥游的好时辰。鲲鹏之大与蜩鸠之小，不过是视角之别。放下执念，方可与天地精神往来。</p>
+      <span class="curated-tag">时令 · 立秋</span>
+    </div>
+    <div class="curated-card">
+      <span class="curated-num">贰</span>
+      <h3>重读红楼</h3>
+      <span class="en-title">Rereading the Dream of the Red Chamber</span>
+      <p>脂砚斋说"字字看来皆是血，十年辛苦不寻常"。少年读情，中年读世，暮年读空。此书常读常新，每一遍都是不同的红楼梦。</p>
+      <span class="curated-tag">心境 · 沉思</span>
+    </div>
+    <div class="curated-card">
+      <span class="curated-num">叁</span>
+      <h3>诗经里的草木</h3>
+      <span class="en-title">Flora in the Book of Songs</span>
+      <p>蒹葭苍苍，采薇采薇。诗经中的草木不只是植物，是相思，是离愁，是三千年前先民对这片土地最深情的注视。读懂草木，便读懂了诗经的心。</p>
+      <span class="curated-tag">专题 · 草木</span>
+    </div>
+  </div>
+</section>
+
+<!-- Reading Rooms -->
+<section class="section rooms-section" id="rooms">
+  <div class="section-header">
+    <div class="section-eyebrow">READING ROOMS · 阅览室</div>
+    <h2 class="section-title">择一室而坐</h2>
+    <p class="section-desc">不同的心境，适合不同的房间。灯下独坐，或临窗听雨。</p>
+  </div>
+
+  <div class="rooms-grid">
+    <div class="room-card">
+      <span class="room-count">312</span>
+      <svg class="room-icon" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round">
+        <path d="M8 40V20l16-12 16 12v20" stroke="rgba(166,124,58,0.5)"/>
+        <path d="M20 40V28h8v12" stroke="rgba(166,124,58,0.5)"/>
+        <path d="M8 40h32" stroke="rgba(166,124,58,0.5)"/>
+      </svg>
+      <h3>明伦堂</h3>
+      <span class="room-en">Hall of Enlightenment</span>
+      <p>经史子集，典籍之室。灯光沉稳，桌椅厚重，适合沉浸式长读。三面书墙环绕，如坐书中。</p>
+    </div>
+    <div class="room-card">
+      <span class="room-count">186</span>
+      <svg class="room-icon" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round">
+        <path d="M8 40V20l16-12 16 12v20" stroke="rgba(166,124,58,0.5)"/>
+        <path d="M20 40V28h8v12" stroke="rgba(166,124,58,0.5)"/>
+        <path d="M8 40h32" stroke="rgba(166,124,58,0.5)"/>
+      </svg>
+      <h3>听雨轩</h3>
+      <span class="room-en">Rain-Pavilion Study</span>
+      <p>临窗而设，可览庭中四时之景。雨天尤佳，雨声与翻书声相和，最宜读诗词小品。</p>
+    </div>
+    <div class="room-card">
+      <span class="room-count">248</span>
+      <svg class="room-icon" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round">
+        <path d="M8 40V20l16-12 16 12v20" stroke="rgba(166,124,58,0.5)"/>
+        <path d="M20 40V28h8v12" stroke="rgba(166,124,58,0.5)"/>
+        <path d="M8 40h32" stroke="rgba(166,124,58,0.5)"/>
+      </svg>
+      <h3>知止斋</h3>
+      <span class="room-en">Studio of Knowing When to Stop</span>
+      <p>子部典藏所在，哲思之室。空间内敛安静，专供研读子书。知止而后有定，定而后能静。</p>
+    </div>
+    <div class="room-card">
+      <span class="room-count">420</span>
+      <svg class="room-icon" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round">
+        <path d="M8 40V20l16-12 16 12v20" stroke="rgba(166,124,58,0.5)"/>
+        <path d="M20 40V28h8v12" stroke="rgba(166,124,58,0.5)"/>
+        <path d="M8 40h32" stroke="rgba(166,124,58,0.5)"/>
+      </svg>
+      <h3>风雅廊</h3>
+      <span class="room-en">Gallery of Elegance</span>
+      <p>集部诗文之室，廊式布局。集部藏书最丰，诗词曲赋、笔记小说，应有尽有。廊中行走，如行文脉之中。</p>
+    </div>
+  </div>
+</section>
+
+<!-- Quote -->
+<section class="section quote-section" id="quote">
+  <div class="quote-mark">"</div>
+  <p class="quote-text">
+    盖人心之灵，莫不有知；天下之理，莫不有穷。<br>
+    惟于理有未穷，故其有不尽也。
+  </p>
+  <div class="quote-divider">
+    <div class="line"></div>
+    <div class="dot"></div>
+    <div class="line"></div>
+  </div>
+  <p class="quote-author">朱熹 · 《朱子语类》</p>
+</section>
+
+<!-- CTA -->
+<section class="section cta-section">
+  <div class="cta-content">
+    <h2>来书阁坐坐</h2>
+    <p>The library is not a place you visit. It is a place you return to.</p>
+    <a href="#" class="cta-button">
+      <span>预约到馆</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12,5 19,12 12,19"/>
+      </svg>
+    </a>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="footer-content">
+    <div class="footer-brand">
+      <h3>翰墨书阁</h3>
+      <p>A library is not a collection of books. It is a conversation across centuries.</p>
+    </div>
+    <div class="footer-links">
+      <div class="footer-col">
+        <h4>馆藏</h4>
+        <a href="#">经部典籍</a>
+        <a href="#">史部典籍</a>
+        <a href="#">子部典籍</a>
+        <a href="#">集部典籍</a>
+      </div>
+      <div class="footer-col">
+        <h4>服务</h4>
+        <a href="#">预约到馆</a>
+        <a href="#">借阅规则</a>
+        <a href="#">馆藏检索</a>
+        <a href="#">活动日历</a>
+      </div>
+      <div class="footer-col">
+        <h4>关于</h4>
+        <a href="#">书阁简介</a>
+        <a href="#">馆长寄语</a>
+        <a href="#">联系我们</a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>翰墨书阁 · MMXXVI · 非以聚书，乃以聚人</p>
+    <p>读书不觉已春深</p>
+  </div>
+</footer>
+
+<script>
+// Tab switching
+document.querySelectorAll('.shelf-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.shelf-tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+  });
+});
+
+// Nav background on scroll
+window.addEventListener('scroll', () => {
+  const nav = document.querySelector('.nav-bar');
+  if (window.scrollY > 60) {
+    nav.style.padding = '12px 48px';
+    nav.style.boxShadow = '0 2px 20px rgba(42, 31, 23, 0.08)';
+  } else {
+    nav.style.padding = '18px 48px';
+    nav.style.boxShadow = 'none';
+  }
+});
+
+// Subtle parallax on hero light
+const hero = document.querySelector('.hero');
+if (hero && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  window.addEventListener('scroll', () => {
+    const scrolled = window.scrollY;
+    if (scrolled < window.innerHeight) {
+      hero.style.transform = `translateY(${scrolled * 0.15}px)`;
+      hero.style.opacity = 1 - scrolled / window.innerHeight * 0.8;
+    }
+  });
+}
+</script>
+
+</body>
+</html>
