@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="description" content="榆林市图书馆小程序交互预览">
+  <title>榆见书 · 小程序预览</title>
+  <link rel="stylesheet" href="mini-program-demo.css">
+  <script defer src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
+  <script defer src="mini-program-demo.js"></script>
+</head>
+<body>
+  <main class="mini-app" aria-label="榆林市图书馆小程序预览">
+    <header class="mini-header">
+      <div class="status-row" aria-hidden="true">
+        <time>10:24</time>
+        <div class="status-icons"><i data-lucide="signal"></i><i data-lucide="wifi"></i><i data-lucide="battery-full"></i></div>
+      </div>
+      <div class="title-row">
+        <button class="header-back" id="headerBack" type="button" aria-label="返回首页" hidden><i data-lucide="chevron-left"></i></button>
+        <div class="mini-brand"><span class="mini-brand__seal">榆</span><span><b>榆见书</b><small>YULIN LIBRARY</small></span></div>
+        <div class="mini-capsule" aria-label="小程序菜单"><i data-lucide="ellipsis"></i><span></span><i data-lucide="circle-dot"></i></div>
+      </div>
+    </header>
+
+    <div class="page-stack">
+      <section class="app-page is-active" id="homePage" data-page="home" aria-labelledby="homeTitle">
+        <div class="home-hero">
+          <img src="assets/art-reference.jpg" alt="榆林传统壁画局部">
+          <div class="home-hero__shade"></div>
+          <div class="home-hero__copy">
+            <p><span></span>今日 · 榆林市图书馆</p>
+            <h1 id="homeTitle">在书旁，遇见<br>古人与同好</h1>
+            <button class="hero-route" type="button" data-route="ar">
+              <span><small>馆内探索 01</small>四库编纂 · 文渊阁</span>
+              <i data-lucide="arrow-up-right"></i>
+            </button>
+          </div>
+          <div class="hero-folio" aria-hidden="true"><span>榆图</span><b>八月十八</b></div>
+        </div>
+
+        <div class="home-body">
+          <section class="scan-entry" aria-labelledby="scanEntryTitle">
+            <button class="scan-entry__button" type="button" data-route="scan">
+              <span class="scan-entry__icon"><i data-lucide="scan-line"></i></span>
+              <span><small>SCAN &amp; DISCOVER</small><strong id="scanEntryTitle">扫书，看看谁也读过</strong><em>书籍封面 / 条码 / 馆内地点</em></span>
+              <i data-lucide="chevron-right"></i>
+            </button>
+          </section>
+
+          <section class="today-strip" aria-label="今日馆内信息">
+            <div><span class="pulse-dot"></span><p><small>此刻同读</small><b>27</b> 人</p></div>
+            <div><i data-lucide="glasses"></i><p><small>AR 眼镜</small><b>68</b> / 100 可借</p></div>
+            <button type="button" data-route="community">查看同好 <i data-lucide="arrow-right"></i></button>
+          </section>
+
+          <section class="section-block continue-section" aria-labelledby="continueTitle">
+            <div class="section-title"><div><small>CONTINUE READING</small><h2 id="continueTitle">继续上次的发现</h2></div><button type="button" data-route="scan">阅读记录</button></div>
+            <button class="continue-row" type="button" data-route="scan" data-scan-ready="true">
+              <span class="book-cover book-cover--blue"><em>史部</em><b>榆林府志</b><small>卷之八</small></span>
+              <span class="continue-row__copy"><small>地方志 · 读至 32%</small><strong>“城依山为郭，塞上有驼城”</strong><span class="progress"><i style="width:32%"></i></span><em>二层 · 地方文献区 A-18</em></span>
+              <i data-lucide="chevron-right"></i>
+            </button>
+          </section>
+
+          <section class="section-block city-section" aria-labelledby="cityTitle">
+            <div class="section-title"><div><small>LOCAL INTEREST</small><h2 id="cityTitle">这座城正在读</h2></div><button type="button" data-route="recommend">换一批</button></div>
+            <div class="interest-list">
+              <button type="button" data-route="community"><b>01</b><span><strong>边塞诗与长城</strong><small>榆林本地 126 人关注</small></span><i data-lucide="arrow-up-right"></i></button>
+              <button type="button" data-route="community"><b>02</b><span><strong>四库全书里的西北</strong><small>58 条书旁笺注</small></span><i data-lucide="arrow-up-right"></i></button>
+              <button type="button" data-route="community"><b>03</b><span><strong>榆林地方志</strong><small>此刻 6 人在馆阅读</small></span><i data-lucide="arrow-up-right"></i></button>
+            </div>
+          </section>
+        </div>
+      </section>
+
+      <section class="app-page" id="scanPage" data-page="scan" aria-labelledby="scanTitle" hidden>
+        <div class="page-heading page-heading--dark">
+          <p>SCAN A BOOK</p>
+          <h1 id="scanTitle">扫书发现同好</h1>
+          <span>将封面或条码放入框内</span>
+        </div>
+
+        <div class="scanner" id="scanner">
+          <img src="assets/art-reference.jpg" alt="摄像头取景模拟画面">
+          <div class="scanner__wash"></div>
+          <div class="scan-frame"><i></i><i></i><i></i><i></i><span class="scan-beam"></span></div>
+          <div class="scanner__hint" id="scannerHint"><i data-lucide="scan-line"></i><span>对准图书封面或条码</span></div>
+          <div class="scanner__tools">
+            <button type="button" id="flashButton" aria-pressed="false"><i data-lucide="flashlight"></i><span>补光</span></button>
+            <button type="button" id="albumButton"><i data-lucide="image"></i><span>相册</span></button>
+          </div>
+        </div>
+
+        <div class="scan-actions" id="scanActions">
+          <p>也可以扫描馆内展柜与地点标识</p>
+          <button class="primary-action" id="scanButton" type="button"><i data-lucide="scan-line"></i>模拟扫描《榆林府志》</button>
+        </div>
+
+        <article class="scan-result" id="scanResult" aria-live="polite" hidden>
+          <div class="result-kicker"><span>识别成功</span><small>馆藏编码 YLDF-00318</small></div>
+          <div class="result-book">
+            <span class="book-cover book-cover--blue book-cover--large"><em>史部</em><b>榆林府志</b><small>清道光本 · 影印</small></span>
+            <div><p>榆林地方志 · 馆内阅览</p><h2>《榆林府志》</h2><span class="location-tag"><i data-lucide="map-pin"></i>二层 A-18 · 在架</span><button type="button"><i data-lucide="route"></i>去书架</button></div>
+          </div>
+          <div class="reader-stats">
+            <button type="button" data-route="community"><b>3</b><span>此刻在读</span></button>
+            <button type="button" data-route="community"><b>86</b><span>本地读过</span></button>
+            <button type="button" data-route="community"><b>24</b><span>书旁留言</span></button>
+          </div>
+          <blockquote>“看到镇北台那一节，才发现每天经过的城墙原来藏着这么多故事。”<cite>北门旧客 · 2天前</cite></blockquote>
+          <div class="result-actions"><button class="primary-action" type="button" data-route="community"><i data-lucide="messages-square"></i>查看同好与留言</button><button class="icon-action" id="saveBook" type="button" aria-pressed="false" title="收藏"><i data-lucide="bookmark"></i></button></div>
+        </article>
+      </section>
+
+      <section class="app-page" id="communityPage" data-page="community" aria-labelledby="communityTitle" hidden>
+        <div class="page-heading page-heading--paper">
+          <p>READING TRACES · 榆林</p>
+          <h1 id="communityTitle">书旁有回声</h1>
+          <span>《榆林府志》 · 本地阅读足迹</span>
+        </div>
+
+        <div class="book-context">
+          <span class="book-cover book-cover--blue"><em>史部</em><b>榆林府志</b><small>卷之八</small></span>
+          <div><small>此刻在馆</small><h2><b>3</b> 位同好正在阅读</h2><p><span>二层地方文献区 2 位</span><span>四层古籍区 1 位</span></p></div>
+        </div>
+
+        <div class="community-tabs" role="tablist" aria-label="同好内容">
+          <button class="is-active" type="button" role="tab" aria-selected="true" data-community-tab="notes">书旁留言 <span>24</span></button>
+          <button type="button" role="tab" aria-selected="false" data-community-tab="questions">馆内问答 <span>7</span></button>
+          <button type="button" role="tab" aria-selected="false" data-community-tab="readers">兴趣同好 <span>86</span></button>
+        </div>
+
+        <div class="community-panel" id="notesPanel" data-community-panel="notes">
+          <div class="note-filter"><button class="is-active" type="button">最新</button><button type="button">共鸣最多</button><span>匿名展示 · 不显示精确位置</span></div>
+          <div class="note-list" id="noteList">
+            <article class="reader-note"><span class="reader-avatar">城</span><div><header><b>北门旧客</b><small>2天前 · 读过</small></header><p>看到镇北台那一节，才发现每天经过的城墙原来藏着这么多故事。</p><footer><span>#榆林城墙</span><button type="button" data-like><i data-lucide="heart"></i><em>18</em></button></footer></div></article>
+            <article class="reader-note"><span class="reader-avatar reader-avatar--jade">禾</span><div><header><b>长城以北</b><small>昨天 · 正在读</small></header><p>卷八的驿路图很有意思，和今天去红石峡的路线几乎重合。</p><footer><span>#地方志</span><button type="button" data-like><i data-lucide="heart"></i><em>11</em></button></footer></div></article>
+            <article class="reader-note"><span class="reader-avatar reader-avatar--gold">砚</span><div><header><b>无定河边</b><small>3小时前 · 读过</small></header><p>如果你也喜欢边塞诗，可以接着看《延绥镇志》，就在同一排书架。</p><footer><span>#下一本</span><button type="button" data-like><i data-lucide="heart"></i><em>7</em></button></footer></div></article>
+          </div>
+        </div>
+
+        <div class="community-panel" id="questionsPanel" data-community-panel="questions" hidden>
+          <div class="question-list">
+            <article><span>问</span><div><h3>府志里的“榆溪”对应今天哪里？</h3><p>馆员阿宁：大致对应今天榆溪河沿线，可在轻量 AR 的古地图层对照。</p><small>3 个回答 · 12 人关注</small></div></article>
+            <article><span>问</span><div><h3>影印本和馆藏善本内容一样吗？</h3><p>塞上读史：正文相同，馆藏善本另有朱笔批注，需预约馆内阅览。</p><small>5 个回答 · 8 人关注</small></div></article>
+          </div>
+        </div>
+
+        <div class="community-panel" id="readersPanel" data-community-panel="readers" hidden>
+          <div class="interest-map">
+            <div class="interest-map__rings"><span></span><span></span><span></span><i>我</i><b style="--x:26%;--y:28%">城</b><b style="--x:75%;--y:23%">禾</b><b style="--x:68%;--y:72%">砚</b><b style="--x:22%;--y:76%">关</b></div>
+            <h3>你们都关注“边塞历史”</h3><p>本周还有 12 位榆林读者读过相近馆藏</p>
+          </div>
+        </div>
+
+        <form class="compose-bar" id="noteForm">
+          <label for="noteInput">在这本书旁留下感受</label>
+          <div><input id="noteInput" maxlength="42" placeholder="这一页让你想到什么？" required><button type="submit" title="发布留言"><i data-lucide="send"></i></button></div>
+        </form>
+      </section>
+
+      <section class="app-page" id="recommendPage" data-page="recommend" aria-labelledby="recommendTitle" hidden>
+        <div class="recommend-hero">
+          <p>FOR YOU · 依据你的阅读足迹</p>
+          <h1 id="recommendTitle">沿着喜欢的书，<br>找到下一页</h1>
+          <div class="taste-tags"><span>地方史</span><span>边塞诗</span><span>古城建筑</span></div>
+        </div>
+
+        <div class="recommend-body">
+          <div class="taste-switch" role="group" aria-label="推荐类型">
+            <button class="is-active" type="button" data-rec-filter="all">全部</button>
+            <button type="button" data-rec-filter="book">馆藏</button>
+            <button type="button" data-rec-filter="route">AR 路线</button>
+            <button type="button" data-rec-filter="event">馆藏活动</button>
+          </div>
+          <section class="lead-recommend" data-rec-type="book">
+            <div class="lead-recommend__art"><img src="assets/art-reference.jpg" alt="古典壁画人物局部"><span>匹配度 96%</span></div>
+            <div><small>读过《榆林府志》的人也喜欢</small><h2>《延绥镇志》</h2><p>从城垣、驿路与边防制度，继续阅读明代榆林。</p><div><span><i data-lucide="map-pin"></i>二层 A-19</span><b>在架</b></div><button type="button" data-route="scan" data-scan-ready="true">查看馆藏 <i data-lucide="arrow-right"></i></button></div>
+          </section>
+          <section class="recommend-list" aria-labelledby="moreRecommendTitle">
+            <div class="section-title"><div><small>NEXT DISCOVERY</small><h2 id="moreRecommendTitle">继续探索</h2></div></div>
+            <button class="recommend-row" type="button" data-rec-type="route" data-route="ar"><span class="recommend-row__index">01</span><span><small>手机轻量 AR · 约 12 分钟</small><strong>古城叠影：从驼城到榆阳</strong><em>图书馆一层大厅起点</em></span><i data-lucide="chevron-right"></i></button>
+            <button class="recommend-row" type="button" data-rec-type="event"><span class="recommend-row__index">02</span><span><small>馆藏导读 · 8月24日 14:30</small><strong>一册方志，如何记录一座城</strong><em>三层地方文献阅览室</em></span><i data-lucide="chevron-right"></i></button>
+            <button class="recommend-row" type="button" data-rec-type="book" data-route="scan" data-scan-ready="true"><span class="recommend-row__index">03</span><span><small>古典藏书 · 馆内阅览</small><strong>《四库全书总目提要》史部</strong><em>四层古典藏书区 C-06</em></span><i data-lucide="chevron-right"></i></button>
+            <button class="recommend-row" type="button" data-rec-type="event"><span class="recommend-row__index">04</span><span><small>数字展陈 · 全天开放</small><strong>无定河与长城：榆林古地图展</strong><em>二层西侧展廊</em></span><i data-lucide="chevron-right"></i></button>
+          </section>
+        </div>
+      </section>
+
+      <section class="app-page app-page--ar" id="arPage" data-page="ar" aria-labelledby="arTitle" hidden>
+        <div class="ar-stage" id="arStage">
+          <img src="assets/art-reference.jpg" alt="轻量 AR 中的古代场景模拟画面">
+          <div class="ar-stage__tint"></div>
+          <div class="ar-topline"><span><i></i>轻量 AR</span><b>四库编纂 · 文渊阁</b><small>场景 01 / 03</small></div>
+          <button class="ar-hotspot ar-hotspot--person is-active" type="button" data-hotspot="person" aria-label="查看编纂官信息"><i></i><span>编纂官</span></button>
+          <button class="ar-hotspot ar-hotspot--book" type="button" data-hotspot="book" aria-label="查看四库底本信息"><i></i><span>四库底本</span></button>
+          <button class="ar-hotspot ar-hotspot--place" type="button" data-hotspot="place" aria-label="查看文渊阁信息"><i></i><span>文渊阁</span></button>
+          <div class="ar-reticle" aria-hidden="true"><span></span></div>
+          <div class="ar-story" id="arStory">
+            <div><span id="arStoryIndex">人物 · 01</span><button id="closeArStory" type="button" aria-label="收起说明"><i data-lucide="x"></i></button></div>
+            <h1 id="arTitle">一笔一校，汇成万卷</h1>
+            <p id="arStoryText">乾隆三十八年，纪昀等人在翰林院校勘群书。每部典籍都要经过辑录、辨伪与提要。</p>
+            <button type="button" id="arNarrate"><i data-lucide="volume-2"></i><span>听 38 秒讲解</span></button>
+          </div>
+          <div class="ar-controls">
+            <button type="button" id="arMap"><i data-lucide="map"></i><span>路线</span></button>
+            <button class="ar-capture" id="arCapture" type="button" aria-label="截取 AR 画面"><i></i></button>
+            <button type="button" id="arNotes"><i data-lucide="message-circle"></i><span>笺注</span><b>12</b></button>
+          </div>
+          <p class="ar-footnote">手机体验为轻量内容 · 到馆借用眼镜可进入完整空间场景</p>
+        </div>
+      </section>
+    </div>
+
+    <nav class="bottom-nav" aria-label="小程序主导航">
+      <button class="is-active" type="button" data-route="home"><i data-lucide="house"></i><span>首页</span></button>
+      <button type="button" data-route="scan"><span class="scan-nav-icon"><i data-lucide="scan-line"></i></span><span>扫书</span></button>
+      <button type="button" data-route="community"><i data-lucide="messages-square"></i><span>同好</span><b class="nav-badge">3</b></button>
+      <button type="button" data-route="recommend"><i data-lucide="compass"></i><span>推荐</span></button>
+      <button type="button" data-route="ar"><i data-lucide="scan-eye"></i><span>轻量AR</span></button>
+    </nav>
+
+    <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+  </main>
+</body>
+</html>
