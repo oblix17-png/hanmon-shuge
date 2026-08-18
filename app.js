@@ -59,6 +59,51 @@ const readerSignals = [
   }
 ];
 
+const libraryZones = {
+  literature: {
+    name: '文学艺术', english: 'LITERATURE & ARTS', floor: '二层 · 东侧书库', floorCode: 'F2 · EAST',
+    status: '开放 · 可借阅', description: '从当代文学、古典诗词到绘画、音乐与设计，让一次随手翻阅成为进入另一种生活的入口。',
+    scale: '约 18,600 册', availability: '86% 可借', readerCount: '7 人在读', visualSignal: '7 位读者正在本区阅读',
+    scope: '中国文学 · 外国文学 · 诗歌 · 绘画 · 音乐', tags: ['小说', '诗歌', '书画', '音乐'],
+    readerSignal: '近期有 23 位读者从中国文学继续浏览到地方诗歌。', location: '二层 文学艺术区 东侧书库', finalStep: '上至二层，沿东侧阅览带抵达文学艺术区', focus: '66% 48%', accent: 'rust'
+  },
+  society: {
+    name: '社会科学', english: 'SOCIAL SCIENCES', floor: '三层 · 北侧书库', floorCode: 'F3 · NORTH',
+    status: '开放 · 可借阅', description: '把历史、哲学、经济和社会观察放在同一条知识脉络中，适合专题研究，也适合从一个问题开始漫游。',
+    scale: '约 22,400 册', availability: '81% 可借', readerCount: '11 人在读', visualSignal: '11 位读者正在本区阅读',
+    scope: '历史 · 哲学 · 政治 · 经济 · 法律 · 社会学', tags: ['历史', '哲学', '经济', '社会'],
+    readerSignal: '《资治通鉴》附近有 3 人正在阅读，近 30 日新增 41 条匿名感受。', location: '三层 社会科学区 北侧书库', finalStep: '上至三层，从中庭向北抵达社会科学区', focus: '42% 51%', accent: 'cobalt'
+  },
+  science: {
+    name: '自然科技', english: 'SCIENCE & TECHNOLOGY', floor: '三层 · 南侧书库', floorCode: 'F3 · SOUTH',
+    status: '开放 · 可借阅', description: '从自然观察到工程实践，以清晰分类连接科普入门、专业参考和科技史，让好奇心有路径可循。',
+    scale: '约 15,200 册', availability: '89% 可借', readerCount: '4 人在读', visualSignal: '4 位读者正在本区阅读',
+    scope: '数学 · 天文 · 生物 · 工程 · 计算机 · 科技史', tags: ['自然', '工程', '计算机', '科普'],
+    readerSignal: '读过《梦溪笔谈》的读者，最近常继续查看天文与古代工程主题。', location: '三层 自然科技区 南侧书库', finalStep: '上至三层，从中庭向南抵达自然科技区', focus: '76% 57%', accent: 'jade'
+  },
+  local: {
+    name: '地方文献', english: 'LOCAL DOCUMENTS', floor: '四层 · 西侧书库', floorCode: 'F4 · WEST',
+    status: '开放 · 部分限馆内', description: '汇集榆林地方史、西北区域研究与地方出版物。这里是可检索的城市记忆入口，与不外借古典藏书分区相邻但独立。',
+    scale: '约 6,800 册', availability: '82% 可阅', readerCount: '6 人在读', visualSignal: '6 位读者正在查阅地方文献',
+    scope: '榆林地方史 · 西北研究 · 地方出版物 · 城市影像', tags: ['榆林', '西北', '方志研究', '城市记忆'],
+    readerSignal: '最近 26 条阅读足迹提到了镇北台、六楼骑街和明代延绥镇。', location: '四层 地方文献区 西侧书库', finalStep: '上至四层，向西抵达地方文献区服务台', focus: '34% 45%', accent: 'gold'
+  },
+  children: {
+    name: '少儿阅读', english: 'CHILDREN\'S READING', floor: '一层 · 南侧阅览区', floorCode: 'F1 · SOUTH',
+    status: '开放 · 余 38 席', description: '用绘本、儿童文学、知识读物和亲子共读空间照顾不同年龄，让孩子可以自己选择、坐下并读完一本书。',
+    scale: '约 12,900 册', availability: '38 个座位可用', readerCount: '19 组家庭', visualSignal: '19 组家庭正在本区共读',
+    scope: '绘本 · 儿童文学 · 科普启蒙 · 亲子阅读', tags: ['绘本', '亲子', '启蒙', '故事'],
+    readerSignal: '今天最常被继续阅读的主题是自然观察、传统节日与榆林故事。', location: '一层 少儿阅读区 南侧阅览区', finalStep: '经过总服务台后向南，抵达少儿阅读区入口', focus: '58% 70%', accent: 'rust'
+  },
+  digital: {
+    name: '数字阅读', english: 'DIGITAL READING', floor: '一层 · 东侧数字空间', floorCode: 'F1 · EAST',
+    status: '开放 · 14 台空闲', description: '连接电子图书、专题数据库、视听资源与数字展览，为快速检索和深度研究提供安静、清楚的数字入口。',
+    scale: '36 个阅览终端', availability: '14 台可用', readerCount: '9 人使用中', visualSignal: '9 位读者正在使用数字资源',
+    scope: '电子图书 · 数据库 · 视听资源 · 数字展览', tags: ['电子书', '数据库', '视听', '数字展'],
+    readerSignal: '本周地方文献数据库与古籍影像专题的访问量最高。', location: '一层 数字阅读区 东侧数字空间', finalStep: '经过总服务台后向东，抵达数字阅读区', focus: '82% 44%', accent: 'cobalt'
+  }
+};
+
 const classicalCollections = {
   '四库全书': [
     {
@@ -172,6 +217,7 @@ const escapeHtml = value => String(value).replace(/[&<>"']/g, character => ({
 })[character]);
 
 let activeStatus = '全部';
+let activeZone = 'literature';
 let selectedBook = null;
 let selectedSeat = null;
 let selectedFloor = '二层';
@@ -247,6 +293,44 @@ function renderCatalog() {
   $('#catalogEmpty').hidden = list.length > 0;
   $('#catalogList').setAttribute('aria-label', `找到 ${list.length} 条馆藏`);
   refreshIcons();
+}
+
+function renderLibraryZone() {
+  const zone = libraryZones[activeZone];
+  if (!zone) return;
+  const panel = $('#zonePanel');
+  const activeTab = $(`[data-zone="${activeZone}"]`, $('#zoneIndex'));
+  const animateChange = panel.dataset.rendered === 'true';
+
+  $$('#zoneIndex [data-zone]').forEach(button => {
+    const active = button === activeTab;
+    button.classList.toggle('is-active', active);
+    button.setAttribute('aria-selected', String(active));
+    button.tabIndex = active ? 0 : -1;
+  });
+  panel.setAttribute('aria-labelledby', activeTab.id);
+  panel.dataset.accent = zone.accent;
+  $('#zoneVisual').style.backgroundPosition = zone.focus;
+  $('#zoneFloorCode').textContent = zone.floorCode;
+  $('#zoneEnglish').textContent = zone.english;
+  $('#zoneVisualName').textContent = zone.name;
+  $('#zoneVisualSignal').textContent = zone.visualSignal;
+  $('#zoneFloor').textContent = zone.floor;
+  $('#zoneStatus').textContent = zone.status;
+  $('#zoneName').textContent = zone.name;
+  $('#zoneDescription').textContent = zone.description;
+  $('#zoneScale').textContent = zone.scale;
+  $('#zoneAvailability').textContent = zone.availability;
+  $('#zoneReaderCount').textContent = zone.readerCount;
+  $('#zoneScope').textContent = zone.scope;
+  $('#zoneReaderSignal').textContent = zone.readerSignal;
+  $('#zoneTags').innerHTML = zone.tags.map(tag => `<li>${escapeHtml(tag)}</li>`).join('');
+  panel.dataset.rendered = 'true';
+  if (animateChange) {
+    panel.classList.remove('is-changing');
+    requestAnimationFrame(() => panel.classList.add('is-changing'));
+    window.setTimeout(() => panel.classList.remove('is-changing'), 560);
+  }
 }
 
 function showBook(book) {
@@ -798,6 +882,72 @@ function initParticleIntro() {
   return { burst, destroy, get reduced() { return reduced; } };
 }
 
+function enterClassicsExperience() {
+  const transition = $('#classicsTransition');
+  const special = $('#special');
+  const heading = $('#specialTitle');
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  if (reducedMotion) {
+    special.scrollIntoView({ behavior: 'auto' });
+    heading.tabIndex = -1;
+    heading.focus({ preventScroll: true });
+    return;
+  }
+
+  if (transition.classList.contains('is-active')) return;
+  transition.classList.add('is-active');
+  transition.setAttribute('aria-hidden', 'false');
+  document.body.classList.add('classics-transitioning');
+
+  window.setTimeout(() => {
+    special.scrollIntoView({ behavior: 'auto' });
+    special.classList.add('is-revealed');
+  }, 1450);
+
+  window.setTimeout(() => {
+    transition.classList.remove('is-active');
+    transition.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('classics-transitioning');
+    heading.tabIndex = -1;
+    heading.focus({ preventScroll: true });
+  }, 2100);
+}
+
+function initScrollReveals() {
+  const gateway = $('#classicsGateway');
+  const targets = [
+    ...$$('.section-heading'),
+    $('#zoneIndex'),
+    $('#zonePanel'),
+    $('.rokid-feature'),
+    $('#collectionTabs'),
+    $('#classicalCollectionPanel'),
+    $('.mini-program__copy'),
+    $('.mini-program__access')
+  ].filter(Boolean);
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  if (reducedMotion || !('IntersectionObserver' in window)) {
+    gateway.classList.add('is-visible');
+    targets.forEach(target => target.classList.add('is-visible'));
+    return;
+  }
+
+  document.body.classList.add('has-reveal-motion');
+  targets.forEach(target => target.classList.add('reveal-on-scroll'));
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+      entry.target.classList.add('is-visible');
+      observer.unobserve(entry.target);
+    });
+  }, { threshold: .12, rootMargin: '0px 0px -6% 0px' });
+
+  targets.forEach(target => observer.observe(target));
+  observer.observe(gateway);
+}
+
 function initEvents() {
   const particleIntro = initParticleIntro();
   let introOpening = false;
@@ -826,6 +976,7 @@ function initEvents() {
   $$('[data-scroll]').forEach(button => button.addEventListener('click', () => {
     document.getElementById(button.dataset.scroll).scrollIntoView({ behavior: 'smooth' });
   }));
+  $$('[data-enter-classics]').forEach(button => button.addEventListener('click', enterClassicsExperience));
 
   $('#globalSearch').addEventListener('click', () => {
     switchService('catalog');
@@ -839,6 +990,34 @@ function initEvents() {
     switchService(button.dataset.openService);
     $('#reading').scrollIntoView({ behavior: 'smooth' });
   }));
+
+  $('#zoneIndex').addEventListener('click', event => {
+    const button = event.target.closest('[data-zone]');
+    if (!button) return;
+    activeZone = button.dataset.zone;
+    renderLibraryZone();
+  });
+  $('#zoneIndex').addEventListener('keydown', event => {
+    if (!['ArrowDown', 'ArrowUp', 'ArrowRight', 'ArrowLeft', 'Home', 'End'].includes(event.key)) return;
+    const tabs = $$('#zoneIndex [data-zone]');
+    const currentIndex = tabs.findIndex(tab => tab.dataset.zone === activeZone);
+    let nextIndex = currentIndex;
+    if (event.key === 'Home') nextIndex = 0;
+    else if (event.key === 'End') nextIndex = tabs.length - 1;
+    else if (event.key === 'ArrowDown' || event.key === 'ArrowRight') nextIndex = (currentIndex + 1) % tabs.length;
+    else nextIndex = (currentIndex - 1 + tabs.length) % tabs.length;
+    event.preventDefault();
+    activeZone = tabs[nextIndex].dataset.zone;
+    renderLibraryZone();
+    tabs[nextIndex].focus();
+  });
+  $('#navigateZone').addEventListener('click', () => {
+    const zone = libraryZones[activeZone];
+    $('#mapDestination').textContent = `目的地：${zone.location}`;
+    $('#mapFinalStep').textContent = zone.finalStep;
+    $('#mapTargetRoom').textContent = zone.name;
+    openDialog($('#mapDialog'));
+  });
 
   $('#catalogSearch').addEventListener('input', renderCatalog);
   $$('.filter-button').forEach(button => button.addEventListener('click', () => {
@@ -964,6 +1143,7 @@ function initEvents() {
     closeDialog($('#bookDialog'));
     $('#mapDestination').textContent = `目的地：${selectedBook.location} · ${selectedBook.title}`;
     $('#mapFinalStep').textContent = selectedBook.restricted ? '到四层服务台核验预约后进入古典藏书区' : `抵达 ${selectedBook.location}`;
+    $('#mapTargetRoom').textContent = selectedBook.restricted ? '古典藏书' : selectedBook.category;
     openDialog($('#mapDialog'));
   });
 
@@ -982,10 +1162,12 @@ function init() {
   renderSeats();
   updateSeatSummary();
   renderReaderSignals();
+  renderLibraryZone();
   renderClassicsNav();
   renderManuscript();
   initEvents();
   initMiniProgramBridge();
+  initScrollReveals();
   updateGlassesAvailability();
   $$('.filter-button').forEach(button => button.setAttribute('aria-pressed', String(button.classList.contains('is-active'))));
   $$('#annotationSwitch button').forEach(button => button.setAttribute('aria-pressed', String(button.classList.contains('is-active'))));

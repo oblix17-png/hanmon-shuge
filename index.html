@@ -41,7 +41,8 @@
     </a>
     <nav class="main-nav" aria-label="主要导航">
       <a href="#reading">读书专区</a>
-      <a href="#special">古典藏书</a>
+      <a href="#zones">馆藏分区</a>
+      <a href="#classicsGateway">古典藏书</a>
       <a href="#miniprogram">小程序</a>
     </nav>
     <div class="header-actions">
@@ -60,7 +61,7 @@
         <p class="hero__lead">从一张座位、一册馆藏，到一部典籍里的山河人物。让阅读成为抵达这座城的另一条路。</p>
         <div class="hero__commands">
           <button class="command command--ink" type="button" data-scroll="reading"><i data-lucide="book-open"></i><span><small>READING SERVICE</small>进入读书专区</span></button>
-          <button class="command command--paper" type="button" data-scroll="special"><i data-lucide="sparkles"></i><span><small>CLASSICAL COLLECTION</small>进入古典藏书</span></button>
+          <button class="command command--paper" type="button" data-enter-classics><i data-lucide="sparkles"></i><span><small>CLASSICAL COLLECTION</small>进入古典藏书</span></button>
         </div>
         <a class="hero__mini-link" href="#miniprogram"><i data-lucide="scan-line" aria-hidden="true"></i><span>没有眼镜？使用小程序扫码体验轻量 AR</span><i data-lucide="arrow-right" aria-hidden="true"></i></a>
       </div>
@@ -125,6 +126,85 @@
           </section>
         </div>
       </div>
+    </section>
+
+    <section class="zones-section" id="zones" aria-labelledby="zonesTitle">
+      <div class="zones__inner">
+        <div class="section-heading zones__heading">
+          <div>
+            <p class="eyebrow">COLLECTION DIRECTORY · 馆藏分区</p>
+            <h2 id="zonesTitle">从兴趣出发，找到今天要读的地方</h2>
+          </div>
+          <p>选择分区，先查看楼层、馆藏范围与当前使用状态，再开启馆内导航。规模与实时状态为首版原型数据。</p>
+        </div>
+
+        <div class="zone-explorer">
+          <nav class="zone-index" id="zoneIndex" role="tablist" aria-label="普通馆藏分区">
+            <button class="zone-tab is-active" id="zoneTabLiterature" type="button" role="tab" aria-selected="true" aria-controls="zonePanel" tabindex="0" data-zone="literature"><span>01</span><b>文学艺术</b><small>二层</small></button>
+            <button class="zone-tab" id="zoneTabSociety" type="button" role="tab" aria-selected="false" aria-controls="zonePanel" tabindex="-1" data-zone="society"><span>02</span><b>社会科学</b><small>三层</small></button>
+            <button class="zone-tab" id="zoneTabScience" type="button" role="tab" aria-selected="false" aria-controls="zonePanel" tabindex="-1" data-zone="science"><span>03</span><b>自然科技</b><small>三层</small></button>
+            <button class="zone-tab" id="zoneTabLocal" type="button" role="tab" aria-selected="false" aria-controls="zonePanel" tabindex="-1" data-zone="local"><span>04</span><b>地方文献</b><small>四层</small></button>
+            <button class="zone-tab" id="zoneTabChildren" type="button" role="tab" aria-selected="false" aria-controls="zonePanel" tabindex="-1" data-zone="children"><span>05</span><b>少儿阅读</b><small>一层</small></button>
+            <button class="zone-tab" id="zoneTabDigital" type="button" role="tab" aria-selected="false" aria-controls="zonePanel" tabindex="-1" data-zone="digital"><span>06</span><b>数字阅读</b><small>一层</small></button>
+          </nav>
+
+          <article class="zone-panel" id="zonePanel" role="tabpanel" aria-labelledby="zoneTabLiterature" data-accent="rust">
+            <div class="zone-visual" id="zoneVisual" aria-hidden="true">
+              <div class="zone-visual__coordinates"><span id="zoneFloorCode">F2 · EAST</span><span>YULIN LIBRARY</span></div>
+              <div class="zone-visual__title"><small id="zoneEnglish">LITERATURE &amp; ARTS</small><strong id="zoneVisualName">文学艺术</strong></div>
+              <div class="zone-visual__signal"><i></i><span id="zoneVisualSignal">7 位读者正在本区阅读</span></div>
+            </div>
+
+            <div class="zone-detail">
+              <header class="zone-detail__header">
+                <p><span id="zoneFloor">二层 · 东侧书库</span><b id="zoneStatus">开放 · 可借阅</b></p>
+                <h3 id="zoneName">文学艺术</h3>
+                <p id="zoneDescription">从当代文学、古典诗词到绘画、音乐与设计，让一次随手翻阅成为进入另一种生活的入口。</p>
+              </header>
+
+              <dl class="zone-metrics" aria-label="分区原型数据">
+                <div><dt>馆藏规模</dt><dd id="zoneScale">约 18,600 册</dd></div>
+                <div><dt>当前状态</dt><dd id="zoneAvailability">86% 可借</dd></div>
+                <div><dt>阅读信号</dt><dd id="zoneReaderCount">7 人在读</dd></div>
+              </dl>
+
+              <div class="zone-scope"><span>馆藏范围</span><p id="zoneScope">中国文学 · 外国文学 · 诗歌 · 绘画 · 音乐</p></div>
+              <ul class="zone-tags" id="zoneTags" aria-label="分区主题标签"></ul>
+              <div class="zone-reader-note"><i data-lucide="message-circle" aria-hidden="true"></i><p><span>此刻的阅读线索</span><b id="zoneReaderSignal">近期有 23 位读者从中国文学继续浏览到地方诗歌。</b></p></div>
+
+              <div class="zone-actions">
+                <button class="primary-button" id="navigateZone" type="button"><i data-lucide="route" aria-hidden="true"></i>导航到书区</button>
+                <a class="secondary-button" href="mini-program-demo.html" data-mini-program-link><i data-lucide="scan-line" aria-hidden="true"></i>小程序查看</a>
+              </div>
+              <p class="zone-prototype-note"><i data-lucide="info" aria-hidden="true"></i>楼层、馆藏规模和实时状态为交互原型，正式上线前以馆方数据为准。</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="classics-gateway" id="classicsGateway" aria-labelledby="classicsGatewayTitle">
+      <div class="classics-gateway__wash" aria-hidden="true"></div>
+      <div class="classics-gateway__topline" aria-hidden="true"><span>经</span><span>史</span><span>子</span><span>集</span></div>
+      <div class="classics-gateway__copy">
+        <p class="eyebrow">THE ARCHIVE BEYOND · 古典藏书入口</p>
+        <h2 id="classicsGatewayTitle">一窗之内，<br>万卷相逢</h2>
+        <p>从地方志、善本与金石拓片，进入以《四库全书》为核心的馆内阅览体验。</p>
+      </div>
+      <div class="classics-gateway__portal" id="classicsPortal" aria-hidden="true">
+        <div class="classics-gateway__scene"></div>
+        <div class="classics-gateway__frame"></div>
+        <strong>藏</strong>
+        <span>书中见城</span>
+      </div>
+      <div class="classics-gateway__action">
+        <button class="classics-enter" id="enterClassics" type="button" data-enter-classics>
+          <span><small>ENTER THE ARCHIVE</small>点击入阁</span>
+          <i data-lucide="arrow-right" aria-hidden="true"></i>
+        </button>
+        <p>馆内阅览 · 四库全书 · 地方文脉 · Rokid AR</p>
+      </div>
+      <div class="classics-gateway__folio" aria-hidden="true"><span>卷贰</span><b>古典藏书</b></div>
     </section>
 
     <section class="special-section" id="special" aria-labelledby="specialTitle">
@@ -235,6 +315,17 @@
     </section>
   </main>
 
+  <div class="classics-transition" id="classicsTransition" aria-hidden="true">
+    <div class="classics-transition__paper"></div>
+    <div class="classics-transition__title"><small>经 · 史 · 子 · 集</small><strong>入阁</strong></div>
+    <div class="classics-transition__aperture">
+      <div class="classics-transition__scene"></div>
+      <span>从一页，走入一座书中之城</span>
+    </div>
+    <div class="classics-transition__rule classics-transition__rule--left"></div>
+    <div class="classics-transition__rule classics-transition__rule--right"></div>
+  </div>
+
   <footer class="site-footer">
     <div class="brand brand--footer"><span class="brand__mark">榆</span><span><b>榆林市图书馆</b><small>YULIN LIBRARY</small></span></div>
     <p>首版交互原型 · 馆藏、座位与社区数据为演示内容</p>
@@ -268,7 +359,7 @@
     <h2 id="mapDialogTitle">书架导航</h2>
     <p id="mapDestination">正在为你规划馆内路线。</p>
     <div class="floor-map" role="img" aria-label="从入口经服务台和阅览区前往目标藏书区域的楼层导航示意图">
-      <div class="map-room map-room--entrance">入口</div><div class="map-room map-room--desk">服务台</div><div class="map-room map-room--reading">阅览区</div><div class="map-room map-room--special">特藏室</div>
+      <div class="map-room map-room--entrance">入口</div><div class="map-room map-room--desk">服务台</div><div class="map-room map-room--reading">阅览区</div><div class="map-room map-room--special" id="mapTargetRoom">目标书区</div>
       <div class="route-line route-line--one"></div><div class="route-line route-line--two"></div><div class="route-line route-line--three"></div><span class="route-start">起</span><span class="route-end">达</span>
     </div>
     <div class="map-steps" role="group" aria-label="导航步骤"><span>1</span><p>从一层东门进入</p><span>2</span><p>经过总服务台右转</p><span>3</span><p id="mapFinalStep">抵达目标书架</p></div>
