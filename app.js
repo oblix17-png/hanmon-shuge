@@ -42,9 +42,9 @@ const books = [
 ];
 
 const clubs = [
-  { day: '23', month: 'AUG', title: '共读《榆林府志》：从城墙看见城市', place: '四层地方文献阅览室', time: '14:30', left: 7 },
-  { day: '27', month: 'AUG', title: '边塞诗夜读：月照长城', place: '屋顶城市观景台', time: '19:00', left: 12 },
-  { day: '31', month: 'AUG', title: '四库入门：经史子集如何读', place: '古典藏书区导览厅', time: '10:00', left: 4 }
+  { day: '23', month: 'AUG', title: '共读《榆林府志》：从城墙看见城市', place: '四层地方文献阅览室', time: '14:30', left: 7, joined: false },
+  { day: '27', month: 'AUG', title: '边塞诗夜读：月照长城', place: '屋顶城市观景台', time: '19:00', left: 12, joined: false },
+  { day: '31', month: 'AUG', title: '四库入门：经史子集如何读', place: '古典藏书区导览厅', time: '10:00', left: 4, joined: false }
 ];
 
 const classicalCollections = {
@@ -155,6 +155,9 @@ const curatedNotes = [
 
 const $ = (selector, root = document) => root.querySelector(selector);
 const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
+const escapeHtml = value => String(value).replace(/[&<>"']/g, character => ({
+  '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;'
+})[character]);
 
 let activeStatus = '全部';
 let selectedBook = null;
@@ -165,8 +168,12 @@ let selectedGlassesSlot = '14:00-14:30';
 let activeCollection = '四库全书';
 let activeClassicalItem = 0;
 let activeNote = 'original';
-let danmakuNotes = [...curatedNotes];
-const takenSeats = new Set([2, 6, 9, 14, 18, 21, 27, 31, 37, 42, 46]);
+let glassesTarget = '古典藏书区展柜 A-01';
+let glassesAvailable = 3;
+const baseTakenSeats = new Set([2, 6, 9, 14, 18, 21, 27, 31, 37, 42, 46]);
+const seatReservations = new Map();
+const bookRequests = new Set();
+const notesByManuscript = new Map([['四库全书:0', [...curatedNotes]]]);
 
 function refreshIcons() {
   if (window.lucide) window.lucide.createIcons();
@@ -182,11 +189,12 @@ function showToast(message) {
 }
 
 function openDialog(dialog) {
-  if (!dialog.open) dialog.showModal();
+  if (!dialog || dialog.open) return;
+  dialog.showModal();
 }
 
 function closeDialog(dialog) {
-  if (dialog.open) dialog.close();
+  if (dialog?.open) dialog.close();
 }
 
 function statusClass(status) {
@@ -224,6 +232,7 @@ function renderCatalog() {
     container.appendChild(row);
   });
   $('#catalogEmpty').hidden = list.length > 0;
+  $('#catalogList').setAttribute('aria-label', `找到 ${list.length} 条馆藏`);
   refreshIcons();
 }
 
@@ -238,7 +247,13 @@ function showBook(book) {
   $('#dialogStatus').textContent = book.status;
   $('#openRestricted').hidden = !book.restricted;
   $('#reserveBook').hidden = book.restricted;
-  $('#reserveBook').innerHTML = book.status === '借出' ? '<i data-lucide="bookmark-plus"></i>预约借阅' : '<i data-lucide="book-check"></i>借阅此书';
+  const requested = bookRequests.has(book.call);
+  $('#reserveBook').disabled = requested;
+  $('#reserveBook').innerHTML = requested
+    ? `<i data-lucide="check"></i>${book.status === '借出' ? '已预约' : '已加入借阅单'}`
+    : book.status === '借出'
+      ? '<i data-lucide="bookmark-plus"></i>预约借阅'
+      : '<i data-lucide="book-check"></i>借阅此书';
   openDialog($('#bookDialog'));
   refreshIcons();
 }
@@ -263,8 +278,18 @@ function localDateValue() {
   return new Date(date.getTime() - offset).toISOString().slice(0, 10);
 }
 
+function activeSeatKey() {
+  return `${$('#seatDate').value}|${selectedFloor}|${selectedTime}`;
+}
+
+function occupiedSeats() {
+  const reserved = seatReservations.get(activeSeatKey()) || new Set();
+  return new Set([...baseTakenSeats, ...reserved]);
+}
+
 function renderSeats() {
   const map = $('#seatMap');
+  const takenSeats = occupiedSeats();
   map.innerHTML = '';
   for (let seat = 1; seat <= 48; seat += 1) {
     const button = document.createElement('button');
@@ -297,21 +322,23 @@ function renderClubs() {
     const row = document.createElement('article');
     row.className = 'club-row';
     row.innerHTML = `
-      <div class="club-date"><strong>${club.day}</strong><small>${club.month}</small></div>
-      <div class="club-info"><h4>${club.title}</h4><p>${club.time} · ${club.place}</p></div>
-      <div class="club-action"><span>余 ${club.left} 席</span><button class="secondary-button" type="button" data-club-index="${index}"><i data-lucide="user-plus"></i>报名</button></div>`;
+      <div class="club-date"><strong>${escapeHtml(club.day)}</strong><small>${escapeHtml(club.month)}</small></div>
+      <div class="club-info"><h4>${escapeHtml(club.title)}</h4><p>${escapeHtml(club.time)} · ${escapeHtml(club.place)}</p></div>
+      <div class="club-action"><span>余 ${club.left} 席</span><button class="secondary-button${club.joined ? ' is-joined' : ''}" type="button" data-club-index="${index}"${club.left === 0 && !club.joined ? ' disabled' : ''}><i data-lucide="${club.joined ? 'check' : 'user-plus'}"></i>${club.joined ? '已报名' : club.left === 0 ? '已满员' : '报名'}</button></div>`;
     container.appendChild(row);
   });
   $$('[data-club-index]', container).forEach(button => {
     button.addEventListener('click', () => {
       const club = clubs[Number(button.dataset.clubIndex)];
-      const joined = button.classList.toggle('is-joined');
-      button.innerHTML = joined ? '<i data-lucide="check"></i>已报名' : '<i data-lucide="user-plus"></i>报名';
-      if (joined) club.left = Math.max(0, club.left - 1);
+      if (!club.joined && club.left === 0) {
+        showToast('本场活动已满员');
+        return;
+      }
+      club.joined = !club.joined;
+      if (club.joined) club.left = Math.max(0, club.left - 1);
       else club.left += 1;
-      button.previousElementSibling.textContent = `余 ${club.left} 席`;
-      showToast(joined ? `已报名「${club.title}」` : '已取消活动报名');
-      refreshIcons();
+      showToast(club.joined ? `已报名「${club.title}」` : '已取消活动报名');
+      renderClubs();
     });
   });
   refreshIcons();
@@ -326,6 +353,7 @@ function renderClassicsNav() {
     const button = document.createElement('button');
     button.type = 'button';
     button.className = `siku-tab${index === activeClassicalItem ? ' is-active' : ''}`;
+    button.setAttribute('aria-pressed', String(index === activeClassicalItem));
     button.innerHTML = `<strong>${item.key}</strong><span>${item.label}<small>${item.en}</small></span>`;
     button.addEventListener('click', () => {
       activeClassicalItem = index;
@@ -338,6 +366,22 @@ function renderClassicsNav() {
 
 function activeManuscript() {
   return classicalCollections[activeCollection][activeClassicalItem];
+}
+
+function activeManuscriptKey() {
+  return `${activeCollection}:${activeClassicalItem}`;
+}
+
+function activeDanmakuNotes() {
+  const key = activeManuscriptKey();
+  if (!notesByManuscript.has(key)) {
+    const item = activeManuscript();
+    notesByManuscript.set(key, [
+      { text: `第一次这样读${item.title}，地点与人物一下清楚了。`, curated: true },
+      { text: `想继续听馆员讲「${item.chapter}」的版本故事。`, curated: false }
+    ]);
+  }
+  return notesByManuscript.get(key);
 }
 
 function renderManuscript() {
@@ -360,7 +404,7 @@ function renderManuscript() {
 function renderDanmaku() {
   const windowEl = $('#danmakuWindow');
   windowEl.innerHTML = '';
-  danmakuNotes.forEach((note, index) => {
+  activeDanmakuNotes().forEach((note, index) => {
     const item = document.createElement('span');
     item.className = 'danmaku-item';
     item.dataset.curated = String(note.curated);
@@ -372,47 +416,71 @@ function renderDanmaku() {
   windowEl.classList.toggle('is-paused', !$('#danmakuToggle').checked);
 }
 
-function openGlassesBooking() {
+function updateGlassesAvailability() {
+  const entry = $('.glasses-entry > span');
+  const stock = $('.device-stock strong');
+  const stockDetail = $('.device-stock small');
+  if (entry) entry.innerHTML = `<i></i>今日可用 ${glassesAvailable} / 8`;
+  if (stock) stock.textContent = `${glassesAvailable} 台可用`;
+  if (stockDetail) stockDetail.textContent = `共 8 台 · ${8 - glassesAvailable} 台使用中或已预约`;
+}
+
+function openGlassesBooking(book = null) {
   if ($('#special').classList.contains('is-glasses')) {
     showToast('设备 R-03 已分配，可在预约时段到服务台领取');
     $('#glassesStatus').scrollIntoView({ behavior: 'smooth', block: 'center' });
     return;
   }
+  glassesTarget = book?.restricted ? `${book.location} · ${book.title}` : `古典藏书区 · ${activeCollection}展柜`;
+  $('#deviceAgreement').checked = false;
   openDialog($('#glassesDialog'));
 }
 
 function activateGlasses() {
+  if (glassesAvailable <= 0) {
+    showToast('今日设备已全部预约，请改日再试');
+    return;
+  }
   if (!$('#deviceAgreement').checked) {
     showToast('请先确认设备使用与归还约定');
     return;
   }
   closeDialog($('#glassesDialog'));
+  glassesAvailable -= 1;
   $('#special').classList.add('is-glasses');
   $('#glassesStatus').hidden = false;
-  $('#glassesSession').textContent = `${selectedGlassesSlot} · 古典藏书区展柜 A-01`;
+  $('#glassesSession').textContent = `${selectedGlassesSlot} · ${glassesTarget}`;
   $('#glassesToggle').setAttribute('aria-pressed', 'true');
+  updateGlassesAvailability();
   renderDanmaku();
   $('#glassesStatus').scrollIntoView({ behavior: 'smooth', block: 'center' });
   showToast('预约成功：设备 R-03 已为你保留');
 }
 
 function stopGlasses() {
+  if (!$('#special').classList.contains('is-glasses')) return;
+  glassesAvailable = Math.min(3, glassesAvailable + 1);
   $('#special').classList.remove('is-glasses');
   $('#glassesStatus').hidden = true;
   $('#glassesToggle').setAttribute('aria-pressed', 'false');
   $('#deviceAgreement').checked = false;
+  updateGlassesAvailability();
   renderDanmaku();
   showToast('已结束眼镜导览，感谢按时归还设备');
 }
 
 function initEvents() {
+  let introOpening = false;
   $('#introEnter').addEventListener('click', () => {
+    if (introOpening) return;
+    introOpening = true;
     const intro = $('#intro');
     intro.classList.add('is-opening');
     document.body.classList.remove('intro-open');
     setTimeout(() => {
       intro.hidden = true;
       intro.setAttribute('aria-hidden', 'true');
+      $('#globalSearch').focus({ preventScroll: true });
     }, 1200);
   });
 
@@ -436,9 +504,19 @@ function initEvents() {
   $('#catalogSearch').addEventListener('input', renderCatalog);
   $$('.filter-button').forEach(button => button.addEventListener('click', () => {
     activeStatus = button.dataset.status;
-    $$('.filter-button').forEach(candidate => candidate.classList.toggle('is-active', candidate === button));
+    $$('.filter-button').forEach(candidate => {
+      const active = candidate === button;
+      candidate.classList.toggle('is-active', active);
+      candidate.setAttribute('aria-pressed', String(active));
+    });
     renderCatalog();
   }));
+
+  $('#seatDate').addEventListener('change', () => {
+    selectedSeat = null;
+    renderSeats();
+    updateSeatSummary();
+  });
 
   $$('.service-panel .segmented').forEach(group => group.addEventListener('click', event => {
     const button = event.target.closest('button');
@@ -452,16 +530,39 @@ function initEvents() {
   }));
 
   $('#confirmSeat').addEventListener('click', () => {
+    if (!$('#seatDate').value) {
+      showToast('请先选择预约日期');
+      return;
+    }
     if (!selectedSeat) {
       showToast('请先选择一个可预约座位');
       return;
     }
     const reserved = selectedSeat;
-    takenSeats.add(reserved);
+    const key = activeSeatKey();
+    if (!seatReservations.has(key)) seatReservations.set(key, new Set());
+    seatReservations.get(key).add(reserved);
     selectedSeat = null;
     renderSeats();
     updateSeatSummary();
-    showToast(`预约成功：${selectedFloor} ${String(reserved).padStart(2, '0')}号座位`);
+    showToast(`预约成功：${$('#seatDate').value} ${selectedFloor} ${String(reserved).padStart(2, '0')}号座位`);
+  });
+
+  $('.club-intro .secondary-button').addEventListener('click', () => {
+    const title = window.prompt('请输入共读主题（例如：共读《榆林府志》）');
+    if (!title?.trim()) return;
+    const date = new Date();
+    clubs.unshift({
+      day: String(date.getDate()).padStart(2, '0'),
+      month: date.toLocaleString('en-US', { month: 'short' }).toUpperCase(),
+      title: title.trim().slice(0, 36),
+      place: '一层共享阅读区',
+      time: '19:00',
+      left: 20,
+      joined: true
+    });
+    renderClubs();
+    showToast('共读提议已提交，馆员确认后将开放报名');
   });
 
   $('#collectionTabs').addEventListener('click', event => {
@@ -482,7 +583,11 @@ function initEvents() {
     const button = event.target.closest('[data-note]');
     if (!button) return;
     activeNote = button.dataset.note;
-    $$('#annotationSwitch button').forEach(candidate => candidate.classList.toggle('is-active', candidate === button));
+    $$('#annotationSwitch button').forEach(candidate => {
+      const active = candidate === button;
+      candidate.classList.toggle('is-active', active);
+      candidate.setAttribute('aria-pressed', String(active));
+    });
     renderManuscript();
   });
 
@@ -499,7 +604,7 @@ function initEvents() {
     const input = $('#noteInput');
     const text = input.value.trim();
     if (!text) return;
-    danmakuNotes.unshift({ text, curated: false });
+    activeDanmakuNotes().unshift({ text, curated: false });
     input.value = '';
     renderDanmaku();
     showToast('笺注已绑定当前篇章，审核后可成为精选');
@@ -511,10 +616,11 @@ function initEvents() {
     requestAnimationFrame(() => slot.classList.add('is-previewing'));
     setTimeout(() => slot.classList.remove('is-previewing'), 2600);
   });
-  $('#glassesToggle').addEventListener('click', openGlassesBooking);
+  $('#glassesToggle').addEventListener('click', () => openGlassesBooking());
   $('#openRestricted').addEventListener('click', () => {
+    const book = selectedBook;
     closeDialog($('#bookDialog'));
-    openGlassesBooking();
+    openGlassesBooking(book);
   });
   $('#closeGlasses').addEventListener('click', stopGlasses);
   $('#glassesSlots').addEventListener('click', event => {
@@ -526,10 +632,13 @@ function initEvents() {
   $('#confirmGlasses').addEventListener('click', activateGlasses);
 
   $('#reserveBook').addEventListener('click', () => {
+    if (!selectedBook || bookRequests.has(selectedBook.call)) return;
+    bookRequests.add(selectedBook.call);
     closeDialog($('#bookDialog'));
-    showToast(selectedBook?.status === '借出' ? `已加入「${selectedBook.title}」预约队列` : `已将「${selectedBook?.title}」加入借阅单`);
+    showToast(selectedBook.status === '借出' ? `已加入「${selectedBook.title}」预约队列` : `已将「${selectedBook.title}」加入借阅单`);
   });
   $('#navigateBook').addEventListener('click', () => {
+    if (!selectedBook) return;
     closeDialog($('#bookDialog'));
     $('#mapDestination').textContent = `目的地：${selectedBook.location} · ${selectedBook.title}`;
     $('#mapFinalStep').textContent = selectedBook.restricted ? '到四层服务台核验预约后进入古典藏书区' : `抵达 ${selectedBook.location}`;
@@ -554,6 +663,9 @@ function init() {
   renderClassicsNav();
   renderManuscript();
   initEvents();
+  updateGlassesAvailability();
+  $$('.filter-button').forEach(button => button.setAttribute('aria-pressed', String(button.classList.contains('is-active'))));
+  $$('#annotationSwitch button').forEach(button => button.setAttribute('aria-pressed', String(button.classList.contains('is-active'))));
   refreshIcons();
 }
 
