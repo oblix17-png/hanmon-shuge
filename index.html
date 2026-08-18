@@ -16,13 +16,20 @@
   <div class="intro" id="intro" role="region" aria-label="榆林市图书馆开场">
     <div class="intro__panel intro__panel--left" aria-hidden="true"></div>
     <div class="intro__panel intro__panel--right" aria-hidden="true"></div>
-    <div class="intro__seal">
+    <canvas class="intro__particles" id="introParticles" role="img" aria-label="粒子汇聚成榆林开卷印记">
+      榆林开卷
+    </canvas>
+    <div class="intro__masthead" aria-hidden="true">
+      <span>YULIN LIBRARY</span>
+      <span>BOOKS · CITY · MEMORY</span>
+    </div>
+    <div class="intro__seal" aria-hidden="true">
       <span>榆林</span>
       <strong>开卷</strong>
     </div>
     <!-- 后续将用户提供的开场动画放入此媒体槽。 -->
     <div class="intro__media-slot" data-animation-slot="opening" role="group" aria-labelledby="openingSlotLabel">
-      <p id="openingSlotLabel">OPENING FILM · 开场动画预留</p>
+      <p id="openingSlotLabel">THE CITY WITHIN BOOKS · 书中见城</p>
       <button class="intro__enter" id="introEnter" type="button"><i data-lucide="play" aria-hidden="true"></i><span>点击进入，开启书中之城</span></button>
     </div>
   </div>

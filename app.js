@@ -497,19 +497,330 @@ function stopGlasses() {
   showToast('已结束眼镜导览，感谢按时归还设备');
 }
 
+function initParticleIntro() {
+  const intro = $('#intro');
+  const canvas = $('#introParticles');
+  const context = canvas?.getContext('2d');
+  const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+  if (!intro || !canvas || !context) {
+    return { burst() {}, destroy() {}, get reduced() { return true; } };
+  }
+
+  const palette = ['#f8f4ea', '#bfd5d0', '#c4a467', '#a95f49'];
+  const pointer = { x: 0, y: 0, active: false };
+  let particles = [];
+  let width = 0;
+  let height = 0;
+  let stampSize = 0;
+  let stampCenterY = 0;
+  let pixelRatio = 1;
+  let frameId = 0;
+  let resizeTimer = 0;
+  let previousTime = 0;
+  let burstOpacity = 1;
+  let mode = 'gather';
+  let disposed = false;
+  let reduced = motionQuery.matches;
+
+  const constrainedDevice = () => (
+    window.innerWidth <= 560
+    || (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4)
+    || (navigator.deviceMemory && navigator.deviceMemory <= 4)
+  );
+
+  function shuffle(points) {
+    for (let index = points.length - 1; index > 0; index -= 1) {
+      const target = Math.floor(Math.random() * (index + 1));
+      [points[index], points[target]] = [points[target], points[index]];
+    }
+    return points;
+  }
+
+  function makeStampPoints() {
+    const mobile = width <= 560;
+    stampSize = Math.round(Math.max(154, Math.min(mobile ? width * .5 : width * .25, height * .38, 292)));
+    stampCenterY = height * (mobile ? .4 : .42);
+    const mask = document.createElement('canvas');
+    mask.width = stampSize;
+    mask.height = stampSize;
+    const maskContext = mask.getContext('2d', { willReadFrequently: true });
+    if (!maskContext) return [];
+
+    const inset = Math.max(7, Math.round(stampSize * .035));
+    maskContext.strokeStyle = '#fff';
+    maskContext.fillStyle = '#fff';
+    maskContext.lineJoin = 'miter';
+    maskContext.lineWidth = Math.max(3, Math.round(stampSize * .016));
+    maskContext.strokeRect(inset, inset, stampSize - inset * 2, stampSize - inset * 2);
+
+    const corner = stampSize * .12;
+    maskContext.lineWidth = Math.max(2, Math.round(stampSize * .009));
+    maskContext.beginPath();
+    maskContext.moveTo(inset, inset + corner);
+    maskContext.lineTo(inset + corner, inset);
+    maskContext.moveTo(stampSize - inset - corner, stampSize - inset);
+    maskContext.lineTo(stampSize - inset, stampSize - inset - corner);
+    maskContext.stroke();
+
+    maskContext.textAlign = 'center';
+    maskContext.textBaseline = 'middle';
+    maskContext.font = `700 ${Math.round(stampSize * .29)}px "Noto Serif SC", "Source Han Serif SC", "Microsoft YaHei", serif`;
+    maskContext.fillText('榆林', stampSize / 2, stampSize * .36);
+    maskContext.fillText('开卷', stampSize / 2, stampSize * .67);
+    maskContext.fillRect(stampSize * .37, stampSize * .51, stampSize * .26, Math.max(1, stampSize * .006));
+
+    const image = maskContext.getImageData(0, 0, stampSize, stampSize).data;
+    const step = constrainedDevice() ? 6 : 4;
+    const points = [];
+    const offsetX = width / 2 - stampSize / 2;
+    const offsetY = stampCenterY - stampSize / 2;
+    for (let y = 0; y < stampSize; y += step) {
+      for (let x = 0; x < stampSize; x += step) {
+        if (image[(y * stampSize + x) * 4 + 3] > 96) {
+          points.push({ x: offsetX + x, y: offsetY + y });
+        }
+      }
+    }
+    const limit = constrainedDevice() ? 620 : 1250;
+    return shuffle(points).slice(0, limit);
+  }
+
+  function scatteredPosition() {
+    const margin = Math.min(width, height) * .12;
+    const side = Math.floor(Math.random() * 4);
+    if (side === 0) return { x: Math.random() * width, y: -Math.random() * margin };
+    if (side === 1) return { x: width + Math.random() * margin, y: Math.random() * height };
+    if (side === 2) return { x: Math.random() * width, y: height + Math.random() * margin };
+    return { x: -Math.random() * margin, y: Math.random() * height };
+  }
+
+  function buildParticles() {
+    const targets = makeStampPoints();
+    particles = targets.map((target, index) => {
+      const start = scatteredPosition();
+      return {
+        x: reduced ? target.x : start.x,
+        y: reduced ? target.y : start.y,
+        targetX: target.x,
+        targetY: target.y,
+        velocityX: (Math.random() - .5) * 1.3,
+        velocityY: (Math.random() - .5) * 1.3,
+        radius: constrainedDevice() ? 1.1 + Math.random() * .65 : .9 + Math.random() * 1.05,
+        color: index % 11 === 0 ? 3 : index % 7 === 0 ? 2 : index % 4 === 0 ? 1 : 0,
+        phase: Math.random() * Math.PI * 2,
+        spring: .014 + Math.random() * .009
+      };
+    });
+    intro.classList.add('is-particle-ready');
+  }
+
+  function sizeCanvas() {
+    if (mode === 'burst' || disposed) return;
+    const bounds = canvas.getBoundingClientRect();
+    width = Math.max(1, Math.round(bounds.width));
+    height = Math.max(1, Math.round(bounds.height));
+    pixelRatio = Math.min(window.devicePixelRatio || 1, constrainedDevice() ? 1.25 : 1.75);
+    canvas.width = Math.round(width * pixelRatio);
+    canvas.height = Math.round(height * pixelRatio);
+    context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+    buildParticles();
+    draw(performance.now());
+  }
+
+  function drawGuide(time) {
+    const pulse = 1 + Math.sin(time * .00065) * .008;
+    context.save();
+    context.translate(width / 2, stampCenterY);
+    context.scale(pulse, pulse);
+    context.strokeStyle = 'rgba(248, 244, 234, .09)';
+    context.lineWidth = 1;
+    context.beginPath();
+    context.arc(0, 0, stampSize * .66, 0, Math.PI * 2);
+    context.stroke();
+    context.strokeStyle = 'rgba(191, 213, 208, .07)';
+    context.beginPath();
+    context.arc(0, 0, stampSize * .82, 0, Math.PI * 2);
+    context.stroke();
+    context.restore();
+  }
+
+  function updateParticles(time, delta) {
+    const repelRadius = width <= 560 ? 62 : 94;
+    const repelRadiusSquared = repelRadius * repelRadius;
+    particles.forEach(particle => {
+      if (mode === 'gather') {
+        particle.velocityX += (particle.targetX - particle.x) * particle.spring * delta;
+        particle.velocityY += (particle.targetY - particle.y) * particle.spring * delta;
+        if (pointer.active) {
+          const differenceX = particle.x - pointer.x;
+          const differenceY = particle.y - pointer.y;
+          const distanceSquared = differenceX * differenceX + differenceY * differenceY;
+          if (distanceSquared > 0 && distanceSquared < repelRadiusSquared) {
+            const distance = Math.sqrt(distanceSquared);
+            const force = (1 - distance / repelRadius) * 1.85 * delta;
+            particle.velocityX += differenceX / distance * force;
+            particle.velocityY += differenceY / distance * force;
+          }
+        }
+        const damping = Math.pow(.875, delta);
+        particle.velocityX *= damping;
+        particle.velocityY *= damping;
+      } else {
+        const damping = Math.pow(.988, delta);
+        particle.velocityX *= damping;
+        particle.velocityY *= damping;
+      }
+      particle.x += particle.velocityX * delta;
+      particle.y += particle.velocityY * delta;
+      particle.renderRadius = particle.radius * (1 + Math.sin(time * .0016 + particle.phase) * .12);
+    });
+    if (mode === 'burst') burstOpacity = Math.max(0, burstOpacity - .025 * delta);
+  }
+
+  function draw(time) {
+    context.clearRect(0, 0, width, height);
+    if (mode === 'gather') drawGuide(time);
+
+    context.save();
+    context.globalCompositeOperation = 'screen';
+    context.globalAlpha = .1 * burstOpacity;
+    context.fillStyle = '#f8f4ea';
+    context.beginPath();
+    particles.forEach(particle => {
+      const radius = (particle.renderRadius || particle.radius) * 2.8;
+      context.moveTo(particle.x + radius, particle.y);
+      context.arc(particle.x, particle.y, radius, 0, Math.PI * 2);
+    });
+    context.fill();
+
+    palette.forEach((color, colorIndex) => {
+      context.globalAlpha = (colorIndex === 3 ? .78 : .9) * burstOpacity;
+      context.fillStyle = color;
+      context.beginPath();
+      particles.forEach(particle => {
+        if (particle.color !== colorIndex) return;
+        const radius = particle.renderRadius || particle.radius;
+        context.moveTo(particle.x + radius, particle.y);
+        context.arc(particle.x, particle.y, radius, 0, Math.PI * 2);
+      });
+      context.fill();
+    });
+    context.restore();
+  }
+
+  function animate(time) {
+    if (disposed) return;
+    const delta = previousTime ? Math.min(2, (time - previousTime) / 16.67) : 1;
+    previousTime = time;
+    updateParticles(time, delta);
+    draw(time);
+    if (mode !== 'burst' || burstOpacity > .01) frameId = requestAnimationFrame(animate);
+  }
+
+  function handlePointerMove(event) {
+    const bounds = canvas.getBoundingClientRect();
+    pointer.x = event.clientX - bounds.left;
+    pointer.y = event.clientY - bounds.top;
+    pointer.active = true;
+  }
+
+  function handlePointerLeave() {
+    pointer.active = false;
+  }
+
+  function handleResize() {
+    window.clearTimeout(resizeTimer);
+    resizeTimer = window.setTimeout(sizeCanvas, 120);
+  }
+
+  function handleVisibility() {
+    if (document.hidden) {
+      cancelAnimationFrame(frameId);
+      frameId = 0;
+    } else if (!disposed && !reduced && !frameId) {
+      previousTime = 0;
+      frameId = requestAnimationFrame(animate);
+    }
+  }
+
+  function handleMotionChange(event) {
+    reduced = event.matches;
+    cancelAnimationFrame(frameId);
+    frameId = 0;
+    previousTime = 0;
+    buildParticles();
+    draw(performance.now());
+    if (!reduced) frameId = requestAnimationFrame(animate);
+  }
+
+  function burst() {
+    if (reduced || mode === 'burst') return;
+    mode = 'burst';
+    pointer.active = false;
+    burstOpacity = 1;
+    const centerX = width / 2;
+    particles.forEach(particle => {
+      let differenceX = particle.x - centerX;
+      let differenceY = particle.y - stampCenterY;
+      let distance = Math.hypot(differenceX, differenceY);
+      if (distance < 1) {
+        const angle = Math.random() * Math.PI * 2;
+        differenceX = Math.cos(angle);
+        differenceY = Math.sin(angle);
+        distance = 1;
+      }
+      const speed = 7 + Math.random() * 11;
+      particle.velocityX = differenceX / distance * speed + (Math.random() - .5) * 2;
+      particle.velocityY = differenceY / distance * speed + (Math.random() - .5) * 2;
+    });
+  }
+
+  function destroy() {
+    disposed = true;
+    cancelAnimationFrame(frameId);
+    window.clearTimeout(resizeTimer);
+    window.removeEventListener('resize', handleResize);
+    document.removeEventListener('visibilitychange', handleVisibility);
+    intro.removeEventListener('pointermove', handlePointerMove);
+    intro.removeEventListener('pointerleave', handlePointerLeave);
+    motionQuery.removeEventListener?.('change', handleMotionChange);
+    particles = [];
+  }
+
+  window.addEventListener('resize', handleResize, { passive: true });
+  document.addEventListener('visibilitychange', handleVisibility);
+  intro.addEventListener('pointermove', handlePointerMove, { passive: true });
+  intro.addEventListener('pointerleave', handlePointerLeave);
+  motionQuery.addEventListener?.('change', handleMotionChange);
+  sizeCanvas();
+  if (!reduced) frameId = requestAnimationFrame(animate);
+
+  return { burst, destroy, get reduced() { return reduced; } };
+}
+
 function initEvents() {
+  const particleIntro = initParticleIntro();
   let introOpening = false;
   $('#introEnter').addEventListener('click', () => {
     if (introOpening) return;
     introOpening = true;
     const intro = $('#intro');
-    intro.classList.add('is-opening');
-    document.body.classList.remove('intro-open');
+    const enterButton = $('#introEnter');
+    const scatterDuration = particleIntro.reduced ? 0 : 420;
+    enterButton.disabled = true;
+    enterButton.setAttribute('aria-busy', 'true');
+    intro.classList.add('is-scattering');
+    particleIntro.burst();
     setTimeout(() => {
+      intro.classList.add('is-opening');
+      document.body.classList.remove('intro-open');
+    }, scatterDuration);
+    setTimeout(() => {
+      particleIntro.destroy();
       intro.hidden = true;
       intro.setAttribute('aria-hidden', 'true');
       $('#globalSearch').focus({ preventScroll: true });
-    }, 1200);
+    }, scatterDuration + (particleIntro.reduced ? 80 : 1200));
   });
 
   $$('[data-scroll]').forEach(button => button.addEventListener('click', () => {
