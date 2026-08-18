@@ -1,43 +1,138 @@
 const books = [
   {
     title: '四库全书·文渊阁本选卷', author: '清·纪昀等纂修', category: '古典藏书 · 四库全书',
-    call: 'GJ-SK-001', location: '四层 古典藏书区 A-01', status: '馆内阅览', restricted: true,
+    call: 'GJ-SK-001', location: '三层 馆藏文献阅览区（馆员核验）', status: '馆内阅览', restricted: true, mapFloor: 'f3', mapTarget: 'specialized',
     description: '以经、史、子、集四部统摄古代重要典籍。本馆选取代表性卷册开展馆内数字注释与眼镜导览。'
   },
   {
     title: '延绥镇志', author: '明·谭吉璁修', category: '古典藏书 · 榆林地方志',
-    call: 'GJ-DFZ-018', location: '四层 古典藏书区 B-03', status: '馆内阅览', restricted: true,
+    call: 'GJ-DFZ-018', location: '三层 馆藏文献阅览区（馆员核验）', status: '馆内阅览', restricted: true, mapFloor: 'f3', mapTarget: 'specialized',
     description: '记载延绥镇建置、边防、山川与人物，是理解明代榆林城市格局的重要地方文献。'
   },
   {
     title: '资治通鉴', author: '宋·司马光', category: '历史', call: 'K204.3/124',
-    location: '三层 社科书库 H-12', status: '在馆', restricted: false,
+    location: '二层 社会科学借阅区 H-12', status: '在馆', restricted: false, mapFloor: 'f2', mapTarget: 'comprehensive',
     description: '编年体通史巨著，以历代治乱兴衰为鉴，贯通周威烈王至五代后周世宗。'
   },
   {
     title: '梦溪笔谈', author: '宋·沈括', category: '科技史', call: 'N092/044',
-    location: '三层 综合书库 C-08', status: '借出', restricted: false,
+    location: '三层 自然科学借阅区 C-08', status: '借出', restricted: false, mapFloor: 'f3', mapTarget: 'comprehensive',
     description: '涉及天文、数学、地理、物理、生物与工程技术，呈现宋代知识世界的广阔面貌。'
   },
   {
     title: '杜工部集', author: '唐·杜甫', category: '古典文学', call: 'I222.742/071',
-    location: '二层 文学书库 D-16', status: '在馆', restricted: false,
+    location: '二层 文学借阅区 D-16', status: '在馆', restricted: false, mapFloor: 'f2', mapTarget: 'open',
     description: '杜甫诗文别集，作品书写时代与民生，也连接着西北边塞和黄土地的历史记忆。'
   },
   {
     title: '榆林府志校注', author: '榆林市地方志办公室', category: '地方文献', call: 'K294.13/062',
-    location: '四层 地方文献 L-05', status: '在馆', restricted: false,
+    location: '三层 地方文献阅览区 L-05', status: '在馆', restricted: false, mapFloor: 'f3', mapTarget: 'specialized',
     description: '对榆林府志进行整理、点校和注释，便于当代读者进入地方历史。'
   },
   {
     title: '边塞诗中的榆林', author: '李闻远', category: '地方文献', call: 'I207.22/133',
-    location: '四层 地方文献 L-09', status: '借出', restricted: false,
+    location: '三层 地方文献阅览区 L-09', status: '借出', restricted: false, mapFloor: 'f3', mapTarget: 'specialized',
     description: '从诗歌、地理和军事史三个维度，梳理榆林在古代边塞文学中的形象。'
   },
   {
     title: '道德经古本合校', author: '老子著·高明校', category: '哲学', call: 'B223.1/036',
-    location: '三层 社科书库 B-07', status: '在馆', restricted: false,
+    location: '二层 社会科学借阅区 B-07', status: '在馆', restricted: false, mapFloor: 'f2', mapTarget: 'comprehensive',
     description: '汇校多种传本，帮助读者比较经典文本在不同时代的流变。'
+  },
+  {
+    title: '史记集解', author: '汉·司马迁撰', category: '古典藏书 · 史部', call: 'GJ-SB-024',
+    location: '三层 馆藏文献阅览区（馆员核验）', status: '馆内阅览', restricted: true, mapFloor: 'f3', mapTarget: 'specialized',
+    description: '以本纪、表、书、世家和列传构成中国早期纪传体通史的重要范式。'
+  },
+  {
+    title: '平凡的世界', author: '路遥', category: '中国文学', call: 'I247.57/186',
+    location: '二层 文学借阅区 D-03', status: '在馆', restricted: false, mapFloor: 'f2', mapTarget: 'open',
+    description: '以陕北城乡生活为背景，书写普通人在时代变化中的选择、劳动与尊严。'
+  },
+  {
+    title: '额尔古纳河右岸', author: '迟子建', category: '中国文学', call: 'I247.57/214',
+    location: '二层 文学借阅区 D-05', status: '借出', restricted: false, mapFloor: 'f2', mapTarget: 'open',
+    description: '以鄂温克族老人的讲述展开族群迁徙、自然记忆与现代变迁。'
+  },
+  {
+    title: '百年孤独', author: '哥伦比亚·加西亚·马尔克斯', category: '外国文学', call: 'I775.45/032',
+    location: '二层 文学借阅区 E-11', status: '在馆', restricted: false, mapFloor: 'f2', mapTarget: 'open',
+    description: '布恩迪亚家族七代人的故事与马孔多的兴衰交织，构成魔幻现实主义经典。'
+  },
+  {
+    title: '中国通史', author: '吕思勉', category: '历史', call: 'K20/077',
+    location: '二层 社会科学借阅区 H-08', status: '在馆', restricted: false, mapFloor: 'f2', mapTarget: 'comprehensive',
+    description: '从制度、文化与社会生活出发，系统梳理中国历史发展的主要线索。'
+  },
+  {
+    title: '庄子今注今译', author: '陈鼓应注译', category: '哲学', call: 'B223.5/052',
+    location: '二层 社会科学借阅区 B-09', status: '借出', restricted: false, mapFloor: 'f2', mapTarget: 'comprehensive',
+    description: '以校注和白话译文帮助现代读者理解《庄子》的思想、寓言与语言。'
+  },
+  {
+    title: '乡土中国', author: '费孝通', category: '社会学', call: 'C912.82/041',
+    location: '二层 社会科学借阅区 C-14', status: '在馆', restricted: false, mapFloor: 'f2', mapTarget: 'comprehensive',
+    description: '以差序格局、礼治秩序等概念解释传统中国基层社会的结构。'
+  },
+  {
+    title: '置身事内', author: '兰小欢', category: '经济', call: 'F124/093',
+    location: '二层 社会科学借阅区 F-06', status: '借出', restricted: false, mapFloor: 'f2', mapTarget: 'comprehensive',
+    description: '从地方政府、城市化与产业政策切入，理解中国经济运行的现实逻辑。'
+  },
+  {
+    title: '时间简史', author: '英·史蒂芬·霍金', category: '科学普及', call: 'P159/118',
+    location: '三层 自然科学借阅区 A-12', status: '在馆', restricted: false, mapFloor: 'f3', mapTarget: 'comprehensive',
+    description: '以通俗语言讨论宇宙起源、黑洞、时间箭头与基础物理学问题。'
+  },
+  {
+    title: '物种起源', author: '英·查尔斯·达尔文', category: '生命科学', call: 'Q111.2/026',
+    location: '三层 自然科学借阅区 B-04', status: '在馆', restricted: false, mapFloor: 'f3', mapTarget: 'comprehensive',
+    description: '系统阐述自然选择理论，改变了人类理解生命演化的方式。'
+  },
+  {
+    title: '中国桥梁史', author: '唐寰澄', category: '工程技术', call: 'U44-092/017',
+    location: '三层 自然科学借阅区 D-10', status: '借出', restricted: false, mapFloor: 'f3', mapTarget: 'comprehensive',
+    description: '从材料、结构与营造方法梳理中国桥梁工程的历史发展。'
+  },
+  {
+    title: '算法图解', author: '美·阿迪蒂亚·巴尔加瓦', category: '计算机', call: 'TP301.6/085',
+    location: '三层 自然科学借阅区 E-06', status: '在馆', restricted: false, mapFloor: 'f3', mapTarget: 'comprehensive',
+    description: '用图示和实例解释常用算法，适合作为计算机思维与编程基础读物。'
+  },
+  {
+    title: '中国美术史', author: '洪再新', category: '艺术', call: 'J120.9/068',
+    location: '二层 文学艺术借阅区 G-03', status: '在馆', restricted: false, mapFloor: 'f2', mapTarget: 'open',
+    description: '以历史脉络连接绘画、雕塑、建筑与工艺，呈现中国视觉文化的演变。'
+  },
+  {
+    title: '中国古代音乐史稿', author: '杨荫浏', category: '音乐', call: 'J609.22/014',
+    location: '二层 文学艺术借阅区 G-09', status: '借出', restricted: false, mapFloor: 'f2', mapTarget: 'open',
+    description: '从礼乐、乐器、曲种与乐律等方面梳理中国古代音乐发展的主要阶段。'
+  },
+  {
+    title: '中国神话故事', author: '袁珂编著', category: '少儿文学', call: 'I287.5/109',
+    location: '一层 青少年阅览区 C-07', status: '在馆', restricted: false, mapFloor: 'f1', mapTarget: 'youth',
+    description: '从盘古开天到夸父逐日，以适合青少年阅读的方式串联中国神话谱系。'
+  },
+  {
+    title: '昆虫记', author: '法·让-亨利·法布尔', category: '少儿科普', call: 'Q96-49/063',
+    location: '一层 青少年阅览区 D-04', status: '借出', restricted: false, mapFloor: 'f1', mapTarget: 'youth',
+    description: '在细致观察中记录昆虫习性，把科学研究写成富有耐心与生命感的故事。'
+  },
+  {
+    title: '团圆', author: '余丽琼文·朱成梁图', category: '绘本', call: 'I287.8/151',
+    location: '一层 幼儿亲子阅览区 A-08', status: '在馆', restricted: false, mapFloor: 'f1', mapTarget: 'youth',
+    description: '以春节团聚为线索，用图画和细节呈现儿童视角中的家庭情感。'
+  },
+  {
+    title: '榆林长城研究', author: '榆林市长城保护研究所', category: '地方文献', call: 'K928.77/081',
+    location: '三层 地方文献阅览区 L-12', status: '在馆', restricted: false, mapFloor: 'f3', mapTarget: 'specialized',
+    description: '汇集榆林境内长城遗存、边堡体系与保护工作的专题研究成果。'
+  },
+  {
+    title: '榆林地方文献数字影像集', author: '榆林市图书馆编', category: '数字资源', call: 'DR-YL-012',
+    location: '三层 电子阅览区 终端 01-36', status: '在馆', restricted: false, mapFloor: 'f3', mapTarget: 'digital',
+    description: '通过馆内终端浏览地方志、老照片与专题文献的数字影像和检索目录。'
   }
 ];
 
@@ -61,46 +156,94 @@ const readerSignals = [
 
 const libraryZones = {
   literature: {
-    name: '文学艺术', english: 'LITERATURE & ARTS', floor: '二层 · 东侧书库', floorCode: 'F2 · EAST',
+    name: '文学艺术', english: 'LITERATURE & ARTS', floor: '二层 · 开放阅览区', floorCode: 'F2 · OPEN READING',
     status: '开放 · 可借阅', description: '从当代文学、古典诗词到绘画、音乐与设计，让一次随手翻阅成为进入另一种生活的入口。',
     scale: '约 18,600 册', availability: '86% 可借', readerCount: '7 人在读', visualSignal: '7 位读者正在本区阅读',
     scope: '中国文学 · 外国文学 · 诗歌 · 绘画 · 音乐', tags: ['小说', '诗歌', '书画', '音乐'],
-    readerSignal: '近期有 23 位读者从中国文学继续浏览到地方诗歌。', location: '二层 文学艺术区 东侧书库', finalStep: '上至二层，沿东侧阅览带抵达文学艺术区', focus: '66% 48%', accent: 'rust'
+    readerSignal: '近期有 23 位读者从中国文学继续浏览到地方诗歌。', location: '二层 文学借阅区', finalStep: '按二层现场标识进入文学借阅与开放阅览区域', mapFloor: 'f2', mapTarget: 'open', focus: '66% 48%', accent: 'rust'
   },
   society: {
-    name: '社会科学', english: 'SOCIAL SCIENCES', floor: '三层 · 北侧书库', floorCode: 'F3 · NORTH',
+    name: '社会科学', english: 'SOCIAL SCIENCES', floor: '二层 · 综合阅览区', floorCode: 'F2 · COMPREHENSIVE',
     status: '开放 · 可借阅', description: '把历史、哲学、经济和社会观察放在同一条知识脉络中，适合专题研究，也适合从一个问题开始漫游。',
     scale: '约 22,400 册', availability: '81% 可借', readerCount: '11 人在读', visualSignal: '11 位读者正在本区阅读',
     scope: '历史 · 哲学 · 政治 · 经济 · 法律 · 社会学', tags: ['历史', '哲学', '经济', '社会'],
-    readerSignal: '《资治通鉴》附近有 3 人正在阅读，近 30 日新增 41 条匿名感受。', location: '三层 社会科学区 北侧书库', finalStep: '上至三层，从中庭向北抵达社会科学区', focus: '42% 51%', accent: 'cobalt'
+    readerSignal: '《资治通鉴》附近有 3 人正在阅读，近 30 日新增 41 条匿名感受。', location: '二层 社会科学借阅区', finalStep: '按二层现场标识进入社会科学借阅与综合阅览区域', mapFloor: 'f2', mapTarget: 'comprehensive', focus: '42% 51%', accent: 'cobalt'
   },
   science: {
     name: '自然科技', english: 'SCIENCE & TECHNOLOGY', floor: '三层 · 南侧书库', floorCode: 'F3 · SOUTH',
     status: '开放 · 可借阅', description: '从自然观察到工程实践，以清晰分类连接科普入门、专业参考和科技史，让好奇心有路径可循。',
     scale: '约 15,200 册', availability: '89% 可借', readerCount: '4 人在读', visualSignal: '4 位读者正在本区阅读',
     scope: '数学 · 天文 · 生物 · 工程 · 计算机 · 科技史', tags: ['自然', '工程', '计算机', '科普'],
-    readerSignal: '读过《梦溪笔谈》的读者，最近常继续查看天文与古代工程主题。', location: '三层 自然科技区 南侧书库', finalStep: '上至三层，从中庭向南抵达自然科技区', focus: '76% 57%', accent: 'jade'
+    readerSignal: '读过《梦溪笔谈》的读者，最近常继续查看天文与古代工程主题。', location: '三层 自然科学借阅区', finalStep: '按三层现场标识进入自然科学借阅与综合阅览区域', mapFloor: 'f3', mapTarget: 'comprehensive', focus: '76% 57%', accent: 'jade'
   },
   local: {
-    name: '地方文献', english: 'LOCAL DOCUMENTS', floor: '四层 · 西侧书库', floorCode: 'F4 · WEST',
+    name: '地方文献', english: 'LOCAL DOCUMENTS', floor: '三层 · 专题阅览区', floorCode: 'F3 · SPECIALIZED',
     status: '开放 · 部分限馆内', description: '汇集榆林地方史、西北区域研究与地方出版物。这里是可检索的城市记忆入口，与不外借古典藏书分区相邻但独立。',
     scale: '约 6,800 册', availability: '82% 可阅', readerCount: '6 人在读', visualSignal: '6 位读者正在查阅地方文献',
     scope: '榆林地方史 · 西北研究 · 地方出版物 · 城市影像', tags: ['榆林', '西北', '方志研究', '城市记忆'],
-    readerSignal: '最近 26 条阅读足迹提到了镇北台、六楼骑街和明代延绥镇。', location: '四层 地方文献区 西侧书库', finalStep: '上至四层，向西抵达地方文献区服务台', focus: '34% 45%', accent: 'gold'
+    readerSignal: '最近 26 条阅读足迹提到了镇北台、六楼骑街和明代延绥镇。', location: '三层 地方文献阅览区', finalStep: '按三层现场标识进入地方文献与专题阅览区域', mapFloor: 'f3', mapTarget: 'specialized', focus: '34% 45%', accent: 'gold'
   },
   children: {
     name: '少儿阅读', english: 'CHILDREN\'S READING', floor: '一层 · 南侧阅览区', floorCode: 'F1 · SOUTH',
     status: '开放 · 余 38 席', description: '用绘本、儿童文学、知识读物和亲子共读空间照顾不同年龄，让孩子可以自己选择、坐下并读完一本书。',
     scale: '约 12,900 册', availability: '38 个座位可用', readerCount: '19 组家庭', visualSignal: '19 组家庭正在本区共读',
     scope: '绘本 · 儿童文学 · 科普启蒙 · 亲子阅读', tags: ['绘本', '亲子', '启蒙', '故事'],
-    readerSignal: '今天最常被继续阅读的主题是自然观察、传统节日与榆林故事。', location: '一层 少儿阅读区 南侧阅览区', finalStep: '经过总服务台后向南，抵达少儿阅读区入口', focus: '58% 70%', accent: 'rust'
+    readerSignal: '今天最常被继续阅读的主题是自然观察、传统节日与榆林故事。', location: '一层 青少年/幼儿/亲子阅览区', finalStep: '从一层大厅按现场标识进入青少年、幼儿与亲子阅览区域', mapFloor: 'f1', mapTarget: 'youth', focus: '58% 70%', accent: 'rust'
   },
   digital: {
-    name: '数字阅读', english: 'DIGITAL READING', floor: '一层 · 东侧数字空间', floorCode: 'F1 · EAST',
+    name: '数字阅读', english: 'DIGITAL READING', floor: '三层 · 电子阅览区', floorCode: 'F3 · E-READING',
     status: '开放 · 14 台空闲', description: '连接电子图书、专题数据库、视听资源与数字展览，为快速检索和深度研究提供安静、清楚的数字入口。',
     scale: '36 个阅览终端', availability: '14 台可用', readerCount: '9 人使用中', visualSignal: '9 位读者正在使用数字资源',
     scope: '电子图书 · 数据库 · 视听资源 · 数字展览', tags: ['电子书', '数据库', '视听', '数字展'],
-    readerSignal: '本周地方文献数据库与古籍影像专题的访问量最高。', location: '一层 数字阅读区 东侧数字空间', finalStep: '经过总服务台后向东，抵达数字阅读区', focus: '82% 44%', accent: 'cobalt'
+    readerSignal: '本周地方文献数据库与古籍影像专题的访问量最高。', location: '三层 电子阅览区', finalStep: '按三层现场标识进入电子阅览与数字体验相关区域', mapFloor: 'f3', mapTarget: 'digital', focus: '82% 44%', accent: 'cobalt'
+  }
+};
+
+const venueFloors = {
+  b1: {
+    code: 'B1', title: '负一层主要功能区', summary: '下沉广场、报告厅、会议区、培训教室与书库',
+    start: 'sunken', nodes: [
+      { id: 'sunken', label: '下沉广场', x: 8, y: 8, w: 24, h: 18, tone: 'jade' },
+      { id: 'auditorium', label: '报告厅', x: 38, y: 8, w: 48, h: 22, tone: 'gold' },
+      { id: 'meeting', label: '会议区', x: 68, y: 34, w: 20, h: 16, tone: 'rust' },
+      { id: 'training', label: '培训教室', x: 10, y: 38, w: 38, h: 42, tone: 'cobalt' },
+      { id: 'stacks', label: '书库', x: 52, y: 54, w: 36, h: 26, tone: 'jade' }
+    ]
+  },
+  f1: {
+    code: 'F1', title: '一层主要功能区', summary: '大厅、青少年/幼儿/亲子阅览区、综合阅览、老年阅览与 24 小时城市书房',
+    start: 'lobby', nodes: [
+      { id: 'lobby', label: '大厅', x: 70, y: 68, w: 18, h: 18, tone: 'gold' },
+      { id: 'desk', label: '总服务台', x: 54, y: 68, w: 14, h: 18, tone: 'cobalt' },
+      { id: 'youth', label: '青少年 / 幼儿 / 亲子阅览', x: 8, y: 26, w: 44, h: 30, tone: 'jade' },
+      { id: 'comprehensive', label: '综合阅览', x: 8, y: 60, w: 44, h: 22, tone: 'gold' },
+      { id: 'senior', label: '老年阅览', x: 52, y: 10, w: 22, h: 20, tone: 'gold' },
+      { id: 'city', label: '24 小时城市书房', x: 76, y: 10, w: 18, h: 30, tone: 'rust' },
+      { id: 'valley', label: '书谷', x: 54, y: 34, w: 20, h: 26, tone: 'cobalt' }
+    ]
+  },
+  f2: {
+    code: 'F2', title: '二层主要功能区', summary: '开放阅览、综合阅览、专题阅览、自修区、书谷与办公区域',
+    start: 'valley', nodes: [
+      { id: 'office', label: '办公区', x: 6, y: 44, w: 18, h: 36, tone: 'cobalt' },
+      { id: 'open', label: '开放阅览', x: 26, y: 38, w: 40, h: 22, tone: 'jade' },
+      { id: 'comprehensive', label: '综合阅览', x: 26, y: 62, w: 40, h: 18, tone: 'gold' },
+      { id: 'specialized', label: '专题阅览', x: 34, y: 8, w: 44, h: 22, tone: 'gold' },
+      { id: 'study', label: '自修区', x: 72, y: 38, w: 22, h: 42, tone: 'rust' },
+      { id: 'valley', label: '书谷', x: 38, y: 31, w: 28, h: 9, tone: 'cobalt' }
+    ]
+  },
+  f3: {
+    code: 'F3', title: '三层主要功能区', summary: '休闲区、开放阅览、综合阅览、专题阅览、电子阅览与自修区',
+    start: 'valley', nodes: [
+      { id: 'leisure', label: '休闲区', x: 5, y: 8, w: 28, h: 32, tone: 'jade' },
+      { id: 'open', label: '开放阅览', x: 26, y: 45, w: 38, h: 18, tone: 'jade' },
+      { id: 'comprehensive', label: '综合阅览', x: 26, y: 65, w: 38, h: 17, tone: 'gold' },
+      { id: 'specialized', label: '专题阅览', x: 42, y: 16, w: 28, h: 22, tone: 'gold' },
+      { id: 'digital', label: '电子阅览', x: 72, y: 16, w: 22, h: 22, tone: 'gold' },
+      { id: 'study', label: '自修区', x: 72, y: 46, w: 22, h: 36, tone: 'rust' },
+      { id: 'valley', label: '书谷', x: 36, y: 38, w: 30, h: 9, tone: 'cobalt' }
+    ]
   }
 };
 
@@ -226,6 +369,8 @@ let selectedGlassesSlot = '14:00-15:00';
 let activeCollection = '四库全书';
 let activeClassicalItem = 0;
 let activeNote = 'original';
+let activeMapFloor = 'f1';
+let mapGuideTarget = { floor: 'f1', target: 'desk', label: '总服务台 / 全馆导览', finalStep: '由总服务台确认目的地与现场开放动线' };
 let glassesTarget = '古典藏书旗舰路线';
 const glassesCapacity = 100;
 let glassesAvailable = 64;
@@ -331,6 +476,63 @@ function renderLibraryZone() {
     requestAnimationFrame(() => panel.classList.add('is-changing'));
     window.setTimeout(() => panel.classList.remove('is-changing'), 560);
   }
+}
+
+function nodeCenter(node) {
+  return { x: node.x + node.w / 2, y: node.y + node.h / 2 };
+}
+
+function renderVenueMap() {
+  const floor = venueFloors[activeMapFloor] || venueFloors.f1;
+  const plan = $('#venueFloorPlan');
+  const startNode = floor.nodes.find(node => node.id === floor.start) || floor.nodes[0];
+  const isTargetFloor = mapGuideTarget.floor === activeMapFloor;
+  const targetNode = isTargetFloor ? floor.nodes.find(node => node.id === mapGuideTarget.target) : null;
+  const start = nodeCenter(startNode);
+  const target = targetNode ? nodeCenter(targetNode) : null;
+  const bendY = target ? Math.max(12, Math.min(88, (start.y + target.y) / 2)) : 0;
+  const route = target
+    ? `<svg class="venue-route" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><polyline points="${start.x},${start.y} ${start.x},${bendY} ${target.x},${bendY} ${target.x},${target.y}"></polyline></svg>`
+    : '';
+
+  plan.innerHTML = `${route}${floor.nodes.map(node => {
+    const classes = ['venue-space', `venue-space--${node.tone}`];
+    if (node === startNode) classes.push('is-start');
+    if (targetNode && node === targetNode) classes.push('is-target');
+    return `<div class="${classes.join(' ')}" style="--x:${node.x};--y:${node.y};--w:${node.w};--h:${node.h}"><span>${escapeHtml(node.label)}</span></div>`;
+  }).join('')}`;
+
+  $$('#venueFloorTabs [data-map-floor]').forEach(button => {
+    const active = button.dataset.mapFloor === activeMapFloor;
+    button.classList.toggle('is-active', active);
+    button.setAttribute('aria-pressed', String(active));
+  });
+  $('#mapFloorCode').textContent = floor.code;
+  $('#mapFloorTitle').textContent = floor.title;
+  $('#mapFloorSummary').textContent = floor.summary;
+  $('#mapStartLabel').textContent = `${floor.code} · ${startNode.label}`;
+  $('#mapTargetLabel').textContent = targetNode ? mapGuideTarget.label : '楼层概览';
+  plan.setAttribute('aria-label', `${floor.title}：${floor.summary}${targetNode ? `；当前高亮 ${mapGuideTarget.label}` : ''}`);
+}
+
+function openVenueGuide(options = {}) {
+  mapGuideTarget = {
+    floor: options.floor || 'f1',
+    target: options.target || 'desk',
+    label: options.label || '总服务台 / 全馆导览',
+    finalStep: options.finalStep || '由总服务台确认目的地与现场开放动线'
+  };
+  activeMapFloor = mapGuideTarget.floor;
+  const targetFloor = venueFloors[mapGuideTarget.floor] || venueFloors.f1;
+  $('#mapDestination').textContent = `目的地：${mapGuideTarget.label}`;
+  $('#mapStepOne').textContent = '从一层大厅开始';
+  $('#mapStepTwo').textContent = mapGuideTarget.floor === 'f1'
+    ? '先到一层总服务台确认现场开放动线'
+    : `经总服务台确认后前往${targetFloor.title}`;
+  $('#mapFinalStep').textContent = mapGuideTarget.finalStep;
+  renderVenueMap();
+  openDialog($('#mapDialog'));
+  refreshIcons();
 }
 
 function showBook(book) {
@@ -978,6 +1180,13 @@ function initEvents() {
     updateSeatSummary();
     openDialog($('#seatDialog'));
   });
+  $('#openVenueGuide').addEventListener('click', () => openVenueGuide());
+  $('#venueFloorTabs').addEventListener('click', event => {
+    const button = event.target.closest('[data-map-floor]');
+    if (!button) return;
+    activeMapFloor = button.dataset.mapFloor;
+    renderVenueMap();
+  });
 
   $('#zoneIndex').addEventListener('click', event => {
     const button = event.target.closest('[data-zone]');
@@ -1001,10 +1210,7 @@ function initEvents() {
   });
   $('#navigateZone').addEventListener('click', () => {
     const zone = libraryZones[activeZone];
-    $('#mapDestination').textContent = `目的地：${zone.location}`;
-    $('#mapFinalStep').textContent = zone.finalStep;
-    $('#mapTargetRoom').textContent = zone.name;
-    openDialog($('#mapDialog'));
+    openVenueGuide({ floor: zone.mapFloor, target: zone.mapTarget, label: zone.location, finalStep: zone.finalStep });
   });
 
   $('#catalogSearch').addEventListener('input', renderCatalog);
@@ -1130,10 +1336,12 @@ function initEvents() {
   $('#navigateBook').addEventListener('click', () => {
     if (!selectedBook) return;
     closeDialog($('#bookDialog'));
-    $('#mapDestination').textContent = `目的地：${selectedBook.location} · ${selectedBook.title}`;
-    $('#mapFinalStep').textContent = selectedBook.restricted ? '到四层服务台核验预约后进入古典藏书区' : `抵达 ${selectedBook.location}`;
-    $('#mapTargetRoom').textContent = selectedBook.restricted ? '古典藏书' : selectedBook.category;
-    openDialog($('#mapDialog'));
+    openVenueGuide({
+      floor: selectedBook.mapFloor || 'f1',
+      target: selectedBook.mapTarget || 'desk',
+      label: `${selectedBook.location} · ${selectedBook.title}`,
+      finalStep: selectedBook.restricted ? '到三层馆藏文献阅览区服务点，由馆员确认馆藏位置' : `按索书号抵达 ${selectedBook.location}`
+    });
   });
 
   $('[data-close-dialog]').addEventListener('click', () => closeDialog($('#bookDialog')));

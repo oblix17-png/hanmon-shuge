@@ -58,7 +58,7 @@
         <div class="hero__commands">
           <button class="command command--ink" type="button" data-open-service="catalog"><i data-lucide="book-open" aria-hidden="true"></i><span><small>READING SERVICE</small>读书专区</span></button>
           <button class="command command--seat" id="openSeatBooking" type="button" aria-haspopup="dialog" aria-controls="seatDialog"><i data-lucide="armchair" aria-hidden="true"></i><span><small>SEAT RESERVATION</small>座位预约</span></button>
-          <button class="command command--guide" type="button" data-scroll="zones"><i data-lucide="signpost" aria-hidden="true"></i><span><small>IN-LIBRARY GUIDE</small>馆内导航</span></button>
+          <button class="command command--guide" id="openVenueGuide" type="button" aria-haspopup="dialog" aria-controls="mapDialog"><i data-lucide="signpost" aria-hidden="true"></i><span><small>IN-LIBRARY GUIDE</small>馆内导航</span></button>
           <button class="command command--paper" type="button" data-enter-classics><i data-lucide="sparkles" aria-hidden="true"></i><span><small>CLASSICAL COLLECTION</small>古典藏书</span></button>
         </div>
         <a class="hero__mini-link" href="#miniprogram"><i data-lucide="scan-line" aria-hidden="true"></i><span>没有眼镜？使用小程序扫码体验轻量 AR</span><i data-lucide="arrow-right" aria-hidden="true"></i></a>
@@ -120,9 +120,9 @@
         <div class="zone-explorer">
           <nav class="zone-index" id="zoneIndex" role="tablist" aria-label="普通馆藏分区">
             <button class="zone-tab is-active" id="zoneTabLiterature" type="button" role="tab" aria-selected="true" aria-controls="zonePanel" tabindex="0" data-zone="literature"><span>01</span><b>文学艺术</b><small>二层</small></button>
-            <button class="zone-tab" id="zoneTabSociety" type="button" role="tab" aria-selected="false" aria-controls="zonePanel" tabindex="-1" data-zone="society"><span>02</span><b>社会科学</b><small>三层</small></button>
+            <button class="zone-tab" id="zoneTabSociety" type="button" role="tab" aria-selected="false" aria-controls="zonePanel" tabindex="-1" data-zone="society"><span>02</span><b>社会科学</b><small>二层</small></button>
             <button class="zone-tab" id="zoneTabScience" type="button" role="tab" aria-selected="false" aria-controls="zonePanel" tabindex="-1" data-zone="science"><span>03</span><b>自然科技</b><small>三层</small></button>
-            <button class="zone-tab" id="zoneTabLocal" type="button" role="tab" aria-selected="false" aria-controls="zonePanel" tabindex="-1" data-zone="local"><span>04</span><b>地方文献</b><small>四层</small></button>
+            <button class="zone-tab" id="zoneTabLocal" type="button" role="tab" aria-selected="false" aria-controls="zonePanel" tabindex="-1" data-zone="local"><span>04</span><b>地方文献</b><small>三层</small></button>
             <button class="zone-tab" id="zoneTabChildren" type="button" role="tab" aria-selected="false" aria-controls="zonePanel" tabindex="-1" data-zone="children"><span>05</span><b>少儿阅读</b><small>一层</small></button>
             <button class="zone-tab" id="zoneTabDigital" type="button" role="tab" aria-selected="false" aria-controls="zonePanel" tabindex="-1" data-zone="digital"><span>06</span><b>数字阅读</b><small>一层</small></button>
           </nav>
@@ -136,7 +136,7 @@
 
             <div class="zone-detail">
               <header class="zone-detail__header">
-                <p><span id="zoneFloor">二层 · 东侧书库</span><b id="zoneStatus">开放 · 可借阅</b></p>
+                <p><span id="zoneFloor">二层 · 开放阅览区</span><b id="zoneStatus">开放 · 可借阅</b></p>
                 <h3 id="zoneName">文学艺术</h3>
                 <p id="zoneDescription">从当代文学、古典诗词到绘画、音乐与设计，让一次随手翻阅成为进入另一种生活的入口。</p>
               </header>
@@ -357,15 +357,31 @@
   </dialog>
 
   <dialog class="map-dialog" id="mapDialog" aria-labelledby="mapDialogTitle" aria-describedby="mapDestination">
-    <button class="dialog-close icon-button" type="button" data-close-map aria-label="关闭书架导航"><i data-lucide="x" aria-hidden="true"></i></button>
-    <p class="eyebrow">SHELF NAVIGATION</p>
-    <h2 id="mapDialogTitle">书架导航</h2>
-    <p id="mapDestination">正在为你规划馆内路线。</p>
-    <div class="floor-map" role="img" aria-label="从入口经服务台和阅览区前往目标藏书区域的楼层导航示意图">
-      <div class="map-room map-room--entrance">入口</div><div class="map-room map-room--desk">服务台</div><div class="map-room map-room--reading">阅览区</div><div class="map-room map-room--special" id="mapTargetRoom">目标书区</div>
-      <div class="route-line route-line--one"></div><div class="route-line route-line--two"></div><div class="route-line route-line--three"></div><span class="route-start">起</span><span class="route-end">达</span>
+    <button class="dialog-close icon-button" type="button" data-close-map aria-label="关闭馆内导航"><i data-lucide="x" aria-hidden="true"></i></button>
+    <header class="map-dialog__header">
+      <div><p class="eyebrow">YULIN LIBRARY · VENUE GUIDE</p><h2 id="mapDialogTitle">馆内地图引导</h2></div>
+      <p id="mapDestination">正在为你规划馆内路线。</p>
+    </header>
+    <div class="venue-guide">
+      <nav class="venue-floors" id="venueFloorTabs" aria-label="切换楼层">
+        <button type="button" data-map-floor="b1"><span>B1</span><b>负一层</b><small>报告厅 · 书库</small></button>
+        <button class="is-active" type="button" data-map-floor="f1"><span>F1</span><b>一层</b><small>大厅 · 亲子阅览</small></button>
+        <button type="button" data-map-floor="f2"><span>F2</span><b>二层</b><small>开放 · 专题阅览</small></button>
+        <button type="button" data-map-floor="f3"><span>F3</span><b>三层</b><small>电子 · 综合阅览</small></button>
+      </nav>
+      <section class="venue-map-shell" aria-live="polite">
+        <div class="venue-map__meta"><div><span id="mapFloorCode">F1</span><strong id="mapFloorTitle">一层主要功能区</strong></div><p id="mapFloorSummary">大厅、青少年/幼儿/亲子阅览区、综合阅览、老年阅览与 24 小时城市书房</p></div>
+        <div class="venue-map__status"><span><i class="map-dot map-dot--start"></i>起点：<b id="mapStartLabel">一层大厅</b></span><span><i class="map-dot map-dot--target"></i>目的地：<b id="mapTargetLabel">总服务台</b></span></div>
+        <div class="venue-floor-plan" id="venueFloorPlan" role="img" aria-label="一层主要功能区地图"></div>
+        <div class="venue-map__legend" aria-label="地图图例"><span><i class="map-dot map-dot--verified"></i>官方规划功能区</span><span><i class="map-dot map-dot--target"></i>当前目的地</span><span><i class="map-dot map-dot--route"></i>建议动线</span></div>
+      </section>
     </div>
-    <div class="map-steps" role="group" aria-label="导航步骤"><span>1</span><p>从一层东门进入</p><span>2</span><p>经过总服务台右转</p><span>3</span><p id="mapFinalStep">抵达目标书架</p></div>
+    <div class="map-steps" role="group" aria-label="导航步骤"><span>1</span><p id="mapStepOne">从一层大厅开始</p><span>2</span><p id="mapStepTwo">先到总服务台确认馆内开放动线</p><span>3</span><p id="mapFinalStep">按现场标识抵达目标区域</p></div>
+    <details class="official-map-reference">
+      <summary><i data-lucide="map" aria-hidden="true"></i>官方功能分区规划图</summary>
+      <figure><img src="assets/yulin-library-floor-plan-official.png" alt="榆林市图书馆负一层及一至三层主要功能分区规划图"><figcaption>来源：<a href="http://wlj.yl.gov.cn/xxzx/tzgg/202205/t20220525_864637.html" target="_blank" rel="noreferrer">榆林市文旅局公开规划</a>。当前开放功能以馆内标识为准。</figcaption></figure>
+    </details>
+    <p class="map-accuracy"><i data-lucide="badge-check" aria-hidden="true"></i>楼层与功能区依据公开资料建模；入口、总服务台、垂直交通和书架精确坐标需馆方现场测绘后接入。</p>
   </dialog>
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
