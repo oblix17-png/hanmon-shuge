@@ -41,10 +41,22 @@ const books = [
   }
 ];
 
-const clubs = [
-  { day: '23', month: 'AUG', title: '共读《榆林府志》：从城墙看见城市', place: '四层地方文献阅览室', time: '14:30', left: 7, joined: false },
-  { day: '27', month: 'AUG', title: '边塞诗夜读：月照长城', place: '屋顶城市观景台', time: '19:00', left: 12, joined: false },
-  { day: '31', month: 'AUG', title: '四库入门：经史子集如何读', place: '古典藏书区导览厅', time: '10:00', left: 4, joined: false }
+const readerSignals = [
+  {
+    stat: '03', unit: '人正在读', title: '《资治通鉴》旁的此刻同读',
+    meta: '三层社科书库 · 只显示区域，不公开身份', action: '展开书旁留言', doneAction: '收起书旁留言', icon: 'message-circle', active: false,
+    detail: '“读到治乱兴衰时，忽然理解了为什么这本书被称作一面镜子。”'
+  },
+  {
+    stat: '26', unit: '条感受', title: '《榆林府志校注》的本地读者足迹',
+    meta: '榆林历史 · 城市记忆 · 近 30 日更新', action: '看看他们留下什么', doneAction: '收起读者足迹', icon: 'footprints', active: false,
+    detail: '最近的留言提到了镇北台、六楼骑街和明代延绥镇，3 人继续查看了地方志书架。'
+  },
+  {
+    stat: '08', unit: '册相关推荐', title: '读过《延绥镇志》的人还喜欢',
+    meta: '基于匿名阅读兴趣生成，不使用精确位置', action: '查看推荐书目', doneAction: '收起推荐书目', icon: 'sparkles', active: false,
+    detail: '《榆林府志校注》《边塞诗中的榆林》《明长城与九边重镇》等 8 册馆藏可继续探索。'
+  }
 ];
 
 const classicalCollections = {
@@ -56,9 +68,9 @@ const classicalCollections = {
       notes: {
         original: '“习”不只是温习，也有实践、践行之意。经典从来不是停在书页上的文字，而是反复进入生活的行动。',
         translation: '孔子说：学习之后按时实践，不也是令人欣喜的吗？有志同道合的人从远方来，不也是快乐的吗？',
-        allusion: '“有朋自远方来”后来常用于表达迎接远客。书友会以此句命名“远朋计划”，连接周边地区来馆读者。'
+        allusion: '“有朋自远方来”后来常用于表达迎接远客。在扫码页中，系统会将这句话关联到榆林本地的经典阅读兴趣。'
       },
-      story: { place: '杏坛', person: '孔门弟子', title: '远方来学', text: '书页化作行旅，远来的书友在此相逢。', image: '60% 58%' }
+      story: { place: '杏坛', person: '孔门弟子', title: '远方来学', text: '书页化作行旅，分散在一座城里的同好由此相逢。', image: '60% 58%' }
     },
     {
       key: '史', label: '制度与山河', en: 'HISTORY', section: '史部 · 编年类', title: '《资治通鉴》',
@@ -89,7 +101,7 @@ const classicalCollections = {
       notes: {
         original: '诗从暮色写起，归家的喜悦与乱世的惊惧交织在一起，日常景象因此带有沉重的历史温度。',
         translation: '西天赤云高耸，夕阳的光脚落向地面。柴门前鸟雀喧闹，远行千里的归人终于回家。',
-        allusion: '杜甫在安史之乱中辗转至羌村。榆林的边塞诗共读也以“归客千里至”回应远道而来的书友。'
+        allusion: '杜甫在安史之乱中辗转至羌村。系统会据此关联榆林边塞诗、古城地点与相关馆藏。'
       },
       story: { place: '羌村', person: '归家诗人', title: '千里归客', text: '暮色落下，柴门与远行人在风中重逢。', image: '66% 72%' }
     }
@@ -147,7 +159,7 @@ const classicalCollections = {
 
 const curatedNotes = [
   { text: '把“习”理解成实践，突然更贴近今天。', curated: true },
-  { text: '远方来馆的书友，也是“有朋自远方来”。', curated: true },
+  { text: '远方来馆的同好，也是“有朋自远方来”。', curated: true },
   { text: '想听馆员讲讲这个版本的来历。', curated: false },
   { text: '原文与今译切换很适合第一次读古籍的人。', curated: false },
   { text: '这一段的地点动画很有画面感。', curated: true }
@@ -164,12 +176,13 @@ let selectedBook = null;
 let selectedSeat = null;
 let selectedFloor = '二层';
 let selectedTime = '09:00-12:00';
-let selectedGlassesSlot = '14:00-14:30';
+let selectedGlassesSlot = '14:00-15:00';
 let activeCollection = '四库全书';
 let activeClassicalItem = 0;
 let activeNote = 'original';
-let glassesTarget = '古典藏书区展柜 A-01';
-let glassesAvailable = 3;
+let glassesTarget = '古典藏书旗舰路线';
+const glassesCapacity = 100;
+let glassesAvailable = 64;
 const baseTakenSeats = new Set([2, 6, 9, 14, 18, 21, 27, 31, 37, 42, 46]);
 const seatReservations = new Map();
 const bookRequests = new Set();
@@ -315,33 +328,46 @@ function updateSeatSummary() {
   $('#summarySeat').textContent = selectedSeat ? `${String(selectedSeat).padStart(2, '0')} 号` : '尚未选择';
 }
 
-function renderClubs() {
-  const container = $('#clubList');
+function renderReaderSignals() {
+  const container = $('#readerSignalList');
   container.innerHTML = '';
-  clubs.forEach((club, index) => {
+  readerSignals.forEach((signal, index) => {
     const row = document.createElement('article');
     row.className = 'club-row';
     row.innerHTML = `
-      <div class="club-date"><strong>${escapeHtml(club.day)}</strong><small>${escapeHtml(club.month)}</small></div>
-      <div class="club-info"><h4>${escapeHtml(club.title)}</h4><p>${escapeHtml(club.time)} · ${escapeHtml(club.place)}</p></div>
-      <div class="club-action"><span>余 ${club.left} 席</span><button class="secondary-button${club.joined ? ' is-joined' : ''}" type="button" data-club-index="${index}"${club.left === 0 && !club.joined ? ' disabled' : ''}><i data-lucide="${club.joined ? 'check' : 'user-plus'}"></i>${club.joined ? '已报名' : club.left === 0 ? '已满员' : '报名'}</button></div>`;
+      <div class="club-date"><strong>${escapeHtml(signal.stat)}</strong><small>${escapeHtml(signal.unit)}</small></div>
+      <div class="club-info"><h4>${escapeHtml(signal.title)}</h4><p>${escapeHtml(signal.meta)}</p>${signal.active ? `<p class="reader-reveal">${escapeHtml(signal.detail)}</p>` : ''}</div>
+      <div class="club-action"><span>${signal.active ? '内容已展开' : '匿名兴趣信号'}</span><button class="secondary-button${signal.active ? ' is-joined' : ''}" type="button" data-reader-index="${index}" aria-expanded="${signal.active}"><i data-lucide="${signal.active ? 'chevron-up' : signal.icon}"></i>${signal.active ? signal.doneAction : signal.action}</button></div>`;
     container.appendChild(row);
   });
-  $$('[data-club-index]', container).forEach(button => {
+  $$('[data-reader-index]', container).forEach(button => {
     button.addEventListener('click', () => {
-      const club = clubs[Number(button.dataset.clubIndex)];
-      if (!club.joined && club.left === 0) {
-        showToast('本场活动已满员');
-        return;
-      }
-      club.joined = !club.joined;
-      if (club.joined) club.left = Math.max(0, club.left - 1);
-      else club.left += 1;
-      showToast(club.joined ? `已报名「${club.title}」` : '已取消活动报名');
-      renderClubs();
+      const signal = readerSignals[Number(button.dataset.readerIndex)];
+      signal.active = !signal.active;
+      renderReaderSignals();
+      showToast(signal.active ? `已展开「${signal.title}」` : '内容已收起');
     });
   });
   refreshIcons();
+}
+
+function initMiniProgramBridge() {
+  const target = $('#miniProgramQr');
+  if (!target) return;
+  const prototypeUrl = new URL('mini-program-demo.html', window.location.href).href;
+  if (typeof window.QRCode !== 'function') {
+    target.classList.add('is-fallback');
+    return;
+  }
+  target.innerHTML = '';
+  new window.QRCode(target, {
+    text: prototypeUrl,
+    width: 176,
+    height: 176,
+    colorDark: '#1e334f',
+    colorLight: '#ffffff',
+    correctLevel: window.QRCode.CorrectLevel.H
+  });
 }
 
 function renderClassicsNav() {
@@ -420,18 +446,20 @@ function updateGlassesAvailability() {
   const entry = $('.glasses-entry > span');
   const stock = $('.device-stock strong');
   const stockDetail = $('.device-stock small');
-  if (entry) entry.innerHTML = `<i></i>今日可用 ${glassesAvailable} / 8`;
-  if (stock) stock.textContent = `${glassesAvailable} 台可用`;
-  if (stockDetail) stockDetail.textContent = `共 8 台 · ${8 - glassesAvailable} 台使用中或已预约`;
+  const stockBar = $('.stock-bar i');
+  if (entry) entry.innerHTML = `<i></i>今日可借 ${glassesAvailable} / ${glassesCapacity}`;
+  if (stock) stock.textContent = `${glassesAvailable} 副可借`;
+  if (stockDetail) stockDetail.textContent = `共约 ${glassesCapacity} 副 · ${glassesCapacity - glassesAvailable} 副使用中或已预约`;
+  if (stockBar) stockBar.style.width = `${glassesAvailable}%`;
 }
 
 function openGlassesBooking(book = null) {
   if ($('#special').classList.contains('is-glasses')) {
-    showToast('设备 R-03 已分配，可在预约时段到服务台领取');
+    showToast('设备 R-063 已分配，可在预约时段到一层 AR 设备服务台领取');
     $('#glassesStatus').scrollIntoView({ behavior: 'smooth', block: 'center' });
     return;
   }
-  glassesTarget = book?.restricted ? `${book.location} · ${book.title}` : `古典藏书区 · ${activeCollection}展柜`;
+  glassesTarget = book?.restricted ? `${book.location} · ${book.title}` : `馆内 AR 路线 · ${activeCollection}旗舰点位`;
   $('#deviceAgreement').checked = false;
   openDialog($('#glassesDialog'));
 }
@@ -454,12 +482,12 @@ function activateGlasses() {
   updateGlassesAvailability();
   renderDanmaku();
   $('#glassesStatus').scrollIntoView({ behavior: 'smooth', block: 'center' });
-  showToast('预约成功：设备 R-03 已为你保留');
+  showToast('预约成功：设备 R-063 已为你保留');
 }
 
 function stopGlasses() {
   if (!$('#special').classList.contains('is-glasses')) return;
-  glassesAvailable = Math.min(3, glassesAvailable + 1);
+  glassesAvailable = Math.min(glassesCapacity, glassesAvailable + 1);
   $('#special').classList.remove('is-glasses');
   $('#glassesStatus').hidden = true;
   $('#glassesToggle').setAttribute('aria-pressed', 'false');
@@ -546,23 +574,6 @@ function initEvents() {
     renderSeats();
     updateSeatSummary();
     showToast(`预约成功：${$('#seatDate').value} ${selectedFloor} ${String(reserved).padStart(2, '0')}号座位`);
-  });
-
-  $('.club-intro .secondary-button').addEventListener('click', () => {
-    const title = window.prompt('请输入共读主题（例如：共读《榆林府志》）');
-    if (!title?.trim()) return;
-    const date = new Date();
-    clubs.unshift({
-      day: String(date.getDate()).padStart(2, '0'),
-      month: date.toLocaleString('en-US', { month: 'short' }).toUpperCase(),
-      title: title.trim().slice(0, 36),
-      place: '一层共享阅读区',
-      time: '19:00',
-      left: 20,
-      joined: true
-    });
-    renderClubs();
-    showToast('共读提议已提交，馆员确认后将开放报名');
   });
 
   $('#collectionTabs').addEventListener('click', event => {
@@ -659,10 +670,11 @@ function init() {
   renderCatalog();
   renderSeats();
   updateSeatSummary();
-  renderClubs();
+  renderReaderSignals();
   renderClassicsNav();
   renderManuscript();
   initEvents();
+  initMiniProgramBridge();
   updateGlassesAvailability();
   $$('.filter-button').forEach(button => button.setAttribute('aria-pressed', String(button.classList.contains('is-active'))));
   $$('#annotationSwitch button').forEach(button => button.setAttribute('aria-pressed', String(button.classList.contains('is-active'))));

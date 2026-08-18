@@ -7,6 +7,7 @@
   <title>榆林市图书馆 · 书中见城</title>
   <link rel="stylesheet" href="styles.css">
   <script defer src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
   <script defer src="app.js"></script>
 </head>
 <body class="intro-open">
@@ -34,7 +35,7 @@
     <nav class="main-nav" aria-label="主要导航">
       <a href="#reading">读书专区</a>
       <a href="#special">古典藏书</a>
-      <a href="#clubs">书友会</a>
+      <a href="#miniprogram">小程序</a>
     </nav>
     <div class="header-actions">
       <button class="icon-button" id="globalSearch" type="button" title="搜索馆藏" aria-label="搜索馆藏"><i data-lucide="search"></i></button>
@@ -54,6 +55,7 @@
           <button class="command command--ink" type="button" data-scroll="reading"><i data-lucide="book-open"></i><span><small>READING SERVICE</small>进入读书专区</span></button>
           <button class="command command--paper" type="button" data-scroll="special"><i data-lucide="sparkles"></i><span><small>CLASSICAL COLLECTION</small>进入古典藏书</span></button>
         </div>
+        <a class="hero__mini-link" href="#miniprogram"><i data-lucide="scan-line" aria-hidden="true"></i><span>没有眼镜？使用小程序扫码体验轻量 AR</span><i data-lucide="arrow-right" aria-hidden="true"></i></a>
       </div>
       <div class="hero__folio" aria-hidden="true"><span>卷一</span><b>书中见城</b><small>READ · DISCOVER · REMEMBER</small></div>
       <button class="hero__down icon-button" type="button" data-scroll="reading" aria-label="继续浏览"><i data-lucide="arrow-down"></i></button>
@@ -65,14 +67,14 @@
           <p class="eyebrow">READING ZONE</p>
           <h2 id="readingTitle">把来馆阅读的事，办得简单</h2>
         </div>
-        <p>检索、定位、预约与共读集中在一个工作台内。当前数据为首版模拟，交互流程可完整体验。</p>
+        <p>检索、定位、预约与扫书发现集中在一个工作台内。当前数据为首版模拟，交互流程可完整体验。</p>
       </div>
 
       <div class="service-layout">
         <div class="service-tabs" role="tablist" aria-label="读书服务">
           <button class="service-tab is-active" id="catalogTab" type="button" role="tab" aria-selected="true" aria-controls="catalogPanel" data-service="catalog"><i data-lucide="library-big" aria-hidden="true"></i><span>馆藏检索<small>状态与书架位置</small></span></button>
           <button class="service-tab" id="seatsTab" type="button" role="tab" aria-selected="false" aria-controls="seatsPanel" data-service="seats"><i data-lucide="armchair" aria-hidden="true"></i><span>座位预约<small>楼层与时段</small></span></button>
-          <button class="service-tab" id="clubsTab" type="button" role="tab" aria-selected="false" aria-controls="clubsPanel" data-service="clubs"><i data-lucide="users-round" aria-hidden="true"></i><span>书友会<small>活动与共读</small></span></button>
+          <button class="service-tab" id="discoveryTab" type="button" role="tab" aria-selected="false" aria-controls="discoveryPanel" data-service="discovery"><i data-lucide="scan-line" aria-hidden="true"></i><span>扫书发现<small>同好与书旁留言</small></span></button>
         </div>
 
         <div class="service-workbench">
@@ -109,9 +111,10 @@
             </div>
           </section>
 
-          <section class="service-panel" id="clubsPanel" data-panel="clubs" role="tabpanel" aria-labelledby="clubsTab" hidden>
-            <div class="club-intro"><div><p class="eyebrow">LOCAL READERS</p><h3>在同一座城，共读同一本书</h3></div><button class="secondary-button" type="button"><i data-lucide="plus"></i>发起共读</button></div>
-            <div class="club-list" id="clubList"></div>
+          <section class="service-panel" id="discoveryPanel" data-panel="discovery" role="tabpanel" aria-labelledby="discoveryTab" hidden>
+            <div class="club-intro discovery-intro"><div><p class="eyebrow">READING SIGNALS · YULIN</p><h3>扫一本书，看见这座城的同好</h3><p>不公开姓名和精确位置，只呈现此刻同读、书旁留言与相关兴趣。</p></div><a class="secondary-button" href="mini-program-demo.html" data-mini-program-link><i data-lucide="scan-line"></i>打开扫码样机</a></div>
+            <div class="discovery-flow" aria-label="扫书发现流程"><span><b>01</b>扫描封面或条码</span><i data-lucide="arrow-right" aria-hidden="true"></i><span><b>02</b>发现同好与留言</span><i data-lucide="arrow-right" aria-hidden="true"></i><span><b>03</b>获得下一册推荐</span></div>
+            <div class="club-list" id="readerSignalList" aria-live="polite"></div>
           </section>
         </div>
       </div>
@@ -130,10 +133,10 @@
 
         <section class="rokid-feature" aria-labelledby="rokidFeatureTitle">
           <div class="rokid-feature__copy">
-            <p class="eyebrow">ROKID MAX · 不外借藏书区限定体验</p>
-            <h3 id="rokidFeatureTitle">让注释从书页进入眼前</h3>
-            <p id="rokidAvailabilityNote">Rokid Max 不作为全馆通用模式，仅在古典藏书不外借区的指定展柜前使用。眼镜会依章节叠加人物、地点与精选笺注；设备数量有限，仅对已预约读者开放。</p>
-            <div class="glasses-entry"><span><i aria-hidden="true"></i>今日可用 3 / 8</span><button class="glasses-button" id="glassesToggle" type="button" aria-pressed="false" aria-describedby="rokidAvailabilityNote" title="预约古典藏书区 Rokid Max"><i data-lucide="glasses" aria-hidden="true"></i><span><small>古典藏书区限量设备</small>预约眼镜导览</span></button></div>
+            <p class="eyebrow">ROKID MAX · 入馆借用 · 约 100 副</p>
+            <h3 id="rokidFeatureTitle">戴上眼镜，沿一条路线走进古今</h3>
+            <p id="rokidAvailabilityNote">在一层 AR 设备服务台领取 Rokid Max 后，可沿馆内开放路线探索。对准可交互古籍或地点标记并做轻触手势，即可触发 AI 生成的历史场景；古典藏书与《四库全书》编纂现场是旗舰体验。</p>
+            <div class="glasses-entry"><span><i aria-hidden="true"></i>今日可借 64 / 100</span><button class="glasses-button" id="glassesToggle" type="button" aria-pressed="false" aria-describedby="rokidAvailabilityNote" title="预约 Rokid Max 馆内路线"><i data-lucide="glasses" aria-hidden="true"></i><span><small>入馆领取 · 馆内路线使用</small>预约眼镜体验</span></button></div>
           </div>
           <!-- 后续将用户提供的 Rokid 介绍动画放入此媒体槽。 -->
           <div class="rokid-feature__media" id="rokidAnimationSlot" data-animation-slot="rokid" role="group" aria-labelledby="rokidAnimationLabel">
@@ -143,7 +146,7 @@
           </div>
         </section>
 
-        <div class="glasses-status" id="glassesStatus" hidden><span><i></i>设备 R-03 已分配</span><b id="glassesSession">14:00-14:30 · 展柜 A-01</b><button class="icon-button" id="closeGlasses" type="button" aria-label="结束眼镜导览"><i data-lucide="x"></i></button></div>
+        <div class="glasses-status" id="glassesStatus" hidden><span><i></i>设备 R-063 已分配</span><b id="glassesSession">14:00-15:00 · 古典藏书旗舰路线</b><button class="icon-button" id="closeGlasses" type="button" aria-label="结束眼镜导览"><i data-lucide="x"></i></button></div>
 
         <div class="collection-tabs" id="collectionTabs" role="tablist" aria-label="古典藏书分类">
           <button class="collection-tab--featured is-active" id="sikuCollectionTab" type="button" role="tab" aria-selected="true" aria-controls="classicalCollectionPanel" data-collection="四库全书"><span>壹</span><b>四库全书</b><small>古典藏书核心专题 · 经史子集</small></button>
@@ -193,22 +196,41 @@
             <p class="marginalia__intro">留言会绑定当前篇章；眼镜导览开启时仅显示精选笺注。</p>
             <div class="danmaku-window" id="danmakuWindow" aria-live="polite"></div>
             <form class="note-form" id="noteForm"><label for="noteInput">写一条笺注</label><div><input id="noteInput" maxlength="42" placeholder="这一句让你想到什么？"><button class="icon-button" type="submit" title="发送笺注" aria-label="发送笺注"><i data-lucide="send"></i></button></div></form>
-            <div class="curator-note"><i data-lucide="landmark"></i><p><b>馆员提示</b>特藏原件不外借。Rokid Max 数量有限，请先预约时段，再凭预约码到特藏服务台领取。</p></div>
+            <div class="curator-note"><i data-lucide="landmark"></i><p><b>馆员提示</b>特藏原件不外借，请使用凝视或手势触发虚拟标记。Rokid Max 约 100 副，凭预约码在一层 AR 设备服务台领取。</p></div>
           </aside>
         </div>
       </div>
     </section>
 
-    <section class="club-band" id="clubs" aria-labelledby="clubBandTitle">
-      <div><p class="eyebrow">BOOK CLUB · YULIN</p><h2 id="clubBandTitle">本周，共读榆林</h2></div>
-      <p>从地方志、边塞诗到城市口述史，让书友会成为这座城市持续更新的公共注脚。</p>
-      <button class="secondary-button" type="button" data-open-service="clubs"><i data-lucide="calendar-days"></i>查看本周活动</button>
+    <section class="mini-program-section" id="miniprogram" aria-labelledby="miniProgramTitle">
+      <div class="mini-program__inner">
+        <div class="mini-program__copy">
+          <p class="eyebrow">WECHAT MINI PROGRAM · 轻量 AR 入口</p>
+          <h2 id="miniProgramTitle">一部手机，也能走进书中之城</h2>
+          <p class="mini-program__lead">无需下载独立应用。打开微信小程序，扫描图书封面、条码或馆内地点标记，即可发现读过这本书的人留下了什么，并体验部分 AR 内容。</p>
+          <ol class="mini-program__features">
+            <li><span>01</span><div><b>扫书发现同好</b><small>查看读过与正在读的人数，不暴露真实身份</small></div></li>
+            <li><span>02</span><div><b>留下书旁感受</b><small>围绕一本书或一个地点进行异步留言与问答</small></div></li>
+            <li><span>03</span><div><b>沿兴趣继续探索</b><small>获得相关馆藏、馆内路线与文化活动推荐</small></div></li>
+            <li><span>04</span><div><b>体验手机轻量 AR</b><small>没有眼镜时，也能观看精选人物、地点与场景</small></div></li>
+          </ol>
+        </div>
+        <div class="mini-program__access">
+          <a class="mini-qr-card" href="mini-program-demo.html" data-mini-program-link aria-label="打开榆林市图书馆小程序交互样机">
+            <span class="mini-qr-card__label"><i data-lucide="scan-line" aria-hidden="true"></i>微信扫码 / 点击体验</span>
+            <span class="mini-qr-shell" aria-hidden="true"><span class="mini-qr-code" id="miniProgramQr"><span class="mini-qr-fallback"><i data-lucide="scan-line"></i><b>打开样机</b></span></span></span>
+            <strong>榆林市图书馆 · 书中见城</strong>
+            <small>扫描图书，发现同好与历史现场</small>
+          </a>
+          <p class="mini-qr-note"><i data-lucide="info" aria-hidden="true"></i><span>当前二维码连接网页交互样机；正式微信小程序码将在 AppID 注册并发布后替换。</span></p>
+        </div>
+      </div>
     </section>
   </main>
 
   <footer class="site-footer">
     <div class="brand brand--footer"><span class="brand__mark">榆</span><span><b>榆林市图书馆</b><small>YULIN LIBRARY</small></span></div>
-    <p>首版交互原型 · 馆藏、座位与活动数据为演示内容</p>
+    <p>首版交互原型 · 馆藏、座位与社区数据为演示内容</p>
     <a href="#top">回到页首 <i data-lucide="arrow-up"></i></a>
   </footer>
 
@@ -219,17 +241,17 @@
     <p class="dialog-author" id="dialogAuthor"></p>
     <p class="dialog-description" id="dialogDescription"></p>
     <dl class="book-facts"><div><dt>索书号</dt><dd id="dialogCall"></dd></div><div><dt>馆藏位置</dt><dd id="dialogShelf"></dd></div><div><dt>当前状态</dt><dd id="dialogStatus"></dd></div></dl>
-    <div class="dialog-actions"><button class="secondary-button" id="navigateBook" type="button"><i data-lucide="route" aria-hidden="true"></i>导航到书架</button><button class="primary-button" id="reserveBook" type="button"><i data-lucide="bookmark-plus" aria-hidden="true"></i>预约借阅</button><button class="primary-button primary-button--glasses" id="openRestricted" type="button" hidden><i data-lucide="glasses" aria-hidden="true"></i>预约馆内眼镜导览</button></div>
+    <div class="dialog-actions"><button class="secondary-button" id="navigateBook" type="button"><i data-lucide="route" aria-hidden="true"></i>导航到书架</button><button class="primary-button" id="reserveBook" type="button"><i data-lucide="bookmark-plus" aria-hidden="true"></i>预约借阅</button><button class="primary-button primary-button--glasses" id="openRestricted" type="button" hidden><i data-lucide="glasses" aria-hidden="true"></i>预约 Rokid 旗舰路线</button></div>
   </dialog>
 
   <dialog class="glasses-dialog" id="glassesDialog" aria-labelledby="glassesDialogTitle" aria-describedby="glassesDialogDescription">
     <button class="dialog-close icon-button" type="button" data-close-glasses-dialog aria-label="关闭眼镜导览预约"><i data-lucide="x" aria-hidden="true"></i></button>
-    <p class="eyebrow">ROKID MAX · CLASSICAL COLLECTION</p>
-    <h2 id="glassesDialogTitle">预约馆内眼镜导览</h2>
-    <p class="dialog-description" id="glassesDialogDescription">设备仅在古典藏书不外借区使用，每次体验 30 分钟。确认后请提前 10 分钟到特藏服务台领取。</p>
-    <div class="device-stock"><div><span>今日设备</span><strong>3 台可用</strong></div><div class="stock-bar"><i></i></div><small>共 8 台 · 5 台使用中或已预约</small></div>
-    <fieldset class="slot-field"><legend>选择体验时段</legend><div class="slot-list" id="glassesSlots"><button type="button" disabled>10:00 已满</button><button class="is-active" type="button" data-slot="14:00-14:30">14:00</button><button type="button" data-slot="15:30-16:00">15:30</button><button type="button" data-slot="17:00-17:30">17:00</button></div></fieldset>
-    <label class="agreement"><input id="deviceAgreement" type="checkbox"><span>我会在特藏区内使用，并按时归还设备</span></label>
+    <p class="eyebrow">ROKID MAX · IN-LIBRARY JOURNEY</p>
+    <h2 id="glassesDialogTitle">预约馆内 AR 眼镜</h2>
+    <p class="dialog-description" id="glassesDialogDescription">馆内约提供 100 副设备，每次体验 60 分钟。确认后请提前 10 分钟到一层 AR 设备服务台领取，并沿开放路线使用。</p>
+    <div class="device-stock"><div><span>今日设备</span><strong>64 副可借</strong></div><div class="stock-bar"><i></i></div><small>共约 100 副 · 36 副使用中或已预约</small></div>
+    <fieldset class="slot-field"><legend>选择体验时段</legend><div class="slot-list" id="glassesSlots"><button type="button" disabled>10:00 已满</button><button class="is-active" type="button" data-slot="14:00-15:00">14:00</button><button type="button" data-slot="15:30-16:30">15:30</button><button type="button" data-slot="17:00-18:00">17:00</button></div></fieldset>
+    <label class="agreement"><input id="deviceAgreement" type="checkbox"><span>我会沿馆内开放路线使用，并按时归还设备</span></label>
     <button class="primary-button" id="confirmGlasses" type="button"><i data-lucide="calendar-check" aria-hidden="true"></i>确认预约</button>
   </dialog>
 
