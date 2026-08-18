@@ -1,0 +1,15 @@
+{
+  "pages": [
+    "pages/home/index",
+    "pages/scan/index",
+    "pages/discover/index"
+  ],
+  "window": {
+    "navigationBarTitleText": "榆林市图书馆",
+    "navigationBarBackgroundColor": "#243b5a",
+    "navigationBarTextStyle": "white",
+    "backgroundColor": "#f3efe5",
+    "backgroundTextStyle": "dark"
+  },
+  "sitemapLocation": "sitemap.json"
+}

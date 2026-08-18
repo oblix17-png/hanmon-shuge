@@ -1,0 +1,31 @@
+<view class="page scan-page">
+  <view class="scan-result">
+    <view class="scan-line"></view>
+    <image src="/assets/art-reference.jpg" mode="aspectFill"></image>
+    <view class="scan-label"><text>识别成功</text><strong>《资治通鉴》</strong><small>史部 · 编年类</small></view>
+  </view>
+
+  <view class="reader-summary card">
+    <view><strong>38</strong><text>位读者读过</text></view>
+    <view><strong>3</strong><text>位正在馆内阅读</text></view>
+    <view><strong>12</strong><text>条书旁留言</text></view>
+  </view>
+
+  <view class="privacy-note"><text>同好位置仅显示馆内区域，不公开身份和精确座位。</text></view>
+
+  <view class="section-title-row"><view><text class="eyebrow">BOOKSIDE NOTES</text><text class="section-title">书旁留言</text></view><text>按时间</text></view>
+  <view class="note-list">
+    <view class="note-card card" wx:for="{{notes}}" wx:key="text"><view><strong>{{item.name}}</strong><text>{{item.time}}</text></view><text>{{item.text}}</text></view>
+  </view>
+  <view class="note-input card"><input value="{{note}}" bindinput="updateNote" maxlength="42" placeholder="你想在书旁留下什么？"></input><button bindtap="submitNote">留下</button></view>
+
+  <button class="ar-preview" bindtap="previewAR"><text class="ar-mark">AR</text><view><strong>查看这本书的穿越场景</strong><text>手机端轻量体验 · 眼镜端完整呈现</text></view><text class="arrow">›</text></button>
+
+  <view class="recommend"><text class="eyebrow">NEXT DISCOVERY</text><text class="section-title">读过的人还喜欢</text><view class="recommend-item" wx:for="{{recommendations}}" wx:key="*this"><text>{{index + 1}}</text><strong>{{item}}</strong><text>›</text></view></view>
+
+  <view class="bottom-nav">
+    <button bindtap="openHome"><text class="nav-icon">卷</text><text>首页</text></button>
+    <button class="active"><text class="nav-icon">扫</text><text>扫书</text></button>
+    <button bindtap="openDiscover"><text class="nav-icon">星</text><text>同好</text></button>
+  </view>
+</view>

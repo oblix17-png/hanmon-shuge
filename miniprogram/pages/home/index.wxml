@@ -1,0 +1,42 @@
+<view class="page home-page">
+  <view class="hero-card">
+    <image src="/assets/art-reference.jpg" mode="aspectFill"></image>
+    <view class="hero-wash"></view>
+    <view class="hero-copy">
+      <text class="eyebrow">YULIN LIBRARY · 书中见城</text>
+      <text class="hero-title">在书旁遇见古人，\n也遇见同好</text>
+      <text class="hero-lead">眼镜探索与手机轻量 AR，共同连接一座城的阅读记忆。</text>
+    </view>
+  </view>
+
+  <view class="device-strip card">
+    <view><text class="device-dot"></text><text>入馆 AR 眼镜</text></view>
+    <text><strong>{{available}}</strong> / {{total}} 副可借</text>
+  </view>
+
+  <view class="action-grid">
+    <button class="scan-action" bindtap="openScan"><text class="action-icon">扫</text><view><strong>扫书识友</strong><text>先体验模拟扫描</text></view></button>
+    <button class="ar-action" bindtap="useCamera"><text class="action-icon">景</text><view><strong>手机轻量 AR</strong><text>扫描封面或地点</text></view></button>
+  </view>
+
+  <view class="section-head"><view><text class="eyebrow">AR ROUTES</text><text class="section-title">今日探索路线</text></view><text class="section-note">馆内触发</text></view>
+  <view class="route-list">
+    <view class="route-card card" wx:for="{{routes}}" wx:key="tag">
+      <text class="route-tag">{{item.tag}}</text>
+      <view><text class="route-title">{{item.title}}</text><text class="route-meta">{{item.meta}}</text></view>
+      <text class="route-arrow">›</text>
+    </view>
+  </view>
+
+  <view class="same-reader card" bindtap="openDiscover">
+    <view><text class="eyebrow">SAME READERS</text><text class="section-title">这座城，还有谁和你读一样的书？</text></view>
+    <view class="reader-orbit"><text>史</text><i></i><i></i><i></i><i></i></view>
+    <text class="same-reader-link">查看榆林阅读兴趣星图 →</text>
+  </view>
+
+  <view class="bottom-nav">
+    <button class="active"><text class="nav-icon">卷</text><text>首页</text></button>
+    <button bindtap="openScan"><text class="nav-icon">扫</text><text>扫书</text></button>
+    <button bindtap="openDiscover"><text class="nav-icon">星</text><text>同好</text></button>
+  </view>
+</view>

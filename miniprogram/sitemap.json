@@ -1,0 +1,4 @@
+{
+  "desc": "榆林市图书馆小程序原型",
+  "rules": [{ "action": "allow", "page": "*" }]
+}

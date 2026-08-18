@@ -1,0 +1,26 @@
+page {
+  --ink: #22272c;
+  --blue: #243b5a;
+  --blue-soft: #365f83;
+  --paper: #f3efe5;
+  --paper-light: #fbf8f0;
+  --rust: #92533f;
+  --jade: #6f9f97;
+  color: var(--ink);
+  background: var(--paper);
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", sans-serif;
+}
+
+button::after { border: 0; }
+.page { min-height: 100vh; padding: 28rpx 28rpx 160rpx; box-sizing: border-box; }
+.eyebrow { margin: 0 0 10rpx; color: var(--rust); font-size: 20rpx; font-weight: 700; }
+.title { margin: 0; color: var(--blue); font-family: "Songti SC", serif; font-size: 54rpx; line-height: 1.18; }
+.muted { color: #697078; }
+.primary, .secondary { min-height: 88rpx; display: flex; align-items: center; justify-content: center; padding: 0 26rpx; border-radius: 4rpx; font-size: 28rpx; }
+.primary { color: #fff; background: var(--blue); }
+.secondary { color: var(--blue); background: var(--paper-light); border: 2rpx solid rgba(36, 59, 90, .35); }
+.card { background: var(--paper-light); border: 2rpx solid rgba(36, 59, 90, .14); }
+.bottom-nav { position: fixed; z-index: 20; right: 0; bottom: 0; left: 0; height: 122rpx; display: grid; grid-template-columns: repeat(3, 1fr); padding-bottom: env(safe-area-inset-bottom); background: rgba(251, 248, 240, .98); border-top: 2rpx solid rgba(36, 59, 90, .14); }
+.bottom-nav button { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6rpx; color: #697078; background: transparent; font-size: 22rpx; }
+.bottom-nav button.active { color: var(--rust); font-weight: 700; }
+.nav-icon { font-family: "Songti SC", serif; font-size: 36rpx; line-height: 1; }

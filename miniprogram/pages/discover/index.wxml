@@ -1,0 +1,24 @@
+<view class="page discover-page">
+  <text class="eyebrow">LOCAL READING CONSTELLATION</text>
+  <text class="title">榆林阅读兴趣星图</text>
+  <text class="intro">不需要认识彼此，也能知道这座城里有人和你在读相似的书。</text>
+
+  <view class="constellation card">
+    <view class="orbit orbit-one"></view><view class="orbit orbit-two"></view>
+    <view class="interest {{item.size}}" wx:for="{{interests}}" wx:key="label"><strong>{{item.label}}</strong><text>{{item.count}} 人</text></view>
+    <text class="constellation-note">数据仅展示自愿开启“被同好发现”的匿名读者</text>
+  </view>
+
+  <view class="nearby card"><view><text class="eyebrow">READING NOW</text><strong>此刻馆内</strong></view><text><b>7</b> 位同好正在阅读历史类书籍</text><small>二层社科区 4 位 · 四层地方文献区 3 位</small></view>
+
+  <view class="recommend-head"><text class="eyebrow">FOR YOU</text><text class="section-title">为你推荐下一站</text></view>
+  <view class="recommend-list">
+    <view class="recommend-card card" wx:for="{{recommendations}}" wx:key="title"><text class="index">0{{index + 1}}</text><view><strong>{{item.title}}</strong><text>{{item.reason}}</text><small>{{item.place}}</small></view><text class="arrow">›</text></view>
+  </view>
+
+  <view class="bottom-nav">
+    <button bindtap="openHome"><text class="nav-icon">卷</text><text>首页</text></button>
+    <button bindtap="openScan"><text class="nav-icon">扫</text><text>扫书</text></button>
+    <button class="active"><text class="nav-icon">星</text><text>同好</text></button>
+  </view>
+</view>
