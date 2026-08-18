@@ -10,19 +10,19 @@
   <script defer src="app.js"></script>
 </head>
 <body class="intro-open">
-  <a class="skip-link" href="#reading">跳到主要内容</a>
+  <a class="skip-link" href="#mainContent">跳到主要内容</a>
 
-  <div class="intro" id="intro" aria-hidden="false">
-    <div class="intro__panel intro__panel--left"></div>
-    <div class="intro__panel intro__panel--right"></div>
+  <div class="intro" id="intro" role="region" aria-label="榆林市图书馆开场">
+    <div class="intro__panel intro__panel--left" aria-hidden="true"></div>
+    <div class="intro__panel intro__panel--right" aria-hidden="true"></div>
     <div class="intro__seal">
       <span>榆林</span>
       <strong>开卷</strong>
     </div>
     <!-- 后续将用户提供的开场动画放入此媒体槽。 -->
-    <div class="intro__media-slot" data-animation-slot="opening">
-      <p>OPENING FILM · 动画预留</p>
-      <button class="intro__enter" id="introEnter" type="button"><i data-lucide="play"></i><span>点击入阁</span></button>
+    <div class="intro__media-slot" data-animation-slot="opening" role="group" aria-labelledby="openingSlotLabel">
+      <p id="openingSlotLabel">OPENING FILM · 开场动画预留</p>
+      <button class="intro__enter" id="introEnter" type="button"><i data-lucide="play" aria-hidden="true"></i><span>点击进入，开启书中之城</span></button>
     </div>
   </div>
 
@@ -42,12 +42,12 @@
     </div>
   </header>
 
-  <main>
+  <main id="mainContent" tabindex="-1">
     <section class="hero" aria-labelledby="heroTitle">
       <img class="hero__art" src="assets/art-reference.jpg" alt="以石青、黛蓝和赭色绘制的传统壁画人物">
       <div class="hero__shade"></div>
       <div class="hero__content">
-        <p class="eyebrow">城市公共文化空间 · 四库数字书阁</p>
+        <p class="eyebrow">城市公共文化空间 · 古典藏书数字体验</p>
         <h1 id="heroTitle">榆林市<br>图书馆</h1>
         <p class="hero__lead">从一张座位、一册馆藏，到一部典籍里的山河人物。让阅读成为抵达这座城的另一条路。</p>
         <div class="hero__commands">
@@ -70,16 +70,16 @@
 
       <div class="service-layout">
         <div class="service-tabs" role="tablist" aria-label="读书服务">
-          <button class="service-tab is-active" type="button" role="tab" aria-selected="true" data-service="catalog"><i data-lucide="library-big"></i><span>馆藏检索<small>状态与书架位置</small></span></button>
-          <button class="service-tab" type="button" role="tab" aria-selected="false" data-service="seats"><i data-lucide="armchair"></i><span>座位预约<small>楼层与时段</small></span></button>
-          <button class="service-tab" type="button" role="tab" aria-selected="false" data-service="clubs"><i data-lucide="users-round"></i><span>书友会<small>活动与共读</small></span></button>
+          <button class="service-tab is-active" id="catalogTab" type="button" role="tab" aria-selected="true" aria-controls="catalogPanel" data-service="catalog"><i data-lucide="library-big" aria-hidden="true"></i><span>馆藏检索<small>状态与书架位置</small></span></button>
+          <button class="service-tab" id="seatsTab" type="button" role="tab" aria-selected="false" aria-controls="seatsPanel" data-service="seats"><i data-lucide="armchair" aria-hidden="true"></i><span>座位预约<small>楼层与时段</small></span></button>
+          <button class="service-tab" id="clubsTab" type="button" role="tab" aria-selected="false" aria-controls="clubsPanel" data-service="clubs"><i data-lucide="users-round" aria-hidden="true"></i><span>书友会<small>活动与共读</small></span></button>
         </div>
 
         <div class="service-workbench">
-          <section class="service-panel is-active" id="catalogPanel" data-panel="catalog" role="tabpanel">
+          <section class="service-panel is-active" id="catalogPanel" data-panel="catalog" role="tabpanel" aria-labelledby="catalogTab">
             <div class="panel-toolbar">
-              <label class="search-field" for="catalogSearch"><i data-lucide="search"></i><input id="catalogSearch" type="search" placeholder="搜索书名、作者、主题或索书号"></label>
-              <div class="filter-set" aria-label="馆藏状态筛选">
+              <label class="search-field" for="catalogSearch"><i data-lucide="search" aria-hidden="true"></i><input id="catalogSearch" type="search" aria-label="搜索馆藏" placeholder="搜索书名、作者、主题或索书号" autocomplete="off"></label>
+              <div class="filter-set" role="group" aria-label="馆藏状态筛选">
                 <button class="filter-button is-active" type="button" data-status="全部">全部</button>
                 <button class="filter-button" type="button" data-status="在馆">在馆</button>
                 <button class="filter-button" type="button" data-status="借出">借出</button>
@@ -91,15 +91,15 @@
             <p class="empty-state" id="catalogEmpty" hidden>没有找到匹配馆藏。</p>
           </section>
 
-          <section class="service-panel" id="seatsPanel" data-panel="seats" role="tabpanel" hidden>
+          <section class="service-panel" id="seatsPanel" data-panel="seats" role="tabpanel" aria-labelledby="seatsTab" hidden>
             <div class="seat-toolbar">
-              <div><span class="field-label">预约日期</span><input class="date-input" id="seatDate" type="date"></div>
-              <div><span class="field-label">楼层</span><div class="segmented" id="floorSwitch"><button class="is-active" type="button" data-floor="二层">二层</button><button type="button" data-floor="三层">三层</button><button type="button" data-floor="四层">四层</button></div></div>
-              <div><span class="field-label">时段</span><div class="segmented" id="timeSwitch"><button class="is-active" type="button" data-time="09:00-12:00">上午</button><button type="button" data-time="14:00-17:00">下午</button><button type="button" data-time="18:00-21:00">晚间</button></div></div>
+              <div><label class="field-label" for="seatDate">预约日期</label><input class="date-input" id="seatDate" type="date"></div>
+              <div><span class="field-label" id="floorSwitchLabel">楼层</span><div class="segmented" id="floorSwitch" role="group" aria-labelledby="floorSwitchLabel"><button class="is-active" type="button" data-floor="二层">二层</button><button type="button" data-floor="三层">三层</button><button type="button" data-floor="四层">四层</button></div></div>
+              <div><span class="field-label" id="timeSwitchLabel">时段</span><div class="segmented" id="timeSwitch" role="group" aria-labelledby="timeSwitchLabel"><button class="is-active" type="button" data-time="09:00-12:00">上午</button><button type="button" data-time="14:00-17:00">下午</button><button type="button" data-time="18:00-21:00">晚间</button></div></div>
             </div>
             <div class="seat-key"><span><i class="seat-swatch seat-swatch--free"></i>可预约</span><span><i class="seat-swatch seat-swatch--taken"></i>已占用</span><span><i class="seat-swatch seat-swatch--selected"></i>已选择</span></div>
             <div class="seat-stage">
-              <div class="seat-map" id="seatMap" aria-label="座位图"></div>
+              <div class="seat-map" id="seatMap" role="group" aria-label="可预约座位图"></div>
               <aside class="seat-summary">
                 <p class="eyebrow">RESERVATION</p>
                 <h3>本次预约</h3>
@@ -109,7 +109,7 @@
             </div>
           </section>
 
-          <section class="service-panel" id="clubsPanel" data-panel="clubs" role="tabpanel" hidden>
+          <section class="service-panel" id="clubsPanel" data-panel="clubs" role="tabpanel" aria-labelledby="clubsTab" hidden>
             <div class="club-intro"><div><p class="eyebrow">LOCAL READERS</p><h3>在同一座城，共读同一本书</h3></div><button class="secondary-button" type="button"><i data-lucide="plus"></i>发起共读</button></div>
             <div class="club-list" id="clubList"></div>
           </section>
@@ -122,37 +122,37 @@
       <div class="special__inner">
         <header class="special__header">
           <div>
-            <p class="eyebrow">NON-CIRCULATING COLLECTION · 古典藏书</p>
+            <p class="eyebrow">NON-CIRCULATING COLLECTION · 不外借古典藏书</p>
             <h2 id="specialTitle">从地方文脉，走入古今万卷</h2>
-            <p>古典藏书包含四库全书、榆林地方志、古籍善本与金石拓本。典籍仅限馆内阅览，可查看注释并在关键段落触发人物、地点和事件动画。</p>
+            <p>古典藏书包含《四库全书》、榆林地方志、古籍善本与金石拓本；《四库全书》是其中的核心专题。典籍仅限馆内阅览，可查看注释，并在关键章节、人物、地点或事件处触发动画。</p>
           </div>
         </header>
 
         <section class="rokid-feature" aria-labelledby="rokidFeatureTitle">
           <div class="rokid-feature__copy">
-            <p class="eyebrow">ROKID MAX · 馆内导览</p>
+            <p class="eyebrow">ROKID MAX · 不外借藏书区限定体验</p>
             <h3 id="rokidFeatureTitle">让注释从书页进入眼前</h3>
-            <p>在古典藏书区的指定展柜前，眼镜会依章节叠加人物、地点与精选笺注。设备数量有限，仅对已预约读者开放。</p>
-            <div class="glasses-entry"><span><i></i>今日可用 3 / 8</span><button class="glasses-button" id="glassesToggle" type="button" aria-pressed="false" title="预约古典藏书区 Rokid Max"><i data-lucide="glasses"></i><span><small>古典藏书区限量设备</small>预约眼镜导览</span></button></div>
+            <p id="rokidAvailabilityNote">Rokid Max 不作为全馆通用模式，仅在古典藏书不外借区的指定展柜前使用。眼镜会依章节叠加人物、地点与精选笺注；设备数量有限，仅对已预约读者开放。</p>
+            <div class="glasses-entry"><span><i aria-hidden="true"></i>今日可用 3 / 8</span><button class="glasses-button" id="glassesToggle" type="button" aria-pressed="false" aria-describedby="rokidAvailabilityNote" title="预约古典藏书区 Rokid Max"><i data-lucide="glasses" aria-hidden="true"></i><span><small>古典藏书区限量设备</small>预约眼镜导览</span></button></div>
           </div>
           <!-- 后续将用户提供的 Rokid 介绍动画放入此媒体槽。 -->
-          <div class="rokid-feature__media" id="rokidAnimationSlot" data-animation-slot="rokid">
-            <div class="rokid-feature__lens"><span>人物</span><span>地点</span><span>笺注</span></div>
-            <button class="rokid-preview" id="rokidAnimationPreview" type="button"><i data-lucide="play"></i><span>预览导览动效</span></button>
-            <small>ROKID INTRO FILM · 动画预留</small>
+          <div class="rokid-feature__media" id="rokidAnimationSlot" data-animation-slot="rokid" role="group" aria-labelledby="rokidAnimationLabel">
+            <div class="rokid-feature__lens" aria-hidden="true"><span>人物</span><span>地点</span><span>笺注</span></div>
+            <button class="rokid-preview" id="rokidAnimationPreview" type="button"><i data-lucide="play" aria-hidden="true"></i><span>预览眼镜介绍动效</span></button>
+            <small id="rokidAnimationLabel">ROKID INTRO FILM · 眼镜介绍动画预留</small>
           </div>
         </section>
 
         <div class="glasses-status" id="glassesStatus" hidden><span><i></i>设备 R-03 已分配</span><b id="glassesSession">14:00-14:30 · 展柜 A-01</b><button class="icon-button" id="closeGlasses" type="button" aria-label="结束眼镜导览"><i data-lucide="x"></i></button></div>
 
         <div class="collection-tabs" id="collectionTabs" role="tablist" aria-label="古典藏书分类">
-          <button class="collection-tab--featured is-active" type="button" role="tab" aria-selected="true" data-collection="四库全书"><span>壹</span><b>四库全书</b><small>核心专题 · 经史子集</small></button>
-          <button type="button" role="tab" aria-selected="false" data-collection="榆林地方志"><span>贰</span><b>榆林地方志</b><small>一城之记</small></button>
-          <button type="button" role="tab" aria-selected="false" data-collection="古籍善本"><span>叁</span><b>古籍善本</b><small>珍本遗珍</small></button>
-          <button type="button" role="tab" aria-selected="false" data-collection="金石拓本"><span>肆</span><b>金石拓本</b><small>碑刻留声</small></button>
+          <button class="collection-tab--featured is-active" id="sikuCollectionTab" type="button" role="tab" aria-selected="true" aria-controls="classicalCollectionPanel" data-collection="四库全书"><span>壹</span><b>四库全书</b><small>古典藏书核心专题 · 经史子集</small></button>
+          <button id="gazetteerCollectionTab" type="button" role="tab" aria-selected="false" aria-controls="classicalCollectionPanel" data-collection="榆林地方志"><span>贰</span><b>榆林地方志</b><small>一城之记</small></button>
+          <button id="rareCollectionTab" type="button" role="tab" aria-selected="false" aria-controls="classicalCollectionPanel" data-collection="古籍善本"><span>叁</span><b>古籍善本</b><small>珍本遗珍</small></button>
+          <button id="rubbingCollectionTab" type="button" role="tab" aria-selected="false" aria-controls="classicalCollectionPanel" data-collection="金石拓本"><span>肆</span><b>金石拓本</b><small>碑刻留声</small></button>
         </div>
 
-        <div class="siku-layout">
+        <div class="siku-layout" id="classicalCollectionPanel" role="tabpanel" aria-label="古典藏书篇章阅读区">
           <nav class="siku-nav" id="classicsNav" aria-label="四库全书经史子集">
             <button class="siku-tab is-active" type="button" data-siku="经"><strong>经</strong><span>义理与经典<small>CLASSICS</small></span></button>
             <button class="siku-tab" type="button" data-siku="史"><strong>史</strong><span>制度与山河<small>HISTORY</small></span></button>
@@ -160,7 +160,7 @@
             <button class="siku-tab" type="button" data-siku="集"><strong>集</strong><span>文章与诗心<small>LITERATURE</small></span></button>
           </nav>
 
-          <article class="manuscript">
+          <article class="manuscript" aria-labelledby="volumeTitle">
             <header class="manuscript__head">
               <div><span id="volumeLabel">经部 · 四书类</span><h3 id="volumeTitle">《论语集注》</h3><p id="volumeMeta">宋 · 朱熹集注　特藏索书号 SK-J-008</p></div>
               <span class="restricted-mark"><i data-lucide="lock-keyhole"></i>馆内阅览</span>
@@ -171,7 +171,7 @@
                 <button type="button" data-note="translation">今译</button>
                 <button type="button" data-note="allusion">典故</button>
               </div>
-              <button class="scene-button" id="sceneTrigger" type="button"><i data-lucide="play"></i>展开段落场景</button>
+              <button class="scene-button" id="sceneTrigger" type="button" aria-controls="narrativeStage"><i data-lucide="play" aria-hidden="true"></i>展开段落场景</button>
             </div>
             <div class="reader-copy">
               <p class="chapter-mark" id="chapterMark">学而第一</p>
@@ -189,7 +189,7 @@
           </article>
 
           <aside class="marginalia">
-            <div class="marginalia__head"><div><p class="eyebrow">LIVE NOTES</p><h3>今人笺注</h3></div><label class="switch"><input id="danmakuToggle" type="checkbox" checked><span></span><b>显示</b></label></div>
+            <div class="marginalia__head"><div><p class="eyebrow">LIVE NOTES</p><h3>今人笺注</h3></div><label class="switch"><input id="danmakuToggle" type="checkbox" aria-controls="danmakuWindow" checked><span aria-hidden="true"></span><b>显示</b></label></div>
             <p class="marginalia__intro">留言会绑定当前篇章；眼镜导览开启时仅显示精选笺注。</p>
             <div class="danmaku-window" id="danmakuWindow" aria-live="polite"></div>
             <form class="note-form" id="noteForm"><label for="noteInput">写一条笺注</label><div><input id="noteInput" maxlength="42" placeholder="这一句让你想到什么？"><button class="icon-button" type="submit" title="发送笺注" aria-label="发送笺注"><i data-lucide="send"></i></button></div></form>
@@ -212,37 +212,37 @@
     <a href="#top">回到页首 <i data-lucide="arrow-up"></i></a>
   </footer>
 
-  <dialog class="book-dialog" id="bookDialog">
-    <button class="dialog-close icon-button" type="button" data-close-dialog aria-label="关闭"><i data-lucide="x"></i></button>
+  <dialog class="book-dialog" id="bookDialog" aria-labelledby="dialogTitle" aria-describedby="dialogDescription">
+    <button class="dialog-close icon-button" type="button" data-close-dialog aria-label="关闭馆藏详情"><i data-lucide="x" aria-hidden="true"></i></button>
     <p class="eyebrow" id="dialogCategory">馆藏详情</p>
     <h2 id="dialogTitle"></h2>
     <p class="dialog-author" id="dialogAuthor"></p>
     <p class="dialog-description" id="dialogDescription"></p>
     <dl class="book-facts"><div><dt>索书号</dt><dd id="dialogCall"></dd></div><div><dt>馆藏位置</dt><dd id="dialogShelf"></dd></div><div><dt>当前状态</dt><dd id="dialogStatus"></dd></div></dl>
-    <div class="dialog-actions"><button class="secondary-button" id="navigateBook" type="button"><i data-lucide="route"></i>导航到书架</button><button class="primary-button" id="reserveBook" type="button"><i data-lucide="bookmark-plus"></i>预约借阅</button><button class="primary-button primary-button--glasses" id="openRestricted" type="button" hidden><i data-lucide="glasses"></i>预约馆内眼镜导览</button></div>
+    <div class="dialog-actions"><button class="secondary-button" id="navigateBook" type="button"><i data-lucide="route" aria-hidden="true"></i>导航到书架</button><button class="primary-button" id="reserveBook" type="button"><i data-lucide="bookmark-plus" aria-hidden="true"></i>预约借阅</button><button class="primary-button primary-button--glasses" id="openRestricted" type="button" hidden><i data-lucide="glasses" aria-hidden="true"></i>预约馆内眼镜导览</button></div>
   </dialog>
 
-  <dialog class="glasses-dialog" id="glassesDialog">
-    <button class="dialog-close icon-button" type="button" data-close-glasses-dialog aria-label="关闭"><i data-lucide="x"></i></button>
+  <dialog class="glasses-dialog" id="glassesDialog" aria-labelledby="glassesDialogTitle" aria-describedby="glassesDialogDescription">
+    <button class="dialog-close icon-button" type="button" data-close-glasses-dialog aria-label="关闭眼镜导览预约"><i data-lucide="x" aria-hidden="true"></i></button>
     <p class="eyebrow">ROKID MAX · CLASSICAL COLLECTION</p>
-    <h2>预约馆内眼镜导览</h2>
-    <p class="dialog-description">设备仅在古典藏书区使用，每次体验 30 分钟。确认后请提前 10 分钟到特藏服务台领取。</p>
+    <h2 id="glassesDialogTitle">预约馆内眼镜导览</h2>
+    <p class="dialog-description" id="glassesDialogDescription">设备仅在古典藏书不外借区使用，每次体验 30 分钟。确认后请提前 10 分钟到特藏服务台领取。</p>
     <div class="device-stock"><div><span>今日设备</span><strong>3 台可用</strong></div><div class="stock-bar"><i></i></div><small>共 8 台 · 5 台使用中或已预约</small></div>
     <fieldset class="slot-field"><legend>选择体验时段</legend><div class="slot-list" id="glassesSlots"><button type="button" disabled>10:00 已满</button><button class="is-active" type="button" data-slot="14:00-14:30">14:00</button><button type="button" data-slot="15:30-16:00">15:30</button><button type="button" data-slot="17:00-17:30">17:00</button></div></fieldset>
     <label class="agreement"><input id="deviceAgreement" type="checkbox"><span>我会在特藏区内使用，并按时归还设备</span></label>
-    <button class="primary-button" id="confirmGlasses" type="button"><i data-lucide="calendar-check"></i>确认预约</button>
+    <button class="primary-button" id="confirmGlasses" type="button"><i data-lucide="calendar-check" aria-hidden="true"></i>确认预约</button>
   </dialog>
 
-  <dialog class="map-dialog" id="mapDialog">
-    <button class="dialog-close icon-button" type="button" data-close-map aria-label="关闭"><i data-lucide="x"></i></button>
+  <dialog class="map-dialog" id="mapDialog" aria-labelledby="mapDialogTitle" aria-describedby="mapDestination">
+    <button class="dialog-close icon-button" type="button" data-close-map aria-label="关闭书架导航"><i data-lucide="x" aria-hidden="true"></i></button>
     <p class="eyebrow">SHELF NAVIGATION</p>
-    <h2>书架导航</h2>
+    <h2 id="mapDialogTitle">书架导航</h2>
     <p id="mapDestination">正在为你规划馆内路线。</p>
-    <div class="floor-map" aria-label="图书馆楼层导航示意图">
+    <div class="floor-map" role="img" aria-label="从入口经服务台和阅览区前往目标藏书区域的楼层导航示意图">
       <div class="map-room map-room--entrance">入口</div><div class="map-room map-room--desk">服务台</div><div class="map-room map-room--reading">阅览区</div><div class="map-room map-room--special">特藏室</div>
       <div class="route-line route-line--one"></div><div class="route-line route-line--two"></div><div class="route-line route-line--three"></div><span class="route-start">起</span><span class="route-end">达</span>
     </div>
-    <div class="map-steps"><span>1</span><p>从一层东门进入</p><span>2</span><p>经过总服务台右转</p><span>3</span><p id="mapFinalStep">抵达目标书架</p></div>
+    <div class="map-steps" role="group" aria-label="导航步骤"><span>1</span><p>从一层东门进入</p><span>2</span><p>经过总服务台右转</p><span>3</span><p id="mapFinalStep">抵达目标书架</p></div>
   </dialog>
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
