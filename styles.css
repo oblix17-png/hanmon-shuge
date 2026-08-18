@@ -337,7 +337,7 @@ body.classics-transitioning { overflow: hidden; }
 .glasses-status .icon-button { width: 34px; height: 34px; border-color: rgba(30, 51, 79, .26); }
 .rokid-feature { display: grid; grid-template-columns: minmax(280px, .82fr) minmax(420px, 1.18fr); min-height: 320px; margin-bottom: 16px; color: var(--ink); background: var(--paper-bright); border-top: 5px solid var(--jade); }
 .rokid-feature__copy { display: flex; flex-direction: column; justify-content: center; padding: 30px 34px; }
-.rokid-feature__copy h3 { margin: 0; color: var(--cobalt-deep); font-family: var(--serif); font-size: 1.8rem; }
+.rokid-feature__copy h3 { margin: 0; color: var(--cobalt-deep); font-family: var(--serif); font-size: 1.65rem; }
 .rokid-feature__copy > p:not(.eyebrow) { margin: 12px 0 20px; color: var(--ink-soft); font-size: .84rem; }
 .rokid-feature .glasses-entry { justify-items: start; }
 .rokid-feature .glasses-entry > span { color: var(--cobalt-deep); }
