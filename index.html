@@ -56,8 +56,10 @@
         <h1 id="heroTitle">榆林市<br>图书馆</h1>
         <p class="hero__lead">从一张座位、一册馆藏，到一部典籍里的山河人物。让阅读成为抵达这座城的另一条路。</p>
         <div class="hero__commands">
-          <button class="command command--ink" type="button" data-scroll="reading"><i data-lucide="book-open"></i><span><small>READING SERVICE</small>进入读书专区</span></button>
-          <button class="command command--paper" type="button" data-enter-classics><i data-lucide="sparkles"></i><span><small>CLASSICAL COLLECTION</small>进入古典藏书</span></button>
+          <button class="command command--ink" type="button" data-open-service="catalog"><i data-lucide="book-open" aria-hidden="true"></i><span><small>READING SERVICE</small>读书专区</span></button>
+          <button class="command command--seat" id="openSeatBooking" type="button" aria-haspopup="dialog" aria-controls="seatDialog"><i data-lucide="armchair" aria-hidden="true"></i><span><small>SEAT RESERVATION</small>座位预约</span></button>
+          <button class="command command--guide" type="button" data-scroll="zones"><i data-lucide="signpost" aria-hidden="true"></i><span><small>IN-LIBRARY GUIDE</small>馆内导航</span></button>
+          <button class="command command--paper" type="button" data-enter-classics><i data-lucide="sparkles" aria-hidden="true"></i><span><small>CLASSICAL COLLECTION</small>古典藏书</span></button>
         </div>
         <a class="hero__mini-link" href="#miniprogram"><i data-lucide="scan-line" aria-hidden="true"></i><span>没有眼镜？使用小程序扫码体验轻量 AR</span><i data-lucide="arrow-right" aria-hidden="true"></i></a>
       </div>
@@ -71,13 +73,12 @@
           <p class="eyebrow">READING ZONE</p>
           <h2 id="readingTitle">把来馆阅读的事，办得简单</h2>
         </div>
-        <p>检索、定位、预约与扫书发现集中在一个工作台内。当前数据为首版模拟，交互流程可完整体验。</p>
+        <p>检索、定位与扫书发现集中在一个工作台内；座位预约已前置到首页核心入口。当前数据为首版模拟。</p>
       </div>
 
       <div class="service-layout">
         <div class="service-tabs" role="tablist" aria-label="读书服务">
           <button class="service-tab is-active" id="catalogTab" type="button" role="tab" aria-selected="true" aria-controls="catalogPanel" data-service="catalog"><i data-lucide="library-big" aria-hidden="true"></i><span>馆藏检索<small>状态与书架位置</small></span></button>
-          <button class="service-tab" id="seatsTab" type="button" role="tab" aria-selected="false" aria-controls="seatsPanel" data-service="seats"><i data-lucide="armchair" aria-hidden="true"></i><span>座位预约<small>楼层与时段</small></span></button>
           <button class="service-tab" id="discoveryTab" type="button" role="tab" aria-selected="false" aria-controls="discoveryPanel" data-service="discovery"><i data-lucide="scan-line" aria-hidden="true"></i><span>扫书发现<small>同好与书旁留言</small></span></button>
         </div>
 
@@ -95,24 +96,6 @@
             <div class="catalog-head" aria-hidden="true"><span>书名 / 著者</span><span>索书号</span><span>位置</span><span>状态</span><span></span></div>
             <div class="catalog-list" id="catalogList" aria-live="polite"></div>
             <p class="empty-state" id="catalogEmpty" hidden>没有找到匹配馆藏。</p>
-          </section>
-
-          <section class="service-panel" id="seatsPanel" data-panel="seats" role="tabpanel" aria-labelledby="seatsTab" hidden>
-            <div class="seat-toolbar">
-              <div><label class="field-label" for="seatDate">预约日期</label><input class="date-input" id="seatDate" type="date"></div>
-              <div><span class="field-label" id="floorSwitchLabel">楼层</span><div class="segmented" id="floorSwitch" role="group" aria-labelledby="floorSwitchLabel"><button class="is-active" type="button" data-floor="二层">二层</button><button type="button" data-floor="三层">三层</button><button type="button" data-floor="四层">四层</button></div></div>
-              <div><span class="field-label" id="timeSwitchLabel">时段</span><div class="segmented" id="timeSwitch" role="group" aria-labelledby="timeSwitchLabel"><button class="is-active" type="button" data-time="09:00-12:00">上午</button><button type="button" data-time="14:00-17:00">下午</button><button type="button" data-time="18:00-21:00">晚间</button></div></div>
-            </div>
-            <div class="seat-key"><span><i class="seat-swatch seat-swatch--free"></i>可预约</span><span><i class="seat-swatch seat-swatch--taken"></i>已占用</span><span><i class="seat-swatch seat-swatch--selected"></i>已选择</span></div>
-            <div class="seat-stage">
-              <div class="seat-map" id="seatMap" role="group" aria-label="可预约座位图"></div>
-              <aside class="seat-summary">
-                <p class="eyebrow">RESERVATION</p>
-                <h3>本次预约</h3>
-                <dl><div><dt>楼层</dt><dd id="summaryFloor">二层</dd></div><div><dt>时段</dt><dd id="summaryTime">上午 09:00-12:00</dd></div><div><dt>座位</dt><dd id="summarySeat">尚未选择</dd></div></dl>
-                <button class="primary-button" id="confirmSeat" type="button"><i data-lucide="check"></i>确认预约</button>
-              </aside>
-            </div>
           </section>
 
           <section class="service-panel" id="discoveryPanel" data-panel="discovery" role="tabpanel" aria-labelledby="discoveryTab" hidden>
@@ -336,6 +319,30 @@
     <p class="dialog-description" id="dialogDescription"></p>
     <dl class="book-facts"><div><dt>索书号</dt><dd id="dialogCall"></dd></div><div><dt>馆藏位置</dt><dd id="dialogShelf"></dd></div><div><dt>当前状态</dt><dd id="dialogStatus"></dd></div></dl>
     <div class="dialog-actions"><button class="secondary-button" id="navigateBook" type="button"><i data-lucide="route" aria-hidden="true"></i>导航到书架</button><button class="primary-button" id="reserveBook" type="button"><i data-lucide="bookmark-plus" aria-hidden="true"></i>预约借阅</button><button class="primary-button primary-button--glasses" id="openRestricted" type="button" hidden><i data-lucide="glasses" aria-hidden="true"></i>预约 Rokid 旗舰路线</button></div>
+  </dialog>
+
+  <dialog class="seat-dialog" id="seatDialog" aria-labelledby="seatDialogTitle" aria-describedby="seatDialogDescription">
+    <button class="dialog-close icon-button" type="button" data-close-seat-dialog aria-label="关闭座位预约"><i data-lucide="x" aria-hidden="true"></i></button>
+    <div class="seat-dialog__head">
+      <p class="eyebrow">SEAT RESERVATION · 首页快捷服务</p>
+      <h2 id="seatDialogTitle">预约一个阅读座位</h2>
+      <p id="seatDialogDescription">场馆公开资料显示约有 3500 个阅览座位；首版样机支持一层至三层，选择日期、楼层和时段后即可挑选位置。</p>
+    </div>
+    <div class="seat-toolbar">
+      <div><label class="field-label" for="seatDate">预约日期</label><input class="date-input" id="seatDate" type="date"></div>
+      <div><span class="field-label" id="floorSwitchLabel">楼层</span><div class="segmented" id="floorSwitch" role="group" aria-labelledby="floorSwitchLabel"><button class="is-active" type="button" data-floor="一层">一层</button><button type="button" data-floor="二层">二层</button><button type="button" data-floor="三层">三层</button></div></div>
+      <div><span class="field-label" id="timeSwitchLabel">时段</span><div class="segmented" id="timeSwitch" role="group" aria-labelledby="timeSwitchLabel"><button class="is-active" type="button" data-time="09:00-12:00">上午</button><button type="button" data-time="14:00-17:00">下午</button><button type="button" data-time="18:00-21:00">晚间</button></div></div>
+    </div>
+    <div class="seat-key"><span><i class="seat-swatch seat-swatch--free"></i>可预约</span><span><i class="seat-swatch seat-swatch--taken"></i>已占用</span><span><i class="seat-swatch seat-swatch--selected"></i>已选择</span></div>
+    <div class="seat-stage">
+      <div class="seat-map" id="seatMap" role="group" aria-label="可预约座位图"></div>
+      <aside class="seat-summary">
+        <p class="eyebrow">RESERVATION</p>
+        <h3>本次预约</h3>
+        <dl><div><dt>楼层</dt><dd id="summaryFloor">一层</dd></div><div><dt>时段</dt><dd id="summaryTime">上午 09:00-12:00</dd></div><div><dt>座位</dt><dd id="summarySeat">尚未选择</dd></div></dl>
+        <button class="primary-button" id="confirmSeat" type="button"><i data-lucide="check" aria-hidden="true"></i>确认预约</button>
+      </aside>
+    </div>
   </dialog>
 
   <dialog class="glasses-dialog" id="glassesDialog" aria-labelledby="glassesDialogTitle" aria-describedby="glassesDialogDescription">

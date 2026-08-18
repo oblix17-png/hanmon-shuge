@@ -220,7 +220,7 @@ let activeStatus = '全部';
 let activeZone = 'literature';
 let selectedBook = null;
 let selectedSeat = null;
-let selectedFloor = '二层';
+let selectedFloor = '一层';
 let selectedTime = '09:00-12:00';
 let selectedGlassesSlot = '14:00-15:00';
 let activeCollection = '四库全书';
@@ -366,7 +366,6 @@ function switchService(name) {
     panel.classList.toggle('is-active', active);
     panel.hidden = !active;
   });
-  if (name === 'seats') renderSeats();
 }
 
 function localDateValue() {
@@ -974,6 +973,11 @@ function initEvents() {
     switchService(button.dataset.openService);
     $('#reading').scrollIntoView({ behavior: 'smooth' });
   }));
+  $('#openSeatBooking').addEventListener('click', () => {
+    renderSeats();
+    updateSeatSummary();
+    openDialog($('#seatDialog'));
+  });
 
   $('#zoneIndex').addEventListener('click', event => {
     const button = event.target.closest('[data-zone]');
@@ -1020,7 +1024,7 @@ function initEvents() {
     updateSeatSummary();
   });
 
-  $$('.service-panel .segmented').forEach(group => group.addEventListener('click', event => {
+  $$('#seatDialog .segmented').forEach(group => group.addEventListener('click', event => {
     const button = event.target.closest('button');
     if (!button) return;
     $$('button', group).forEach(candidate => candidate.classList.toggle('is-active', candidate === button));
@@ -1047,6 +1051,7 @@ function initEvents() {
     selectedSeat = null;
     renderSeats();
     updateSeatSummary();
+    closeDialog($('#seatDialog'));
     showToast(`预约成功：${$('#seatDate').value} ${selectedFloor} ${String(reserved).padStart(2, '0')}号座位`);
   });
 
@@ -1132,9 +1137,10 @@ function initEvents() {
   });
 
   $('[data-close-dialog]').addEventListener('click', () => closeDialog($('#bookDialog')));
+  $('[data-close-seat-dialog]').addEventListener('click', () => closeDialog($('#seatDialog')));
   $('[data-close-map]').addEventListener('click', () => closeDialog($('#mapDialog')));
   $('[data-close-glasses-dialog]').addEventListener('click', () => closeDialog($('#glassesDialog')));
-  [$('#bookDialog'), $('#mapDialog'), $('#glassesDialog')].forEach(dialog => dialog.addEventListener('click', event => {
+  [$('#bookDialog'), $('#seatDialog'), $('#mapDialog'), $('#glassesDialog')].forEach(dialog => dialog.addEventListener('click', event => {
     if (event.target === dialog) closeDialog(dialog);
   }));
 }
