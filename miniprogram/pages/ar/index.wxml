@@ -1,0 +1,36 @@
+<view class="ar-page">
+  <view class="ar-header">
+    <text class="eyebrow">LIGHT AR</text>
+    <text class="ar-heading">用手机看见书外之景</text>
+    <text class="ar-copy">将取景框对准图书封面、展柜标识或馆内历史节点。</text>
+  </view>
+
+  <view class="mode-switch">
+    <button class="{{mode === 'book' ? 'active' : ''}}" data-mode="book" bindtap="selectMode">识别书封</button>
+    <button class="{{mode === 'place' ? 'active' : ''}}" data-mode="place" bindtap="selectMode">识别地点</button>
+  </view>
+
+  <view class="viewfinder">
+    <camera wx:if="{{cameraReady}}" class="camera" mode="normal" device-position="back" flash="off" binderror="handleCameraError"></camera>
+    <image wx:else class="camera-fallback" src="/assets/art-reference.jpg" mode="aspectFill"></image>
+    <view class="shade"></view>
+    <view class="focus-frame"><view class="corner corner-one"></view><view class="corner corner-two"></view><view class="corner corner-three"></view><view class="corner corner-four"></view></view>
+    <view class="scan-beam {{detecting ? 'moving' : ''}}"></view>
+
+    <view class="detecting" wx:if="{{detecting}}"><text>正在匹配馆藏知识库</text><text>AI · 识别中</text></view>
+
+    <view class="scene-result" wx:if="{{result}}">
+      <text class="scene-era">{{result.era}}</text>
+      <text class="scene-title">{{result.title}}</text>
+      <text class="scene-copy">{{result.copy}}</text>
+      <view class="scene-note"><text>馆藏注释</text><text>{{result.note}}</text></view>
+    </view>
+
+    <view class="camera-warning" wx:if="{{!cameraReady && !result}}"><text>相机不可用，仍可体验演示场景</text></view>
+  </view>
+
+  <view class="ar-actions">
+    <button class="primary" bindtap="recognize">{{result ? '重新识别' : '开始识别'}}</button>
+    <text>手机端呈现精简内容，Rokid Max 可在馆内获得完整空间场景。</text>
+  </view>
+</view>

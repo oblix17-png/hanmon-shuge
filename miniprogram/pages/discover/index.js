@@ -14,5 +14,10 @@ Page({
     ]
   },
   openHome() { wx.reLaunch({ url: '/pages/home/index' }); },
-  openScan() { wx.navigateTo({ url: '/pages/scan/index?demo=1' }); }
+  openScan() { wx.navigateTo({ url: '/pages/scan/index?demo=1' }); },
+  openRecommendation(event) {
+    const item = this.data.recommendations[Number(event.currentTarget.dataset.index)];
+    if (!item) return;
+    wx.showModal({ title: item.title, content: `${item.reason}\n位置：${item.place}`, showCancel: false });
+  }
 });

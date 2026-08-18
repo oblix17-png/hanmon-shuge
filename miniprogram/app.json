@@ -2,7 +2,8 @@
   "pages": [
     "pages/home/index",
     "pages/scan/index",
-    "pages/discover/index"
+    "pages/discover/index",
+    "pages/ar/index"
   ],
   "window": {
     "navigationBarTitleText": "榆林市图书馆",
@@ -10,6 +11,11 @@
     "navigationBarTextStyle": "white",
     "backgroundColor": "#f3efe5",
     "backgroundTextStyle": "dark"
+  },
+  "permission": {
+    "scope.camera": {
+      "desc": "用于扫描图书封面、条码和馆内地点，呈现轻量 AR 内容"
+    }
   },
   "sitemapLocation": "sitemap.json"
 }

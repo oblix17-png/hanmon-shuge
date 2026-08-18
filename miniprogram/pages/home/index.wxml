@@ -11,12 +11,33 @@
 
   <view class="device-strip card">
     <view><text class="device-dot"></text><text>入馆 AR 眼镜</text></view>
-    <text><strong>{{available}}</strong> / {{total}} 副可借</text>
+    <text><text class="device-count">{{available}}</text> / {{total}} 副可借</text>
+  </view>
+
+  <view class="glasses-booking card">
+    <view class="booking-heading">
+      <view><text class="eyebrow">AR GLASSES</text><text class="section-title">入馆取镜</text></view>
+      <text class="booking-status">{{booking ? '已预约' : '约 100 副馆内借用'}}</text>
+    </view>
+    <block wx:if="{{!booking}}">
+      <text class="booking-copy">选择到馆时段，凭取镜码在一层服务台领取。眼镜仅限馆内使用。</text>
+      <view class="slot-list">
+        <button class="slot {{selectedSlot === index ? 'selected' : ''}}" wx:for="{{slots}}" wx:key="time" data-index="{{index}}" bindtap="selectSlot">
+          <text>{{item.time}}</text><text>{{item.left}} 副</text>
+        </button>
+      </view>
+      <button class="primary reserve-button" bindtap="reserveGlasses">预约 AR 眼镜</button>
+    </block>
+    <view class="booking-ticket" wx:else>
+      <view><text>取镜码</text><text class="pickup-code">{{booking.code}}</text></view>
+      <view><text>{{booking.time}}</text><text>一层服务台 · {{booking.device}}</text></view>
+      <button class="secondary" bindtap="cancelBooking">取消预约</button>
+    </view>
   </view>
 
   <view class="action-grid">
-    <button class="scan-action" bindtap="openScan"><text class="action-icon">扫</text><view><strong>扫书识友</strong><text>先体验模拟扫描</text></view></button>
-    <button class="ar-action" bindtap="useCamera"><text class="action-icon">景</text><view><strong>手机轻量 AR</strong><text>扫描封面或地点</text></view></button>
+    <button class="scan-action" bindtap="scanBook"><text class="action-icon">扫</text><view><text class="action-title">扫书识友</text><text>条码识别 · 发现同好</text></view></button>
+    <button class="ar-action" bindtap="openAR"><text class="action-icon">景</text><view><text class="action-title">手机轻量 AR</text><text>扫描封面或地点</text></view></button>
   </view>
 
   <view class="section-head"><view><text class="eyebrow">AR ROUTES</text><text class="section-title">今日探索路线</text></view><text class="section-note">馆内触发</text></view>
@@ -28,9 +49,9 @@
     </view>
   </view>
 
-  <view class="same-reader card" bindtap="openDiscover">
+  <view class="same-reader card" bindtap="openDiscover" role="button" aria-label="查看榆林阅读兴趣星图">
     <view><text class="eyebrow">SAME READERS</text><text class="section-title">这座城，还有谁和你读一样的书？</text></view>
-    <view class="reader-orbit"><text>史</text><i></i><i></i><i></i><i></i></view>
+    <view class="reader-orbit"><text>史</text><view class="orbit-dot dot-one"></view><view class="orbit-dot dot-two"></view><view class="orbit-dot dot-three"></view><view class="orbit-dot dot-four"></view></view>
     <text class="same-reader-link">查看榆林阅读兴趣星图 →</text>
   </view>
 

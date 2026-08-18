@@ -1,0 +1,28 @@
+.ar-page { min-height: 100vh; box-sizing: border-box; padding: 30rpx 28rpx calc(40rpx + env(safe-area-inset-bottom)); background: var(--paper); }
+.ar-header text { display: block; }
+.ar-heading { color: var(--blue); font-family: "Songti SC", serif; font-size: 44rpx; line-height: 1.25; }
+.ar-copy { margin-top: 12rpx; color: #697078; font-size: 23rpx; line-height: 1.6; }
+.mode-switch { display: grid; grid-template-columns: 1fr 1fr; margin: 26rpx 0 18rpx; padding: 6rpx; background: rgba(36,59,90,.08); }
+.mode-switch button { min-height: 72rpx; color: #697078; background: transparent; border-radius: 2rpx; font-size: 24rpx; }
+.mode-switch button.active { color: #fff; background: var(--blue); }
+.viewfinder { position: relative; height: 780rpx; overflow: hidden; background: #111; }
+.camera, .camera-fallback, .shade { position: absolute; width: 100%; height: 100%; }
+.camera-fallback { opacity: .76; }
+.shade { background: linear-gradient(180deg, rgba(8,16,26,.2), rgba(8,16,26,.05) 50%, rgba(8,16,26,.72)); }
+.focus-frame { position: absolute; top: 86rpx; right: 54rpx; bottom: 180rpx; left: 54rpx; }
+.corner { position: absolute; width: 64rpx; height: 64rpx; border-color: #c5eee7; }
+.corner-one { top: 0; left: 0; border-top: 5rpx solid #c5eee7; border-left: 5rpx solid #c5eee7; }
+.corner-two { top: 0; right: 0; border-top: 5rpx solid #c5eee7; border-right: 5rpx solid #c5eee7; }
+.corner-three { bottom: 0; left: 0; border-bottom: 5rpx solid #c5eee7; border-left: 5rpx solid #c5eee7; }
+.corner-four { right: 0; bottom: 0; border-right: 5rpx solid #c5eee7; border-bottom: 5rpx solid #c5eee7; }
+.scan-beam { position: absolute; z-index: 2; top: 116rpx; right: 56rpx; left: 56rpx; height: 3rpx; opacity: 0; background: #c5eee7; box-shadow: 0 0 24rpx #c5eee7; }
+.scan-beam.moving { opacity: 1; animation: scan 1s ease-in-out infinite; }
+.detecting { position: absolute; z-index: 4; top: 46%; right: 0; left: 0; color: #fff; text-align: center; }
+.detecting text { display: block; font-size: 22rpx; }.detecting text:last-child { margin-top: 8rpx; color: #c5eee7; font-size: 30rpx; }
+.scene-result { position: absolute; z-index: 5; right: 28rpx; bottom: 28rpx; left: 28rpx; padding: 28rpx; color: #fff; background: rgba(18,38,58,.9); border-left: 6rpx solid #c5eee7; animation: reveal .45s ease-out both; }
+.scene-result text { display: block; }.scene-era { color: #c5eee7; font-size: 20rpx; }.scene-title { margin: 8rpx 0 10rpx; font-family: "Songti SC", serif; font-size: 36rpx; }.scene-copy { color: rgba(255,255,255,.82); font-size: 22rpx; line-height: 1.65; }
+.scene-note { margin-top: 18rpx; padding-top: 16rpx; border-top: 2rpx solid rgba(255,255,255,.15); }.scene-note text:first-child { color: #d8b990; font-size: 19rpx; }.scene-note text:last-child { margin-top: 6rpx; color: rgba(255,255,255,.66); font-size: 19rpx; line-height: 1.5; }
+.camera-warning { position: absolute; top: 36rpx; right: 28rpx; left: 28rpx; color: #fff; font-size: 20rpx; text-align: center; }
+.ar-actions { margin-top: 20rpx; text-align: center; }.ar-actions > text { display: block; margin-top: 14rpx; color: #697078; font-size: 20rpx; line-height: 1.5; }
+@keyframes scan { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(440rpx); } }
+@keyframes reveal { from { opacity: 0; transform: translateY(30rpx); } to { opacity: 1; transform: translateY(0); } }

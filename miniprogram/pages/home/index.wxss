@@ -9,12 +9,28 @@
 .hero-lead { width: 92%; margin-top: 20rpx; color: rgba(255,255,255,.78); font-size: 25rpx; line-height: 1.7; }
 .device-strip { display: flex; align-items: center; justify-content: space-between; padding: 24rpx; font-size: 25rpx; }
 .device-strip > view { display: flex; align-items: center; gap: 12rpx; }
-.device-strip strong { color: var(--rust); font-size: 34rpx; }
+.device-count { color: var(--rust); font-size: 34rpx; font-weight: 700; }
 .device-dot { width: 14rpx; height: 14rpx; background: var(--jade); border-radius: 50%; box-shadow: 0 0 0 10rpx rgba(111,159,151,.16); }
+.glasses-booking { margin-top: 18rpx; padding: 26rpx; }
+.booking-heading { display: flex; align-items: flex-end; justify-content: space-between; gap: 20rpx; }
+.booking-heading text { display: block; }
+.booking-status { color: var(--jade); font-size: 21rpx; }
+.booking-copy { display: block; margin: 20rpx 0; color: #697078; font-size: 23rpx; line-height: 1.65; }
+.slot-list { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10rpx; }
+.slot { min-width: 0; min-height: 92rpx; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 10rpx 6rpx; color: var(--blue); background: transparent; border: 2rpx solid rgba(36,59,90,.18); border-radius: 2rpx; font-size: 19rpx; line-height: 1.4; }
+.slot text { display: block; }
+.slot text:last-child { color: #697078; }
+.slot.selected { color: #fff; background: var(--blue); border-color: var(--blue); }
+.slot.selected text:last-child { color: rgba(255,255,255,.7); }
+.reserve-button { margin-top: 18rpx; }
+.booking-ticket { display: grid; gap: 20rpx; margin-top: 22rpx; padding: 22rpx; background: rgba(111,159,151,.12); border-left: 6rpx solid var(--jade); }
+.booking-ticket > view { display: flex; align-items: center; justify-content: space-between; gap: 16rpx; color: #697078; font-size: 22rpx; }
+.pickup-code { color: var(--rust); font-family: "Songti SC", serif; font-size: 42rpx; letter-spacing: 0; }
+.booking-ticket .secondary { width: 100%; }
 .action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18rpx; margin: 24rpx 0 44rpx; }
 .action-grid button { min-height: 158rpx; display: flex; align-items: center; gap: 16rpx; padding: 24rpx; border-radius: 4rpx; text-align: left; }
-.action-grid strong, .action-grid text { display: block; }
-.action-grid strong { font-size: 29rpx; }
+.action-grid .action-title, .action-grid text { display: block; }
+.action-grid .action-title { font-size: 29rpx; font-weight: 700; }
 .action-grid view > text { margin-top: 5rpx; font-size: 21rpx; opacity: .7; }
 .scan-action { color: #fff; background: var(--blue); }
 .ar-action { color: var(--blue); background: var(--paper-light); border: 2rpx solid var(--blue); }
@@ -35,6 +51,6 @@
 .same-reader .section-title { width: 58%; }
 .reader-orbit { position: absolute; top: 55rpx; right: -35rpx; width: 230rpx; height: 230rpx; display: grid; place-items: center; color: #fff; background: var(--blue); border-radius: 50%; }
 .reader-orbit text { font-family: "Songti SC", serif; font-size: 54rpx; }
-.reader-orbit i { position: absolute; width: 16rpx; height: 16rpx; background: var(--jade); border: 6rpx solid var(--paper-light); border-radius: 50%; }
-.reader-orbit i:nth-child(2) { top: 20rpx; left: 72rpx; }.reader-orbit i:nth-child(3) { top: 84rpx; right: 8rpx; }.reader-orbit i:nth-child(4) { bottom: 20rpx; left: 72rpx; }.reader-orbit i:nth-child(5) { top: 102rpx; left: -5rpx; }
+.orbit-dot { position: absolute; width: 16rpx; height: 16rpx; background: var(--jade); border: 6rpx solid var(--paper-light); border-radius: 50%; }
+.dot-one { top: 20rpx; left: 72rpx; }.dot-two { top: 84rpx; right: 8rpx; }.dot-three { bottom: 20rpx; left: 72rpx; }.dot-four { top: 102rpx; left: -5rpx; }
 .same-reader-link { position: absolute; bottom: 28rpx; left: 30rpx; color: var(--rust); font-size: 23rpx; }
