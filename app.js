@@ -620,7 +620,7 @@ function initParticleIntro() {
     return points;
   }
 
-  function makeStampPoints() {
+  function makeWordmarkPoints() {
     const mobile = width <= 560;
     stampSize = Math.round(Math.max(154, Math.min(mobile ? width * .5 : width * .25, height * .38, 292)));
     stampCenterY = height * (mobile ? .4 : .42);
@@ -630,22 +630,7 @@ function initParticleIntro() {
     const maskContext = mask.getContext('2d', { willReadFrequently: true });
     if (!maskContext) return [];
 
-    const inset = Math.max(7, Math.round(stampSize * .035));
-    maskContext.strokeStyle = '#fff';
     maskContext.fillStyle = '#fff';
-    maskContext.lineJoin = 'miter';
-    maskContext.lineWidth = Math.max(3, Math.round(stampSize * .016));
-    maskContext.strokeRect(inset, inset, stampSize - inset * 2, stampSize - inset * 2);
-
-    const corner = stampSize * .12;
-    maskContext.lineWidth = Math.max(2, Math.round(stampSize * .009));
-    maskContext.beginPath();
-    maskContext.moveTo(inset, inset + corner);
-    maskContext.lineTo(inset + corner, inset);
-    maskContext.moveTo(stampSize - inset - corner, stampSize - inset);
-    maskContext.lineTo(stampSize - inset, stampSize - inset - corner);
-    maskContext.stroke();
-
     maskContext.textAlign = 'center';
     maskContext.textBaseline = 'middle';
     maskContext.font = `700 ${Math.round(stampSize * .29)}px "Noto Serif SC", "Source Han Serif SC", "Microsoft YaHei", serif`;
@@ -679,7 +664,7 @@ function initParticleIntro() {
   }
 
   function buildParticles() {
-    const targets = makeStampPoints();
+    const targets = makeWordmarkPoints();
     particles = targets.map((target, index) => {
       const start = scatteredPosition();
       return {
@@ -695,7 +680,6 @@ function initParticleIntro() {
         spring: .014 + Math.random() * .009
       };
     });
-    intro.classList.add('is-particle-ready');
   }
 
   function sizeCanvas() {
