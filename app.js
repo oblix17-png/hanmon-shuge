@@ -823,8 +823,8 @@ function initParticleIntro() {
 
   function makeWordmarkPoints() {
     const mobile = width <= 560;
-    stampSize = Math.round(Math.max(154, Math.min(mobile ? width * .5 : width * .25, height * .38, 292)));
-    stampCenterY = height * (mobile ? .4 : .42);
+    stampSize = Math.round(Math.max(190, Math.min(mobile ? width * .68 : width * .32, height * .48, mobile ? 280 : 420)));
+    stampCenterY = height * (mobile ? .39 : .4);
     const mask = document.createElement('canvas');
     mask.width = stampSize;
     mask.height = stampSize;
@@ -834,13 +834,13 @@ function initParticleIntro() {
     maskContext.fillStyle = '#fff';
     maskContext.textAlign = 'center';
     maskContext.textBaseline = 'middle';
-    maskContext.font = `700 ${Math.round(stampSize * .29)}px "Noto Serif SC", "Source Han Serif SC", "Microsoft YaHei", serif`;
+    maskContext.font = `800 ${Math.round(stampSize * .31)}px "Noto Serif SC", "Source Han Serif SC", "Microsoft YaHei", serif`;
     maskContext.fillText('榆林', stampSize / 2, stampSize * .36);
     maskContext.fillText('开卷', stampSize / 2, stampSize * .67);
     maskContext.fillRect(stampSize * .37, stampSize * .51, stampSize * .26, Math.max(1, stampSize * .006));
 
     const image = maskContext.getImageData(0, 0, stampSize, stampSize).data;
-    const step = constrainedDevice() ? 6 : 4;
+    const step = constrainedDevice() ? 4 : 3;
     const points = [];
     const offsetX = width / 2 - stampSize / 2;
     const offsetY = stampCenterY - stampSize / 2;
@@ -851,7 +851,7 @@ function initParticleIntro() {
         }
       }
     }
-    const limit = constrainedDevice() ? 620 : 1250;
+    const limit = constrainedDevice() ? 1200 : 2600;
     return shuffle(points).slice(0, limit);
   }
 
@@ -875,7 +875,7 @@ function initParticleIntro() {
         targetY: target.y,
         velocityX: (Math.random() - .5) * 1.3,
         velocityY: (Math.random() - .5) * 1.3,
-        radius: constrainedDevice() ? 1.1 + Math.random() * .65 : .9 + Math.random() * 1.05,
+        radius: constrainedDevice() ? 1.15 + Math.random() * .55 : 1.05 + Math.random() * .8,
         color: index % 11 === 0 ? 3 : index % 7 === 0 ? 2 : index % 4 === 0 ? 1 : 0,
         phase: Math.random() * Math.PI * 2,
         spring: .014 + Math.random() * .009
@@ -941,7 +941,7 @@ function initParticleIntro() {
       }
       particle.x += particle.velocityX * delta;
       particle.y += particle.velocityY * delta;
-      particle.renderRadius = particle.radius * (1 + Math.sin(time * .0016 + particle.phase) * .12);
+      particle.renderRadius = particle.radius * (1 + Math.sin(time * .0014 + particle.phase) * .055);
     });
     if (mode === 'burst') burstOpacity = Math.max(0, burstOpacity - .025 * delta);
   }
@@ -952,7 +952,7 @@ function initParticleIntro() {
 
     context.save();
     context.globalCompositeOperation = 'screen';
-    context.globalAlpha = .1 * burstOpacity;
+    context.globalAlpha = .14 * burstOpacity;
     context.fillStyle = '#f8f4ea';
     context.beginPath();
     particles.forEach(particle => {
@@ -963,7 +963,7 @@ function initParticleIntro() {
     context.fill();
 
     palette.forEach((color, colorIndex) => {
-      context.globalAlpha = (colorIndex === 3 ? .78 : .9) * burstOpacity;
+      context.globalAlpha = (colorIndex === 3 ? .86 : .97) * burstOpacity;
       context.fillStyle = color;
       context.beginPath();
       particles.forEach(particle => {
@@ -1141,21 +1141,26 @@ function initEvents() {
     introOpening = true;
     const intro = $('#intro');
     const enterButton = $('#introEnter');
-    const scatterDuration = particleIntro.reduced ? 0 : 420;
+    const scatterDuration = particleIntro.reduced ? 0 : 260;
+    const crumpleDuration = particleIntro.reduced ? 0 : 1160;
+    const exitDuration = particleIntro.reduced ? 80 : 620;
     enterButton.disabled = true;
     enterButton.setAttribute('aria-busy', 'true');
     intro.classList.add('is-scattering');
     particleIntro.burst();
     setTimeout(() => {
-      intro.classList.add('is-opening');
+      intro.classList.add('is-crumpling');
       document.body.classList.remove('intro-open');
     }, scatterDuration);
+    setTimeout(() => {
+      intro.classList.add('is-opening');
+    }, scatterDuration + crumpleDuration);
     setTimeout(() => {
       particleIntro.destroy();
       intro.hidden = true;
       intro.setAttribute('aria-hidden', 'true');
       $('#globalSearch').focus({ preventScroll: true });
-    }, scatterDuration + (particleIntro.reduced ? 80 : 1200));
+    }, scatterDuration + crumpleDuration + exitDuration);
   });
 
   $$('[data-scroll]').forEach(button => button.addEventListener('click', () => {
