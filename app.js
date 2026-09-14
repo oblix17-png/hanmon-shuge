@@ -136,19 +136,62 @@ const books = [
   }
 ];
 
+// Covers supplied by the library team. Keep the lookup keyed by the visible
+// title (and add aliases where the catalogue uses an annotated title).
+const bookCovers = {
+  '资治通鉴': 'assets/books/zi-zhi-tong-jian.png',
+  '杜工部集': 'assets/books/du-gong-bu-ji.png',
+  '中国神话故事': 'assets/books/zhong-guo-shen-hua-gu-shi.jpg',
+  '昆虫记': 'assets/books/kun-chong-ji.jpg',
+  '团圆': 'assets/books/tuan-yuan.jpg',
+  '道德经古本合校': 'assets/books/dao-de-jing-gu-ben-he-xiao.png',
+  '平凡的世界': 'assets/books/ping-fan-de-shi-jie.png',
+  '国家地理绘本': 'assets/books/guo-jia-di-li-hui-ben.jpg',
+  '额尔古纳河右岸': 'assets/books/e-er-gu-na-he-you-an.png',
+  '中国古代诗法研究': 'assets/books/zhong-guo-gu-dai-shi-fa-yan-jiu.png',
+  '钦定四库全书': 'assets/books/qin-ding-si-ku-quan-shu.jpg',
+  '四库全书·文渊阁本选卷': 'assets/books/qin-ding-si-ku-quan-shu.jpg',
+  '延绥镇志': 'assets/books/yan-sui-zhen-zhi.jpg',
+  '榆林府志': 'assets/books/yu-lin-fu-zhi.jpg',
+  '榆林府志校注': 'assets/books/yu-lin-fu-zhi.jpg',
+  '梦溪笔谈': 'assets/books/meng-xi-bi-tan.jpg',
+  '边疆杂咏': 'assets/books/bian-jiang-za-yong.jpg',
+  '百年孤独': 'assets/books/bai-nian-gu-du.jpg',
+  '置身事内': 'assets/books/zhi-shen-shi-nei.jpg',
+  '中国通史': 'assets/books/zhong-guo-tong-shi.jpg',
+  '乡土中国': 'assets/books/xiang-tu-zhong-guo.jpg',
+  '庄子今注今译': 'assets/books/zhuang-zi-jin-zhu-jin-yi.jpg',
+  '中国古代音乐史稿': 'assets/books/zhong-guo-gu-dai-yin-yue-shi-gao.png',
+  '中国美术史': 'assets/books/zhong-guo-mei-shu-shi.jpg',
+  '算法图解': 'assets/books/suan-fa-tu-jie.jpg',
+  '榆林长城研究': 'assets/books/yu-lin-chang-cheng-yan-jiu.jpg',
+  '榆林地方文献数字影像集': 'assets/books/yu-lin-di-fang-wen-xian.jpg',
+  '时间简史': 'assets/books/shi-jian-jian-shi.jpg',
+  '物种起源': 'assets/books/wu-zhong-qi-yuan.jpg',
+  '中国桥梁史': 'assets/books/zhong-guo-qiao-liang-shi.jpg'
+};
+
+function coverForTitle(title = '') {
+  return bookCovers[title] || Object.entries(bookCovers).find(([key]) => title.includes(key) || key.includes(title))?.[1] || '';
+}
+
+books.forEach(book => {
+  book.cover = coverForTitle(book.title);
+});
+
 const readerSignals = [
   {
-    stat: '03', unit: '人正在读', title: '《资治通鉴》旁的此刻同读',
+    stat: '03', unit: '人正在读', bookTitle: '资治通鉴', title: '《资治通鉴》旁的此刻同读',
     meta: '三层社科书库 · 只显示区域，不公开身份', action: '展开书旁留言', doneAction: '收起书旁留言', icon: 'message-circle', active: false,
     detail: '“读到治乱兴衰时，忽然理解了为什么这本书被称作一面镜子。”'
   },
   {
-    stat: '26', unit: '条感受', title: '《榆林府志校注》的本地读者足迹',
+    stat: '26', unit: '条感受', bookTitle: '榆林府志校注', title: '《榆林府志校注》的本地读者足迹',
     meta: '榆林历史 · 城市记忆 · 近 30 日更新', action: '看看他们留下什么', doneAction: '收起读者足迹', icon: 'footprints', active: false,
     detail: '最近的留言提到了镇北台、六楼骑街和明代延绥镇，3 人继续查看了地方志书架。'
   },
   {
-    stat: '08', unit: '册相关推荐', title: '读过《延绥镇志》的人还喜欢',
+    stat: '08', unit: '册相关推荐', bookTitle: '延绥镇志', title: '读过《延绥镇志》的人还喜欢',
     meta: '基于匿名阅读兴趣生成，不使用精确位置', action: '查看推荐书目', doneAction: '收起推荐书目', icon: 'sparkles', active: false,
     detail: '《榆林府志校注》《边塞诗中的榆林》《明长城与九边重镇》等 8 册馆藏可继续探索。'
   }
@@ -159,28 +202,28 @@ const libraryZones = {
     name: '文学艺术', english: 'LITERATURE & ARTS', floor: '二层 · 开放阅览区', floorCode: 'F2 · OPEN READING',
     status: '开放 · 可借阅', description: '从当代文学、古典诗词到绘画、音乐与设计，让一次随手翻阅成为进入另一种生活的入口。',
     scale: '约 18,600 册', availability: '86% 可借', readerCount: '7 人在读', visualSignal: '7 位读者正在本区阅读',
-    scope: '中国文学 · 外国文学 · 诗歌 · 绘画 · 音乐', tags: ['小说', '诗歌', '书画', '音乐'],
+    scope: '中国文学 · 外国文学 · 诗歌 · 绘画 · 音乐', tags: ['小说', '诗歌', '书画', '音乐'], image: 'assets/zones/literature-arts.jpg', imagePosition: 'center 52%',
     readerSignal: '近期有 23 位读者从中国文学继续浏览到地方诗歌。', location: '二层 文学借阅区', finalStep: '按二层现场标识进入文学借阅与开放阅览区域', mapFloor: 'f2', mapTarget: 'open', focus: '66% 48%', accent: 'rust'
   },
   society: {
     name: '社会科学', english: 'SOCIAL SCIENCES', floor: '二层 · 综合阅览区', floorCode: 'F2 · COMPREHENSIVE',
     status: '开放 · 可借阅', description: '把历史、哲学、经济和社会观察放在同一条知识脉络中，适合专题研究，也适合从一个问题开始漫游。',
     scale: '约 22,400 册', availability: '81% 可借', readerCount: '11 人在读', visualSignal: '11 位读者正在本区阅读',
-    scope: '历史 · 哲学 · 政治 · 经济 · 法律 · 社会学', tags: ['历史', '哲学', '经济', '社会'],
+    scope: '历史 · 哲学 · 政治 · 经济 · 法律 · 社会学', tags: ['历史', '哲学', '经济', '社会'], image: 'assets/zones/social-sciences.jpg', imagePosition: 'center center',
     readerSignal: '《资治通鉴》附近有 3 人正在阅读，近 30 日新增 41 条匿名感受。', location: '二层 社会科学借阅区', finalStep: '按二层现场标识进入社会科学借阅与综合阅览区域', mapFloor: 'f2', mapTarget: 'comprehensive', focus: '42% 51%', accent: 'cobalt'
   },
   science: {
     name: '自然科技', english: 'SCIENCE & TECHNOLOGY', floor: '三层 · 南侧书库', floorCode: 'F3 · SOUTH',
     status: '开放 · 可借阅', description: '从自然观察到工程实践，以清晰分类连接科普入门、专业参考和科技史，让好奇心有路径可循。',
     scale: '约 15,200 册', availability: '89% 可借', readerCount: '4 人在读', visualSignal: '4 位读者正在本区阅读',
-    scope: '数学 · 天文 · 生物 · 工程 · 计算机 · 科技史', tags: ['自然', '工程', '计算机', '科普'],
+    scope: '数学 · 天文 · 生物 · 工程 · 计算机 · 科技史', tags: ['自然', '工程', '计算机', '科普'], image: 'assets/zones/science-technology.jpg', imagePosition: 'center 52%',
     readerSignal: '读过《梦溪笔谈》的读者，最近常继续查看天文与古代工程主题。', location: '三层 自然科学借阅区', finalStep: '按三层现场标识进入自然科学借阅与综合阅览区域', mapFloor: 'f3', mapTarget: 'comprehensive', focus: '76% 57%', accent: 'jade'
   },
   local: {
     name: '地方文献', english: 'LOCAL DOCUMENTS', floor: '三层 · 专题阅览区', floorCode: 'F3 · SPECIALIZED',
     status: '开放 · 部分限馆内', description: '汇集榆林地方史、西北区域研究与地方出版物。这里是可检索的城市记忆入口，与不外借古典藏书分区相邻但独立。',
     scale: '约 6,800 册', availability: '82% 可阅', readerCount: '6 人在读', visualSignal: '6 位读者正在查阅地方文献',
-    scope: '榆林地方史 · 西北研究 · 地方出版物 · 城市影像', tags: ['榆林', '西北', '方志研究', '城市记忆'],
+    scope: '榆林地方史 · 西北研究 · 地方出版物 · 城市影像', tags: ['榆林', '西北', '方志研究', '城市记忆'], image: 'assets/zones/local-documents.jpg', imagePosition: 'center center',
     readerSignal: '最近 26 条阅读足迹提到了镇北台、六楼骑街和明代延绥镇。', location: '三层 地方文献阅览区', finalStep: '按三层现场标识进入地方文献与专题阅览区域', mapFloor: 'f3', mapTarget: 'specialized', focus: '34% 45%', accent: 'gold'
   },
   children: {
@@ -188,14 +231,14 @@ const libraryZones = {
     status: '开放 · 余 38 席', description: '用绘本、儿童文学、知识读物和亲子共读空间照顾不同年龄，让孩子可以自己选择、坐下并读完一本书。',
     scale: '约 12,900 册', availability: '38 个座位可用', readerCount: '19 组家庭', visualSignal: '19 组家庭正在本区共读',
     scope: '绘本 · 儿童文学 · 科普启蒙 · 亲子阅读', tags: ['绘本', '亲子', '启蒙', '故事'],
-    readerSignal: '今天最常被继续阅读的主题是自然观察、传统节日与榆林故事。', location: '一层 青少年/幼儿/亲子阅览区', finalStep: '从一层大厅按现场标识进入青少年、幼儿与亲子阅览区域', mapFloor: 'f1', mapTarget: 'youth', focus: '58% 70%', accent: 'rust'
+    readerSignal: '今天最常被继续阅读的主题是自然观察、传统节日与榆林故事。', location: '一层 青少年/幼儿/亲子阅览区', finalStep: '从一层大厅按现场标识进入青少年、幼儿与亲子阅览区域', mapFloor: 'f1', mapTarget: 'youth', image: 'assets/zones/children-reading.jpg', imagePosition: 'center center', focus: '58% 70%', accent: 'rust'
   },
   digital: {
     name: '数字阅读', english: 'DIGITAL READING', floor: '三层 · 电子阅览区', floorCode: 'F3 · E-READING',
     status: '开放 · 14 台空闲', description: '连接电子图书、专题数据库、视听资源与数字展览，为快速检索和深度研究提供安静、清楚的数字入口。',
     scale: '36 个阅览终端', availability: '14 台可用', readerCount: '9 人使用中', visualSignal: '9 位读者正在使用数字资源',
     scope: '电子图书 · 数据库 · 视听资源 · 数字展览', tags: ['电子书', '数据库', '视听', '数字展'],
-    readerSignal: '本周地方文献数据库与古籍影像专题的访问量最高。', location: '三层 电子阅览区', finalStep: '按三层现场标识进入电子阅览与数字体验相关区域', mapFloor: 'f3', mapTarget: 'digital', focus: '82% 44%', accent: 'cobalt'
+    readerSignal: '本周地方文献数据库与古籍影像专题的访问量最高。', location: '三层 电子阅览区', finalStep: '按三层现场标识进入电子阅览与数字体验相关区域', mapFloor: 'f3', mapTarget: 'digital', image: 'assets/zones/digital-reading.jpg', imagePosition: 'center center', focus: '82% 44%', accent: 'cobalt'
   }
 };
 
@@ -360,6 +403,7 @@ const escapeHtml = value => String(value).replace(/[&<>"']/g, character => ({
 })[character]);
 
 let activeStatus = '全部';
+let catalogDisplayLimit = 5;
 let activeZone = 'literature';
 let selectedBook = null;
 let selectedSeat = null;
@@ -371,6 +415,7 @@ let activeClassicalItem = 0;
 let activeNote = 'original';
 let activeMapFloor = 'f1';
 let mapGuideTarget = { floor: 'f1', target: 'desk', label: '总服务台 / 全馆导览', finalStep: '由总服务台确认目的地与现场开放动线' };
+const mapStartByFloor = {};
 let glassesTarget = '古典藏书旗舰路线';
 const glassesCapacity = 100;
 let glassesAvailable = 64;
@@ -416,12 +461,12 @@ function renderCatalog() {
   });
   const container = $('#catalogList');
   container.innerHTML = '';
-  list.forEach(book => {
+  list.forEach((book, index) => {
     const row = document.createElement('article');
     row.className = 'catalog-row';
     row.tabIndex = 0;
     row.innerHTML = `
-      <div class="catalog-title"><b>${book.title}</b><small>${book.author} · ${book.category}</small></div>
+      <div class="catalog-title"><span class="book-cover book-cover--row">${book.cover ? `<img src="${book.cover}" alt="《${escapeHtml(book.title)}》封面" loading="lazy">` : '<i data-lucide="book-open" aria-hidden="true"></i>'}</span><span><b>${book.title}</b><small>${book.author} · ${book.category}</small></span></div>
       <span class="catalog-meta catalog-call">${book.call}</span>
       <span class="catalog-meta catalog-location">${book.location}</span>
       <span class="${statusClass(book.status)}">${book.status}</span>
@@ -434,8 +479,16 @@ function renderCatalog() {
       }
     });
     container.appendChild(row);
+    row.hidden = index >= catalogDisplayLimit;
   });
   $('#catalogEmpty').hidden = list.length > 0;
+  const loadMore = $('#catalogLoadMore');
+  if (loadMore) {
+    const remaining = Math.max(0, list.length - catalogDisplayLimit);
+    loadMore.hidden = remaining === 0;
+    const label = loadMore.querySelector('span');
+    if (label) label.textContent = remaining ? `加载更多馆藏（还有 ${remaining} 条）` : '已显示全部馆藏';
+  }
   $('#catalogList').setAttribute('aria-label', `找到 ${list.length} 条馆藏`);
   refreshIcons();
 }
@@ -455,7 +508,9 @@ function renderLibraryZone() {
   });
   panel.setAttribute('aria-labelledby', activeTab.id);
   panel.dataset.accent = zone.accent;
-  $('#zoneVisual').style.backgroundPosition = zone.focus;
+  const zoneImage = zone.image || 'assets/art-reference.jpg';
+  $('#zoneVisual').style.backgroundImage = `linear-gradient(180deg, rgba(20, 35, 51, .24), rgba(20, 35, 51, .2) 44%, rgba(20, 35, 51, .88)), url("${zoneImage}")`;
+  $('#zoneVisual').style.backgroundPosition = zone.imagePosition || zone.focus;
   $('#zoneFloorCode').textContent = zone.floorCode;
   $('#zoneEnglish').textContent = zone.english;
   $('#zoneVisualName').textContent = zone.name;
@@ -485,7 +540,8 @@ function nodeCenter(node) {
 function renderVenueMap() {
   const floor = venueFloors[activeMapFloor] || venueFloors.f1;
   const plan = $('#venueFloorPlan');
-  const startNode = floor.nodes.find(node => node.id === floor.start) || floor.nodes[0];
+  const selectedStart = mapStartByFloor[activeMapFloor] || floor.start;
+  const startNode = floor.nodes.find(node => node.id === selectedStart) || floor.nodes[0];
   const isTargetFloor = mapGuideTarget.floor === activeMapFloor;
   const targetNode = isTargetFloor ? floor.nodes.find(node => node.id === mapGuideTarget.target) : null;
   const start = nodeCenter(startNode);
@@ -499,7 +555,7 @@ function renderVenueMap() {
     const classes = ['venue-space', `venue-space--${node.tone}`];
     if (node === startNode) classes.push('is-start');
     if (targetNode && node === targetNode) classes.push('is-target');
-    return `<div class="${classes.join(' ')}" style="--x:${node.x};--y:${node.y};--w:${node.w};--h:${node.h}"><span>${escapeHtml(node.label)}</span></div>`;
+    return `<button class="${classes.join(' ')}" type="button" data-venue-node="${escapeHtml(node.id)}" aria-label="选择目的地：${escapeHtml(node.label)}" style="--x:${node.x};--y:${node.y};--w:${node.w};--h:${node.h}"><span>${escapeHtml(node.label)}</span></button>`;
   }).join('')}`;
 
   $$('#venueFloorTabs [data-map-floor]').forEach(button => {
@@ -507,12 +563,47 @@ function renderVenueMap() {
     button.classList.toggle('is-active', active);
     button.setAttribute('aria-pressed', String(active));
   });
-  $('#mapFloorCode').textContent = floor.code;
-  $('#mapFloorTitle').textContent = floor.title;
-  $('#mapFloorSummary').textContent = floor.summary;
-  $('#mapStartLabel').textContent = `${floor.code} · ${startNode.label}`;
-  $('#mapTargetLabel').textContent = targetNode ? mapGuideTarget.label : '楼层概览';
+  const floorCode = $('#mapFloorCode');
+  const floorTitle = $('#mapFloorTitle');
+  const floorSummary = $('#mapFloorSummary');
+  const targetLabel = $('#mapTargetLabel');
+  const stepOne = $('#mapStepOne');
+  if (floorCode) floorCode.textContent = floor.code;
+  if (floorTitle) floorTitle.textContent = floor.title;
+  if (floorSummary) floorSummary.textContent = floor.summary;
+  if (targetLabel) targetLabel.textContent = targetNode ? mapGuideTarget.label : '楼层概览';
+  if (stepOne) stepOne.textContent = `从${floor.code} · ${startNode.label}开始`;
+  const startSelect = $('#mapStartSelect');
+  if (startSelect) {
+    startSelect.innerHTML = floor.nodes.map(node => `<option value="${escapeHtml(node.id)}">${escapeHtml(node.label)}</option>`).join('');
+    startSelect.value = startNode.id;
+  }
   plan.setAttribute('aria-label', `${floor.title}：${floor.summary}${targetNode ? `；当前高亮 ${mapGuideTarget.label}` : ''}`);
+}
+
+function selectVenueNode(nodeId) {
+  const floor = venueFloors[activeMapFloor];
+  const node = floor?.nodes.find(item => item.id === nodeId);
+  if (!node) return;
+  const labels = {
+    stacks: '密集书库需先在服务台登记，由馆员协助取书',
+    specialized: '沿专题阅览标识前往，古籍与地方文献请在服务点登记',
+    digital: '前往电子阅览区取用空闲终端，数字资源需使用馆内网络',
+    youth: '从入口进入少儿区域，按年龄分区标识选择阅览位置'
+  };
+  mapGuideTarget = {
+    floor: activeMapFloor,
+    target: node.id,
+    label: `${floor.code} ${node.label}`,
+    finalStep: labels[node.id] || `按${floor.code}现场标识抵达${node.label}`
+  };
+  $('#mapDestination').textContent = `目的地：${mapGuideTarget.label}`;
+  const startNode = floor.nodes.find(item => item.id === (mapStartByFloor[activeMapFloor] || floor.start)) || floor.nodes[0];
+  $('#mapStepOne').textContent = `从${floor.code} · ${startNode.label}开始`;
+  $('#mapStepTwo').textContent = activeMapFloor === 'f1' ? '先到一层总服务台确认现场开放动线' : `沿${floor.title}现场指引前行`;
+  $('#mapFinalStep').textContent = mapGuideTarget.finalStep;
+  renderVenueMap();
+  showToast(`已选择目的地：${node.label}`);
 }
 
 function openVenueGuide(options = {}) {
@@ -525,7 +616,8 @@ function openVenueGuide(options = {}) {
   activeMapFloor = mapGuideTarget.floor;
   const targetFloor = venueFloors[mapGuideTarget.floor] || venueFloors.f1;
   $('#mapDestination').textContent = `目的地：${mapGuideTarget.label}`;
-  $('#mapStepOne').textContent = '从一层大厅开始';
+  const startNode = targetFloor.nodes.find(node => node.id === (mapStartByFloor[mapGuideTarget.floor] || targetFloor.start)) || targetFloor.nodes[0];
+  $('#mapStepOne').textContent = `从${targetFloor.code} · ${startNode.label}开始`;
   $('#mapStepTwo').textContent = mapGuideTarget.floor === 'f1'
     ? '先到一层总服务台确认现场开放动线'
     : `经总服务台确认后前往${targetFloor.title}`;
@@ -541,6 +633,12 @@ function showBook(book) {
   $('#dialogTitle').textContent = book.title;
   $('#dialogAuthor').textContent = book.author;
   $('#dialogDescription').textContent = book.description;
+  const dialogCover = $('#dialogCover');
+  if (dialogCover) {
+    dialogCover.innerHTML = book.cover
+      ? `<img src="${book.cover}" alt="《${escapeHtml(book.title)}》封面">`
+      : '<i data-lucide="book-open" aria-hidden="true"></i>';
+  }
   $('#dialogCall').textContent = book.call;
   $('#dialogShelf').textContent = book.location;
   $('#dialogStatus').textContent = book.status;
@@ -621,6 +719,7 @@ function renderReaderSignals() {
     row.className = 'club-row';
     row.innerHTML = `
       <div class="club-date"><strong>${escapeHtml(signal.stat)}</strong><small>${escapeHtml(signal.unit)}</small></div>
+      <div class="club-cover">${coverForTitle(signal.bookTitle) ? `<img src="${coverForTitle(signal.bookTitle)}" alt="《${escapeHtml(signal.bookTitle)}》封面" loading="lazy">` : ''}</div>
       <div class="club-info"><h4>${escapeHtml(signal.title)}</h4><p>${escapeHtml(signal.meta)}</p>${signal.active ? `<p class="reader-reveal">${escapeHtml(signal.detail)}</p>` : ''}</div>
       <div class="club-action"><span>${signal.active ? '内容已展开' : '匿名兴趣信号'}</span><button class="secondary-button${signal.active ? ' is-joined' : ''}" type="button" data-reader-index="${index}" aria-expanded="${signal.active}"><i data-lucide="${signal.active ? 'chevron-up' : signal.icon}"></i>${signal.active ? signal.doneAction : signal.action}</button></div>`;
     container.appendChild(row);
@@ -700,6 +799,8 @@ function renderManuscript() {
   $('#volumeLabel').textContent = item.section;
   $('#volumeTitle').textContent = item.title;
   $('#volumeMeta').textContent = item.meta;
+  const overview = $('#volumeOverview');
+  if (overview) overview.textContent = `${item.section} · 从原文、今译与典故三个层次进入本册，沿“${item.chapter}”继续探索相关人物与地点。`;
   $('#chapterMark').textContent = item.chapter;
   $('#originalText').textContent = item.text;
   $('#annotationText').textContent = item.notes[activeNote];
@@ -823,8 +924,8 @@ function initParticleIntro() {
 
   function makeWordmarkPoints() {
     const mobile = width <= 560;
-    stampSize = Math.round(Math.max(190, Math.min(mobile ? width * .68 : width * .32, height * .48, mobile ? 280 : 420)));
-    stampCenterY = height * (mobile ? .39 : .4);
+    stampSize = Math.round(Math.max(210, Math.min(mobile ? width * .8 : width * .42, height * .56, mobile ? 330 : 560)));
+    stampCenterY = height * (mobile ? .35 : .36);
     const mask = document.createElement('canvas');
     mask.width = stampSize;
     mask.height = stampSize;
@@ -834,13 +935,14 @@ function initParticleIntro() {
     maskContext.fillStyle = '#fff';
     maskContext.textAlign = 'center';
     maskContext.textBaseline = 'middle';
-    maskContext.font = `800 ${Math.round(stampSize * .31)}px "Noto Serif SC", "Source Han Serif SC", "Microsoft YaHei", serif`;
+    maskContext.font = `900 ${Math.round(stampSize * .35)}px "Noto Serif SC", "Source Han Serif SC", "Microsoft YaHei", serif`;
     maskContext.fillText('榆林', stampSize / 2, stampSize * .36);
     maskContext.fillText('开卷', stampSize / 2, stampSize * .67);
     maskContext.fillRect(stampSize * .37, stampSize * .51, stampSize * .26, Math.max(1, stampSize * .006));
 
     const image = maskContext.getImageData(0, 0, stampSize, stampSize).data;
-    const step = constrainedDevice() ? 4 : 3;
+    // A denser sampling keeps the particle wordmark legible while it settles.
+    const step = constrainedDevice() ? 3 : 2;
     const points = [];
     const offsetX = width / 2 - stampSize / 2;
     const offsetY = stampCenterY - stampSize / 2;
@@ -851,7 +953,7 @@ function initParticleIntro() {
         }
       }
     }
-    const limit = constrainedDevice() ? 1200 : 2600;
+    const limit = constrainedDevice() ? 2200 : 5200;
     return shuffle(points).slice(0, limit);
   }
 
@@ -875,7 +977,7 @@ function initParticleIntro() {
         targetY: target.y,
         velocityX: (Math.random() - .5) * 1.3,
         velocityY: (Math.random() - .5) * 1.3,
-        radius: constrainedDevice() ? 1.15 + Math.random() * .55 : 1.05 + Math.random() * .8,
+        radius: constrainedDevice() ? 1.3 + Math.random() * .6 : 1.2 + Math.random() * .9,
         color: index % 11 === 0 ? 3 : index % 7 === 0 ? 2 : index % 4 === 0 ? 1 : 0,
         phase: Math.random() * Math.PI * 2,
         spring: .014 + Math.random() * .009
@@ -1133,6 +1235,26 @@ function initScrollReveals() {
   observer.observe(gateway);
 }
 
+function initSectionTransitions() {
+  const sections = $$('.reading-section, .zones-section, .special-section, .mini-program-section, .memory-section');
+  if (!sections.length) return;
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  sections.forEach(section => section.classList.add('section-enter'));
+  if (reducedMotion || !('IntersectionObserver' in window)) {
+    sections.forEach(section => section.classList.add('is-entered'));
+    return;
+  }
+  document.body.classList.add('has-section-transitions');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+      entry.target.classList.add('is-entered');
+      observer.unobserve(entry.target);
+    });
+  }, { threshold: .08, rootMargin: '0px 0px -8% 0px' });
+  sections.forEach(section => observer.observe(section));
+}
+
 function initEvents() {
   const particleIntro = initParticleIntro();
   let introOpening = false;
@@ -1185,12 +1307,33 @@ function initEvents() {
     updateSeatSummary();
     openDialog($('#seatDialog'));
   });
+  $$('[data-book-seat]').forEach(button => button.addEventListener('click', () => {
+    selectedFloor = button.dataset.floor || '一层';
+    selectedTime = button.dataset.time || '09:00-12:00';
+    selectedSeat = null;
+    $$('#floorSwitch button').forEach(option => option.classList.toggle('is-active', option.dataset.floor === selectedFloor));
+    $$('#timeSwitch button').forEach(option => option.classList.toggle('is-active', option.dataset.time === selectedTime));
+    renderSeats();
+    updateSeatSummary();
+    openDialog($('#seatDialog'));
+  }));
   $('#openVenueGuide').addEventListener('click', () => openVenueGuide());
   $('#venueFloorTabs').addEventListener('click', event => {
     const button = event.target.closest('[data-map-floor]');
     if (!button) return;
     activeMapFloor = button.dataset.mapFloor;
     renderVenueMap();
+  });
+  $('#mapStartSelect').addEventListener('change', event => {
+    const floor = venueFloors[activeMapFloor];
+    if (!floor?.nodes.some(node => node.id === event.target.value)) return;
+    mapStartByFloor[activeMapFloor] = event.target.value;
+    renderVenueMap();
+    showToast(`已将${floor.code}起点设为：${floor.nodes.find(node => node.id === event.target.value).label}`);
+  });
+  $('#venueFloorPlan').addEventListener('click', event => {
+    const button = event.target.closest('[data-venue-node]');
+    if (button) selectVenueNode(button.dataset.venueNode);
   });
 
   $('#zoneIndex').addEventListener('click', event => {
@@ -1218,9 +1361,14 @@ function initEvents() {
     openVenueGuide({ floor: zone.mapFloor, target: zone.mapTarget, label: zone.location, finalStep: zone.finalStep });
   });
 
-  $('#catalogSearch').addEventListener('input', renderCatalog);
+  $('#catalogSearch').addEventListener('input', () => { catalogDisplayLimit = 5; renderCatalog(); });
+  $('#catalogLoadMore').addEventListener('click', () => {
+    catalogDisplayLimit += 5;
+    renderCatalog();
+  });
   $$('.filter-button').forEach(button => button.addEventListener('click', () => {
     activeStatus = button.dataset.status;
+    catalogDisplayLimit = 5;
     $$('.filter-button').forEach(candidate => {
       const active = candidate === button;
       candidate.classList.toggle('is-active', active);
@@ -1269,6 +1417,8 @@ function initEvents() {
   $('#collectionTabs').addEventListener('click', event => {
     const button = event.target.closest('[data-collection]');
     if (!button) return;
+    const specialSection = $('#special');
+    if (specialSection?.classList.contains('is-collection-transitioning')) return;
     activeCollection = button.dataset.collection;
     activeClassicalItem = 0;
     $$('#collectionTabs button').forEach(candidate => {
@@ -1276,9 +1426,50 @@ function initEvents() {
       candidate.classList.toggle('is-active', active);
       candidate.setAttribute('aria-selected', String(active));
     });
+    button.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
     renderClassicsNav();
     renderManuscript();
+    button.classList.add('is-entering');
+    specialSection?.classList.add('is-collection-transitioning');
+    const collectionPanel = $('#classicalCollectionPanel');
+    if (collectionPanel) {
+      const transitionDuration = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 520;
+      window.setTimeout(() => {
+        collectionPanel.classList.remove('is-awaiting-selection');
+        collectionPanel.classList.add('is-collection-open');
+        collectionPanel.classList.add('is-single-book');
+        specialSection?.classList.remove('is-collection-transitioning');
+        specialSection?.classList.add('is-collection-entered');
+        button.classList.remove('is-entering');
+        const collectionCarousel = $('#collectionCarousel');
+        if (collectionCarousel) collectionCarousel.hidden = true;
+        const collectionTabs = $('#collectionTabs');
+        if (collectionTabs) collectionTabs.hidden = true;
+        collectionPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, transitionDuration);
+    }
   });
+  const scrollCollections = direction => {
+    const tabs = $('#collectionTabs');
+    if (!tabs) return;
+    tabs.scrollBy({ left: direction * Math.max(260, tabs.clientWidth * .72), behavior: 'smooth' });
+  };
+  $('#collectionPrev')?.addEventListener('click', () => scrollCollections(-1));
+  $('#collectionNext')?.addEventListener('click', () => scrollCollections(1));
+  $('#collectionBack')?.addEventListener('click', () => {
+    $('#special')?.classList.remove('is-collection-entered');
+    $('#special')?.classList.remove('is-collection-transitioning');
+    $$('#collectionTabs button').forEach(button => button.classList.remove('is-entering'));
+    const collectionCarousel = $('#collectionCarousel');
+    if (collectionCarousel) collectionCarousel.hidden = false;
+    const collectionTabs = $('#collectionTabs');
+    if (collectionTabs) collectionTabs.hidden = false;
+    $('#classicalCollectionPanel')?.classList.add('is-awaiting-selection');
+    $('#classicalCollectionPanel')?.classList.remove('is-collection-open');
+    $('#classicalCollectionPanel')?.classList.remove('is-single-book');
+    $('#collectionTabs')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  });
+  $('#collectionBackInline')?.addEventListener('click', () => $('#collectionBack')?.click());
 
   $('#annotationSwitch').addEventListener('click', event => {
     const button = event.target.closest('[data-note]');
@@ -1311,12 +1502,6 @@ function initEvents() {
     showToast('笺注已绑定当前篇章，审核后可成为精选');
   });
 
-  $('#rokidAnimationPreview').addEventListener('click', () => {
-    const slot = $('#rokidAnimationSlot');
-    slot.classList.remove('is-previewing');
-    requestAnimationFrame(() => slot.classList.add('is-previewing'));
-    setTimeout(() => slot.classList.remove('is-previewing'), 2600);
-  });
   $('#glassesToggle').addEventListener('click', () => openGlassesBooking());
   $('#openRestricted').addEventListener('click', () => {
     const book = selectedBook;
@@ -1359,22 +1544,116 @@ function initEvents() {
 }
 
 function init() {
+  $('#classicalCollectionPanel')?.classList.add('is-awaiting-selection');
   $('#seatDate').value = localDateValue();
   $('#seatDate').min = localDateValue();
   renderCatalog();
   renderSeats();
   updateSeatSummary();
   renderReaderSignals();
+  initReadingWorkbenchExtras();
+  initCityMemory();
   renderLibraryZone();
   renderClassicsNav();
   renderManuscript();
   initEvents();
   initMiniProgramBridge();
   initScrollReveals();
+  initSectionTransitions();
   updateGlassesAvailability();
   $$('.filter-button').forEach(button => button.setAttribute('aria-pressed', String(button.classList.contains('is-active'))));
   $$('#annotationSwitch button').forEach(button => button.setAttribute('aria-pressed', String(button.classList.contains('is-active'))));
   refreshIcons();
+}
+
+function findBookByTitle(query = '') {
+  return books.find(book => book.title === query || book.title.includes(query) || query.includes(book.title));
+}
+
+function initReadingWorkbenchExtras() {
+  const floorGuideMap = {
+    '负一层': { floor: 'b1', target: 'stacks', label: 'B1 密集书库', finalStep: '沿负一层指示前往书库；密集书库需先在服务台登记，由馆员协助取书' },
+    '一层': { floor: 'f1', target: 'youth', label: '一层青少年 / 幼儿 / 亲子阅览区', finalStep: '从一层大厅进入青少年、幼儿与亲子阅览区域，按现场分区标识取阅' },
+    '二层': { floor: 'f2', target: 'open', label: '二层开放阅览区', finalStep: '沿二层开放阅览标识前往书架区，按索书号定位具体书架' },
+    '三层': { floor: 'f3', target: 'specialized', label: '三层专题与地方文献阅览区', finalStep: '沿三层专题阅览标识前往；古籍、地方文献请在服务点登记后阅览' }
+  };
+  $$('[data-floor-query]').forEach(button => {
+    button.addEventListener('click', () => {
+      const guide = floorGuideMap[button.dataset.floorQuery];
+      if (!guide) return;
+      openVenueGuide(guide);
+    });
+  });
+
+  $$('[data-book-title]').forEach(button => {
+    button.addEventListener('click', () => {
+      const book = findBookByTitle(button.dataset.bookTitle);
+      if (book) showBook(book);
+    });
+  });
+
+  $$('[data-subject-query]').forEach(button => button.addEventListener('click', () => {
+    switchService('catalog');
+    const input = $('#catalogSearch');
+    input.value = button.dataset.subjectQuery || '';
+    renderCatalog();
+    input.focus();
+  }));
+
+  const form = $('#readingNoteForm');
+  const output = $('#savedNotes');
+  if (!form || !output) return;
+  let notes = [];
+  try { notes = JSON.parse(localStorage.getItem('yulin-reading-notes') || '[]'); } catch (error) { notes = []; }
+  const renderNotes = () => {
+    output.innerHTML = notes.length
+      ? notes.map(note => `<article class="saved-note"><span>${escapeHtml(note.text)}</span><time>${escapeHtml(note.time)}</time></article>`).join('')
+      : '<p class="empty-state">还没有笔记，先留下一条阅读线索吧。</p>';
+  };
+  renderNotes();
+  form.addEventListener('submit', event => {
+    event.preventDefault();
+    const textarea = $('#readingNoteText');
+    const text = textarea.value.trim();
+    if (!text) { textarea.focus(); return; }
+    notes.unshift({ text, time: new Date().toLocaleString('zh-CN', { dateStyle: 'medium', timeStyle: 'short' }) });
+    notes = notes.slice(0, 8);
+    localStorage.setItem('yulin-reading-notes', JSON.stringify(notes));
+    textarea.value = '';
+    renderNotes();
+    showToast('笔记已保存在这台设备');
+  });
+}
+
+function initCityMemory() {
+  const form = $('#memoryForm');
+  const list = $('#memoryList');
+  if (!form || !list) return;
+  const samples = [
+    { name: '榆林老读者', tags: '老街', text: '记得八十年代的二街，新华书店门口总排着借书的长队。' },
+    { name: '镇北台守护人', tags: '长城', text: '风从镇北台吹下来时，城墙和地方志里的文字忽然有了同一种重量。' }
+  ];
+  let memories = [];
+  try { memories = JSON.parse(localStorage.getItem('yulin-city-memories') || '[]'); } catch (error) { memories = []; }
+  const render = () => {
+    list.innerHTML = [...memories, ...samples].map((item, index) => `<article class="memory-card"><header><b>${escapeHtml(item.name || '匿名读者')}</b><span>${escapeHtml(item.tags || '城市记忆')}</span>${item.own ? `<button type="button" data-delete-memory="${index}" aria-label="删除这条记忆"><i data-lucide="trash-2"></i></button>` : ''}</header><p>${escapeHtml(item.text)}</p></article>`).join('');
+    refreshIcons();
+  };
+  form.addEventListener('submit', event => {
+    event.preventDefault();
+    const text = $('#memoryText').value.trim();
+    if (!text) return;
+    memories.unshift({ name: $('#memoryName').value.trim(), tags: $('#memoryTags').value.trim(), text, own: true });
+    localStorage.setItem('yulin-city-memories', JSON.stringify(memories));
+    form.reset(); render(); showToast('城市记忆已保存在本机');
+  });
+  list.addEventListener('click', event => {
+    const button = event.target.closest('[data-delete-memory]');
+    if (!button) return;
+    memories.splice(Number(button.dataset.deleteMemory), 1);
+    localStorage.setItem('yulin-city-memories', JSON.stringify(memories)); render();
+  });
+  render();
 }
 
 init();

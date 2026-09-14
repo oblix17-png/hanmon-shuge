@@ -5,10 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="榆林市图书馆读书服务与古典藏书数字文化体验原型">
   <title>榆林市图书馆 · 书中见城</title>
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles.css?v=20260914-study-seat-zone">
   <script defer src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
-  <script defer src="app.js"></script>
+  <script defer src="app.js?v=20260914-study-seat-zone"></script>
+  <script defer src="title-motion.js"></script>
 </head>
 <body class="intro-open theme-liquid-glass">
   <a class="skip-link" href="#mainContent">跳到主要内容</a>
@@ -35,14 +36,16 @@
 
   <header class="site-header" id="top">
     <a class="brand" href="#top" aria-label="榆林市图书馆首页">
-      <span class="brand__mark">榆</span>
+      <img class="brand__mark brand__mark--horizontal" src="assets/branding/yulin-horizontal.png" alt="榆见你·榆林市图书馆" width="146" height="49">
       <span><b>榆林市图书馆</b><small>YULIN LIBRARY</small></span>
     </a>
     <nav class="main-nav" aria-label="主要导航">
       <a href="#reading">读书专区</a>
+      <a href="#studySeats">自习座位</a>
       <a href="#zones">馆藏分区</a>
       <a href="#classicsGateway">古典藏书</a>
       <a href="#miniprogram">小程序</a>
+      <a href="#memory">城市记忆</a>
     </nav>
     <div class="header-actions">
       <button class="icon-button" id="globalSearch" type="button" title="搜索馆藏" aria-label="搜索馆藏"><i data-lucide="search"></i></button>
@@ -83,6 +86,10 @@
         <div class="service-tabs" role="tablist" aria-label="读书服务">
           <button class="service-tab is-active" id="catalogTab" type="button" role="tab" aria-selected="true" aria-controls="catalogPanel" data-service="catalog"><i data-lucide="library-big" aria-hidden="true"></i><span>馆藏检索<small>状态与书架位置</small></span></button>
           <button class="service-tab" id="discoveryTab" type="button" role="tab" aria-selected="false" aria-controls="discoveryPanel" data-service="discovery"><i data-lucide="scan-line" aria-hidden="true"></i><span>扫书发现<small>同好与书旁留言</small></span></button>
+          <button class="service-tab" id="featuredTab" type="button" role="tab" aria-selected="false" aria-controls="featuredPanel" data-service="featured"><i data-lucide="sparkles" aria-hidden="true"></i><span>本月精选<small>馆员与读者共选</small></span></button>
+          <button class="service-tab" id="subjectsTab" type="button" role="tab" aria-selected="false" aria-controls="subjectsPanel" data-service="subjects"><i data-lucide="list-filter" aria-hidden="true"></i><span>主题书单<small>按线索读榆林</small></span></button>
+          <button class="service-tab" id="notesTab" type="button" role="tab" aria-selected="false" aria-controls="notesPanel" data-service="notes"><i data-lucide="notebook-pen" aria-hidden="true"></i><span>读书笔记<small>本机留存</small></span></button>
+          <button class="service-tab" id="newBooksTab" type="button" role="tab" aria-selected="false" aria-controls="newBooksPanel" data-service="newBooks"><i data-lucide="package-plus" aria-hidden="true"></i><span>新书速递<small>本月入藏一览</small></span></button>
         </div>
 
         <div class="service-workbench">
@@ -96,9 +103,25 @@
                 <button class="filter-button" type="button" data-status="馆内阅览">不外借</button>
               </div>
             </div>
+            <section class="collection-overview" aria-labelledby="collectionOverviewTitle">
+              <div class="collection-overview__head"><div><p class="eyebrow">COLLECTION OVERVIEW · 馆藏分布</p><h3 id="collectionOverviewTitle">按楼层找到你的下一本书</h3></div><span>可预约 · 可导航</span></div>
+              <div class="floor-card-grid">
+                <button class="floor-card" type="button" data-floor-query="负一层"><i data-lucide="archive"></i><strong>B1 地下一层</strong><small>密集书库</small><b>12 <em>册馆藏 · 查看</em></b></button>
+                <button class="floor-card" type="button" data-floor-query="一层"><i data-lucide="smile"></i><strong>一层</strong><small>少儿 · 报刊 · 服务</small><b>24 <em>册馆藏 · 查看</em></b></button>
+                <button class="floor-card" type="button" data-floor-query="二层"><i data-lucide="book-open"></i><strong>二层</strong><small>开放与综合阅览</small><b>53 <em>册馆藏 · 查看</em></b></button>
+                <button class="floor-card" type="button" data-floor-query="三层"><i data-lucide="library"></i><strong>三层</strong><small>专题与文献</small><b>110 <em>册馆藏 · 查看</em></b></button>
+              </div>
+              <div class="collection-quick-grid" aria-label="馆藏服务快捷入口">
+                <button type="button" class="quick-card" data-quick-message="本馆开放时间：周一至周日 09:00–21:30"><i data-lucide="clock-3"></i><b>开馆时间</b><small>周一至周日 09:00–21:30</small></button>
+                <button type="button" class="quick-card" data-quick-message="本周借阅排行已更新"><i data-lucide="flame"></i><b>借阅排行</b><small>本周 Top 5</small></button>
+                <button type="button" class="quick-card" data-quick-message="数字资源入口将在正式接入后开放"><i data-lucide="database"></i><b>数字资源</b><small>古籍 · 期刊 · 听书</small></button>
+                <button type="button" class="quick-card quick-card--accent" data-quick-message="馆员信箱：工作日 09:00–17:00 回复"><i data-lucide="mail"></i><b>馆员信箱</b><small>咨询 · 采购 · 反馈</small></button>
+              </div>
+            </section>
             <div class="catalog-head" aria-hidden="true"><span>书名 / 著者</span><span>索书号</span><span>位置</span><span>状态</span><span></span></div>
             <div class="catalog-list" id="catalogList" aria-live="polite"></div>
             <p class="empty-state" id="catalogEmpty" hidden>没有找到匹配馆藏。</p>
+            <button class="catalog-load-more secondary-button" id="catalogLoadMore" type="button"><i data-lucide="plus" aria-hidden="true"></i><span>加载更多馆藏</span></button>
           </section>
 
           <section class="service-panel" id="discoveryPanel" data-panel="discovery" role="tabpanel" aria-labelledby="discoveryTab" hidden>
@@ -106,7 +129,93 @@
             <div class="discovery-flow" aria-label="扫书发现流程"><span><b>01</b>扫描封面或条码</span><i data-lucide="arrow-right" aria-hidden="true"></i><span><b>02</b>发现同好与留言</span><i data-lucide="arrow-right" aria-hidden="true"></i><span><b>03</b>获得下一册推荐</span></div>
             <div class="club-list" id="readerSignalList" aria-live="polite"></div>
           </section>
+
+          <section class="service-panel service-card-panel" id="featuredPanel" data-panel="featured" role="tabpanel" aria-labelledby="featuredTab" hidden>
+            <div class="service-panel__heading"><div><p class="eyebrow">CURATED THIS MONTH · 本月精选</p><h3>从馆员与读者的共同线索出发</h3></div><span class="service-panel__count">04 册</span></div>
+            <div class="book-card-grid">
+              <button class="book-card" type="button" data-book-title="钦定四库全书"><span class="book-card__cover"><img src="assets/books/qin-ding-si-ku-quan-shu.jpg" alt="《钦定四库全书》封面"></span><span><b>四库全书·文渊阁本选卷</b><small>古典藏书 · 馆内阅览</small></span></button>
+              <button class="book-card" type="button" data-book-title="延绥镇志"><span class="book-card__cover"><img src="assets/books/yan-sui-zhen-zhi.jpg" alt="《延绥镇志》封面"></span><span><b>延绥镇志</b><small>榆林地方志 · 二层</small></span></button>
+              <button class="book-card" type="button" data-book-title="资治通鉴"><span class="book-card__cover"><img src="assets/books/zi-zhi-tong-jian.png" alt="《资治通鉴》封面"></span><span><b>资治通鉴</b><small>历史 · 三层</small></span></button>
+              <button class="book-card" type="button" data-book-title="边疆杂咏"><span class="book-card__cover"><img src="assets/books/bian-jiang-za-yong.jpg" alt="《边疆杂咏》封面"></span><span><b>边疆杂咏</b><small>地方文献 · 三层</small></span></button>
+            </div>
+          </section>
+
+          <section class="service-panel service-card-panel" id="subjectsPanel" data-panel="subjects" role="tabpanel" aria-labelledby="subjectsTab" hidden>
+            <div class="service-panel__heading"><div><p class="eyebrow">SUBJECT TRAILS · 主题书单</p><h3>沿着一个问题，继续读下去</h3></div></div>
+            <div class="subject-list">
+              <button type="button" class="subject-item" data-subject-query="榆林"><i data-lucide="landmark"></i><span><b>榆林地方志</b><small>城墙、边镇与地方记忆</small></span><i data-lucide="arrow-up-right"></i></button>
+              <button type="button" class="subject-item" data-subject-query="历史"><i data-lucide="scroll-text"></i><span><b>边塞与历史</b><small>从史书读见河套与九边</small></span><i data-lucide="arrow-up-right"></i></button>
+              <button type="button" class="subject-item" data-subject-query="诗"><i data-lucide="feather"></i><span><b>诗歌里的北方</b><small>古典诗法、边疆杂咏与风物</small></span><i data-lucide="arrow-up-right"></i></button>
+            </div>
+          </section>
+
+          <section class="service-panel service-card-panel" id="notesPanel" data-panel="notes" role="tabpanel" aria-labelledby="notesTab" hidden>
+            <div class="service-panel__heading"><div><p class="eyebrow">READING NOTES · 读书笔记</p><h3>把刚刚想到的，留在这本书旁边</h3></div></div>
+            <form class="note-capture" id="readingNoteForm"><label for="readingNoteText">写下一条阅读线索</label><textarea id="readingNoteText" rows="3" placeholder="例如：镇北台这一段，和《榆林府志》的城图可以一起看。"></textarea><button class="primary-button" type="submit"><i data-lucide="plus"></i>保存笔记</button></form>
+            <div class="saved-notes" id="savedNotes" aria-live="polite"><p class="empty-state">还没有笔记，先留下一条阅读线索吧。</p></div>
+          </section>
+
+          <section class="service-panel service-card-panel" id="newBooksPanel" data-panel="newBooks" role="tabpanel" aria-labelledby="newBooksTab" hidden>
+            <div class="service-panel__heading"><div><p class="eyebrow">NEW ARRIVALS · 新书速递</p><h3>本月刚刚抵达书架的内容</h3></div><span class="service-panel__count">06 册</span></div>
+            <div class="new-book-list">
+              <button class="new-book-row" type="button" data-book-title="榆林府志校注"><span class="new-book-row__index">01</span><span><b>榆林府志校注</b><small>地方文献 · 四层 B-03 · 在架</small></span><i data-lucide="arrow-up-right"></i></button>
+              <button class="new-book-row" type="button" data-book-title="梦溪笔谈"><span class="new-book-row__index">02</span><span><b>梦溪笔谈</b><small>古典藏书 · 三层 A-12 · 馆内阅览</small></span><i data-lucide="arrow-up-right"></i></button>
+              <button class="new-book-row" type="button" data-book-title="中国古代诗法研究"><span class="new-book-row__index">03</span><span><b>中国古代诗法研究</b><small>文学艺术 · 二层 C-08 · 在架</small></span><i data-lucide="arrow-up-right"></i></button>
+            </div>
+          </section>
         </div>
+      </div>
+    </section>
+
+    <section class="study-section" id="studySeats" aria-labelledby="studySeatsTitle">
+      <div class="study-section__inner">
+        <div class="section-heading study-section__heading">
+          <div>
+            <p class="eyebrow">STUDY ROOM · 自习室座位专区</p>
+            <h2 id="studySeatsTitle">给专注，留一张安静的座位</h2>
+          </div>
+          <p>榆林市图书馆设有多层阅览与自习空间，可按日期、楼层和时段选择座位。</p>
+        </div>
+
+        <div class="study-overview" aria-label="自习座位概况">
+          <div><i data-lucide="clock-3" aria-hidden="true"></i><span><small>今日开放</small><strong>09:00–21:30</strong></span></div>
+          <div><i data-lucide="armchair" aria-hidden="true"></i><span><small>阅览座位</small><strong>约 3,500 席</strong></span></div>
+          <div><i data-lucide="volume-1" aria-hidden="true"></i><span><small>空间状态</small><strong>安静开放中</strong></span></div>
+          <button class="study-overview__action" type="button" data-book-seat data-floor="一层" data-time="09:00-12:00"><i data-lucide="calendar-check" aria-hidden="true"></i>预约座位</button>
+        </div>
+
+        <div class="study-room-grid">
+          <article class="study-room">
+            <div class="study-room__top"><span>01</span><i data-lucide="book-open" aria-hidden="true"></i></div>
+            <p>一层 · 静阅空间</p>
+            <h3>综合自习室</h3>
+            <div class="study-room__tags"><span>安静阅读</span><span>邻近服务台</span><span>无障碍</span></div>
+            <div class="study-room__availability"><span><b>16</b> 个演示余座</span><small>48 席</small></div>
+            <div class="study-room__meter" aria-hidden="true"><i style="width:66%"></i></div>
+            <button type="button" data-book-seat data-floor="一层" data-time="09:00-12:00"><span>立即选座</span><i data-lucide="arrow-up-right" aria-hidden="true"></i></button>
+          </article>
+
+          <article class="study-room study-room--jade">
+            <div class="study-room__top"><span>02</span><i data-lucide="sun" aria-hidden="true"></i></div>
+            <p>二层 · 开放阅览区</p>
+            <h3>临窗自习区</h3>
+            <div class="study-room__tags"><span>自然采光</span><span>桌面插座</span><span>饮水区</span></div>
+            <div class="study-room__availability"><span><b>31</b> 个演示余座</span><small>96 席</small></div>
+            <div class="study-room__meter" aria-hidden="true"><i style="width:68%"></i></div>
+            <button type="button" data-book-seat data-floor="二层" data-time="14:00-17:00"><span>立即选座</span><i data-lucide="arrow-up-right" aria-hidden="true"></i></button>
+          </article>
+
+          <article class="study-room study-room--rust">
+            <div class="study-room__top"><span>03</span><i data-lucide="lamp-desk" aria-hidden="true"></i></div>
+            <p>三层 · 综合阅览区</p>
+            <h3>深度学习室</h3>
+            <div class="study-room__tags"><span>独立照明</span><span>桌面插座</span><span>晚间开放</span></div>
+            <div class="study-room__availability"><span><b>9</b> 个演示余座</span><small>72 席</small></div>
+            <div class="study-room__meter" aria-hidden="true"><i style="width:88%"></i></div>
+            <button type="button" data-book-seat data-floor="三层" data-time="18:00-21:00"><span>立即选座</span><i data-lucide="arrow-up-right" aria-hidden="true"></i></button>
+          </article>
+        </div>
+        <p class="study-data-note"><i data-lucide="info" aria-hidden="true"></i>余座为交互样机演示数据，正式上线后接入馆内实时座位系统。</p>
       </div>
     </section>
 
@@ -209,20 +318,26 @@
           </div>
           <!-- 后续将用户提供的 Rokid 介绍动画放入此媒体槽。 -->
           <div class="rokid-feature__media" id="rokidAnimationSlot" data-animation-slot="rokid" role="group" aria-labelledby="rokidAnimationLabel">
-            <div class="rokid-feature__lens" aria-hidden="true"><span>人物</span><span>地点</span><span>笺注</span></div>
-            <button class="rokid-preview" id="rokidAnimationPreview" type="button"><i data-lucide="play" aria-hidden="true"></i><span>预览眼镜介绍动效</span></button>
-            <small id="rokidAnimationLabel">ROKID INTRO FILM · 眼镜介绍动画预留</small>
+            <video class="rokid-feature__video" id="rokidIntroVideo" preload="metadata" playsinline controls aria-label="Rokid 眼镜介绍视频">
+              <source src="assets/video/rokid-intro.mp4" type="video/mp4">
+            </video>
+            <small id="rokidAnimationLabel">ROKID INTRO FILM · 眼镜介绍视频</small>
           </div>
         </section>
 
         <div class="glasses-status" id="glassesStatus" hidden><span><i></i>设备 R-063 已分配</span><b id="glassesSession">14:00-15:00 · 古典藏书旗舰路线</b><button class="icon-button" id="closeGlasses" type="button" aria-label="结束眼镜导览"><i data-lucide="x"></i></button></div>
 
-        <div class="collection-tabs" id="collectionTabs" role="tablist" aria-label="古典藏书分类">
+        <div class="collection-carousel" id="collectionCarousel">
+          <button class="collection-arrow collection-arrow--prev" id="collectionPrev" type="button" aria-label="查看上一个藏书分类"><i data-lucide="chevron-left" aria-hidden="true"></i></button>
+          <div class="collection-tabs" id="collectionTabs" role="tablist" aria-label="古典藏书分类">
           <button class="collection-tab--featured is-active" id="sikuCollectionTab" type="button" role="tab" aria-selected="true" aria-controls="classicalCollectionPanel" data-collection="四库全书"><span>壹</span><b>四库全书</b><small>古典藏书核心专题 · 经史子集</small></button>
           <button id="gazetteerCollectionTab" type="button" role="tab" aria-selected="false" aria-controls="classicalCollectionPanel" data-collection="榆林地方志"><span>贰</span><b>榆林地方志</b><small>一城之记</small></button>
           <button id="rareCollectionTab" type="button" role="tab" aria-selected="false" aria-controls="classicalCollectionPanel" data-collection="古籍善本"><span>叁</span><b>古籍善本</b><small>珍本遗珍</small></button>
           <button id="rubbingCollectionTab" type="button" role="tab" aria-selected="false" aria-controls="classicalCollectionPanel" data-collection="金石拓本"><span>肆</span><b>金石拓本</b><small>碑刻留声</small></button>
+          </div>
+          <button class="collection-arrow collection-arrow--next" id="collectionNext" type="button" aria-label="查看下一个藏书分类"><i data-lucide="chevron-right" aria-hidden="true"></i></button>
         </div>
+        <button class="collection-back" id="collectionBack" type="button"><i data-lucide="arrow-left" aria-hidden="true"></i>返回藏书分类</button>
 
         <div class="siku-layout" id="classicalCollectionPanel" role="tabpanel" aria-label="古典藏书篇章阅读区">
           <nav class="siku-nav" id="classicsNav" aria-label="四库全书经史子集">
@@ -233,10 +348,12 @@
           </nav>
 
           <article class="manuscript" aria-labelledby="volumeTitle">
+            <button class="collection-back collection-back--inline" id="collectionBackInline" type="button"><i data-lucide="arrow-left" aria-hidden="true"></i>返回分类</button>
             <header class="manuscript__head">
               <div><span id="volumeLabel">经部 · 四书类</span><h3 id="volumeTitle">《论语集注》</h3><p id="volumeMeta">宋 · 朱熹集注　特藏索书号 SK-J-008</p></div>
               <span class="restricted-mark"><i data-lucide="lock-keyhole"></i>馆内阅览</span>
             </header>
+            <div class="manuscript-overview"><div><span class="eyebrow">VOLUME GUIDE · 本册导览</span><p id="volumeOverview">从经典原文、今译与典故三个层次进入本册，沿段落场景继续探索人物与地点。</p></div><div class="manuscript-tags"><span>馆内阅览</span><span>数字注释</span><span>场景导览</span></div></div>
             <div class="reader-controls">
               <div class="segmented" id="annotationSwitch" aria-label="注释层">
                 <button class="is-active" type="button" data-note="original">原文</button>
@@ -295,6 +412,27 @@
         </div>
       </div>
     </section>
+
+    <section class="memory-section" id="memory" aria-labelledby="memoryTitle">
+      <div class="memory__inner">
+        <header class="memory__header">
+          <div>
+            <p class="eyebrow">CITY MEMORY · 城市记忆台</p>
+            <h2 id="memoryTitle">把榆林的街巷，留在书页之外</h2>
+          </div>
+          <p>每一本书都连着一条街、一个人、一段往事。留下你的城市记忆，也看看读者们共同保存的榆林片段。</p>
+        </header>
+        <form class="memory-form" id="memoryForm">
+          <div class="memory-form__fields">
+            <label><span>昵称（可选）</span><input id="memoryName" maxlength="24" placeholder="例如：榆林老读者"></label>
+            <label><span>标签</span><input id="memoryTags" maxlength="48" placeholder="如 老街 / 镇北台 / 信天游"></label>
+          </div>
+          <label class="memory-form__content"><span>写下一句与这座城、这本书有关的记忆</span><textarea id="memoryText" rows="4" maxlength="280" required placeholder="写下你想留给下一位读者的话…"></textarea></label>
+          <div class="memory-form__actions"><button class="primary-button" type="submit"><i data-lucide="send" aria-hidden="true"></i>发布记忆</button><span>留言仅保存在本机浏览器，可随时删除自己发布的内容。</span></div>
+        </form>
+        <div class="memory-list" id="memoryList" aria-live="polite"></div>
+      </div>
+    </section>
   </main>
 
   <div class="classics-transition" id="classicsTransition" aria-hidden="true">
@@ -309,17 +447,17 @@
   </div>
 
   <footer class="site-footer">
-    <div class="brand brand--footer"><span class="brand__mark">榆</span><span><b>榆林市图书馆</b><small>YULIN LIBRARY</small></span></div>
+    <div class="brand brand--footer"><img class="brand__mark" src="assets/branding/yulin-mark.png" alt="榆" width="38" height="38"><span><b>榆林市图书馆</b><small>YULIN LIBRARY</small></span></div>
     <p>首版交互原型 · 馆藏、座位与社区数据为演示内容</p>
     <a href="#top">回到页首 <i data-lucide="arrow-up"></i></a>
   </footer>
 
   <dialog class="book-dialog" id="bookDialog" aria-labelledby="dialogTitle" aria-describedby="dialogDescription">
     <button class="dialog-close icon-button" type="button" data-close-dialog aria-label="关闭馆藏详情"><i data-lucide="x" aria-hidden="true"></i></button>
-    <p class="eyebrow" id="dialogCategory">馆藏详情</p>
-    <h2 id="dialogTitle"></h2>
-    <p class="dialog-author" id="dialogAuthor"></p>
-    <p class="dialog-description" id="dialogDescription"></p>
+    <div class="book-dialog__intro">
+      <div class="book-dialog__cover" id="dialogCover" aria-live="polite"><i data-lucide="book-open" aria-hidden="true"></i></div>
+      <div class="book-dialog__copy"><p class="eyebrow" id="dialogCategory">馆藏详情</p><h2 id="dialogTitle"></h2><p class="dialog-author" id="dialogAuthor"></p><p class="dialog-description" id="dialogDescription"></p></div>
+    </div>
     <dl class="book-facts"><div><dt>索书号</dt><dd id="dialogCall"></dd></div><div><dt>馆藏位置</dt><dd id="dialogShelf"></dd></div><div><dt>当前状态</dt><dd id="dialogStatus"></dd></div></dl>
     <div class="dialog-actions"><button class="secondary-button" id="navigateBook" type="button"><i data-lucide="route" aria-hidden="true"></i>导航到书架</button><button class="primary-button" id="reserveBook" type="button"><i data-lucide="bookmark-plus" aria-hidden="true"></i>预约借阅</button><button class="primary-button primary-button--glasses" id="openRestricted" type="button" hidden><i data-lucide="glasses" aria-hidden="true"></i>预约 Rokid 旗舰路线</button></div>
   </dialog>
@@ -374,7 +512,7 @@
       </nav>
       <section class="venue-map-shell" aria-live="polite">
         <div class="venue-map__meta"><div><span id="mapFloorCode">F1</span><strong id="mapFloorTitle">一层主要功能区</strong></div><p id="mapFloorSummary">大厅、青少年/幼儿/亲子阅览区、综合阅览、老年阅览与 24 小时城市书房</p></div>
-        <div class="venue-map__status"><span><i class="map-dot map-dot--start"></i>起点：<b id="mapStartLabel">一层大厅</b></span><span><i class="map-dot map-dot--target"></i>目的地：<b id="mapTargetLabel">总服务台</b></span></div>
+        <div class="venue-map__status"><label class="map-start-picker"><i class="map-dot map-dot--start"></i><span>起点</span><select id="mapStartSelect" aria-label="选择导览起点"></select><b id="mapStartLabel" hidden>一层 · 大厅</b></label><span><i class="map-dot map-dot--target"></i>目的地：<b id="mapTargetLabel">总服务台</b></span></div>
         <div class="venue-floor-plan" id="venueFloorPlan" role="img" aria-label="一层主要功能区地图"></div>
         <div class="venue-map__legend" aria-label="地图图例"><span><i class="map-dot map-dot--verified"></i>官方规划功能区</span><span><i class="map-dot map-dot--target"></i>当前目的地</span><span><i class="map-dot map-dot--route"></i>建议动线</span></div>
       </section>
