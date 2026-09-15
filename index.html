@@ -5,10 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="榆林市图书馆读书服务与古典藏书数字文化体验原型">
   <title>榆林市图书馆 · 书中见城</title>
-  <link rel="stylesheet" href="styles.css?v=20260914-study-seat-zone">
+  <link rel="stylesheet" href="styles.css?v=20260915-real-library-map-seats">
   <script defer src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
-  <script defer src="app.js?v=20260914-study-seat-zone"></script>
+  <script defer src="app.js?v=20260915-real-library-map-seats"></script>
   <script defer src="title-motion.js"></script>
 </head>
 <body class="intro-open theme-liquid-glass">
@@ -174,7 +174,7 @@
             <p class="eyebrow">STUDY ROOM · 自习室座位专区</p>
             <h2 id="studySeatsTitle">给专注，留一张安静的座位</h2>
           </div>
-          <p>榆林市图书馆设有多层阅览与自习空间，可按日期、楼层和时段选择座位。</p>
+          <p>根据榆林市图书馆公开功能分区图，自习与安静阅读主要分布在一层 24 小时城市书房、二层自修区和三层自修区。</p>
         </div>
 
         <div class="study-overview" aria-label="自习座位概况">
@@ -187,32 +187,35 @@
         <div class="study-room-grid">
           <article class="study-room">
             <div class="study-room__top"><span>01</span><i data-lucide="book-open" aria-hidden="true"></i></div>
-            <p>一层 · 静阅空间</p>
-            <h3>综合自习室</h3>
-            <div class="study-room__tags"><span>安静阅读</span><span>邻近服务台</span><span>无障碍</span></div>
+            <p>一层 · 24 小时城市书房</p>
+            <h3>城市书房自习位</h3>
+            <div class="study-room__tags"><span>独立开放</span><span>夜间可用</span><span>邻近大厅</span></div>
             <div class="study-room__availability"><span><b>16</b> 个演示余座</span><small>48 席</small></div>
             <div class="study-room__meter" aria-hidden="true"><i style="width:66%"></i></div>
             <button type="button" data-book-seat data-floor="一层" data-time="09:00-12:00"><span>立即选座</span><i data-lucide="arrow-up-right" aria-hidden="true"></i></button>
+            <button class="study-room__map" type="button" data-study-map data-map-floor="f1" data-map-target="city" data-map-label="一层 24 小时城市书房">查看一层楼层图</button>
           </article>
 
           <article class="study-room study-room--jade">
             <div class="study-room__top"><span>02</span><i data-lucide="sun" aria-hidden="true"></i></div>
-            <p>二层 · 开放阅览区</p>
-            <h3>临窗自习区</h3>
-            <div class="study-room__tags"><span>自然采光</span><span>桌面插座</span><span>饮水区</span></div>
+            <p>二层 · 自修区</p>
+            <h3>二层自修区</h3>
+            <div class="study-room__tags"><span>安静阅读</span><span>桌面插座</span><span>开放阅览</span></div>
             <div class="study-room__availability"><span><b>31</b> 个演示余座</span><small>96 席</small></div>
             <div class="study-room__meter" aria-hidden="true"><i style="width:68%"></i></div>
             <button type="button" data-book-seat data-floor="二层" data-time="14:00-17:00"><span>立即选座</span><i data-lucide="arrow-up-right" aria-hidden="true"></i></button>
+            <button class="study-room__map" type="button" data-study-map data-map-floor="f2" data-map-target="study" data-map-label="二层自修区">查看二层楼层图</button>
           </article>
 
           <article class="study-room study-room--rust">
             <div class="study-room__top"><span>03</span><i data-lucide="lamp-desk" aria-hidden="true"></i></div>
-            <p>三层 · 综合阅览区</p>
-            <h3>深度学习室</h3>
-            <div class="study-room__tags"><span>独立照明</span><span>桌面插座</span><span>晚间开放</span></div>
+            <p>三层 · 自修区</p>
+            <h3>三层自修区</h3>
+            <div class="study-room__tags"><span>深度学习</span><span>桌面插座</span><span>晚间开放</span></div>
             <div class="study-room__availability"><span><b>9</b> 个演示余座</span><small>72 席</small></div>
             <div class="study-room__meter" aria-hidden="true"><i style="width:88%"></i></div>
             <button type="button" data-book-seat data-floor="三层" data-time="18:00-21:00"><span>立即选座</span><i data-lucide="arrow-up-right" aria-hidden="true"></i></button>
+            <button class="study-room__map" type="button" data-study-map data-map-floor="f3" data-map-target="study" data-map-label="三层自修区">查看三层楼层图</button>
           </article>
         </div>
         <p class="study-data-note"><i data-lucide="info" aria-hidden="true"></i>余座为交互样机演示数据，正式上线后接入馆内实时座位系统。</p>

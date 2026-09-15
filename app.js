@@ -1317,6 +1317,14 @@ function initEvents() {
     updateSeatSummary();
     openDialog($('#seatDialog'));
   }));
+  $$('[data-study-map]').forEach(button => button.addEventListener('click', () => {
+    openVenueGuide({
+      floor: button.dataset.mapFloor,
+      target: button.dataset.mapTarget,
+      label: button.dataset.mapLabel,
+      finalStep: `按官方楼层图前往${button.dataset.mapLabel}，以现场标识为准`
+    });
+  }));
   $('#openVenueGuide').addEventListener('click', () => openVenueGuide());
   $('#venueFloorTabs').addEventListener('click', event => {
     const button = event.target.closest('[data-map-floor]');

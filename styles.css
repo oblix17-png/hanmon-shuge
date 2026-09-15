@@ -191,6 +191,8 @@ img { display: block; max-width: 100%; }
 .study-room > button { width: calc(100% + 56px); min-height: 54px; display: flex; align-items: center; justify-content: space-between; margin-left: -28px; padding: 0 28px; color: var(--cobalt-deep); background: rgba(30, 51, 79, .06); border: 0; border-top: 1px solid rgba(30, 51, 79, .1); cursor: pointer; }
 .study-room > button:hover { color: var(--paper-bright); background: var(--cobalt-deep); }
 .study-room > button i { width: 17px; height: 17px; }
+.study-room > .study-room__map { width: auto; min-height: 30px; margin: 0; padding: 0; color: var(--ink-soft); background: transparent; border-top: 0; font-size: .66rem; }
+.study-room > .study-room__map:hover { color: var(--rust); background: transparent; }
 .study-data-note { display: flex; align-items: center; gap: 7px; margin: 18px 0 0; color: var(--ink-soft); font-size: .66rem; }
 .study-data-note i { width: 14px; height: 14px; }
 .section-heading { max-width: 1320px; margin: 0 auto 46px; display: flex; align-items: end; justify-content: space-between; gap: 48px; }
