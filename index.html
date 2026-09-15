@@ -5,11 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="榆林市图书馆读书服务与古典藏书数字文化体验原型">
   <title>榆林市图书馆 · 书中见城</title>
-  <link rel="stylesheet" href="styles.css?v=20260915-deep-link-scroll-fix">
+  <link rel="stylesheet" href="styles.css?v=20260915-scroll-companion-fix">
   <script defer src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
   <script src="https://ec2f7ed6b49b4925ad310be1c4b0ed88.app.workbuddy.link/companion.js?size=160"></script>
-  <script defer src="app.js?v=20260915-deep-link-scroll-fix"></script>
+  <script defer src="app.js?v=20260915-scroll-companion-fix"></script>
   <script defer src="title-motion.js"></script>
 </head>
 <body class="intro-open theme-liquid-glass">
@@ -529,6 +529,7 @@
     <p class="map-accuracy"><i data-lucide="badge-check" aria-hidden="true"></i>楼层与功能区依据公开资料建模；入口、总服务台、垂直交通和书架精确坐标需馆方现场测绘后接入。</p>
   </dialog>
 
+  <button class="companion-fallback" id="companionFallback" type="button" aria-label="打开馆员助手" title="馆员助手"><i data-lucide="user-round" aria-hidden="true"></i></button>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 </body>
 </html>
