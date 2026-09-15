@@ -494,7 +494,8 @@ body.classics-transitioning { overflow: hidden; }
 .rokid-feature__media::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(90deg, rgba(30, 51, 79, .25), rgba(30, 51, 79, .7)); }
 .rokid-feature__media > small { position: absolute; right: 16px; bottom: 12px; font-size: .6rem; opacity: .7; }
 .collection-carousel { position: relative; margin-top: 16px; padding: 0 58px; }
-.collection-tabs { position: relative; display: flex; justify-content: flex-start; gap: 38px; margin-top: 0; padding: 42px 12px 50px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; border-top: 1px solid var(--line-light); border-bottom: 1px solid var(--line-light); }
+.collection-tabs { position: relative; display: flex; justify-content: flex-start; gap: 38px; margin-top: 0; padding: 42px 12px 50px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; cursor: grab; touch-action: pan-x; border-top: 1px solid var(--line-light); border-bottom: 1px solid var(--line-light); }
+.collection-tabs.is-dragging { cursor: grabbing; scroll-snap-type: none; user-select: none; }
 .collection-tabs::-webkit-scrollbar { display: none; }
 .collection-arrow { position: absolute; z-index: 8; top: 50%; width: 46px; height: 64px; display: grid; place-items: center; padding: 0; color: var(--paper-bright); background: transparent; border: 0; border-radius: 0; box-shadow: none; cursor: pointer; transform: translateY(-50%); transition: color .2s ease, transform .2s ease; }
 .collection-arrow:hover { color: var(--gold); background: transparent; transform: translateY(-50%) scale(1.08); }

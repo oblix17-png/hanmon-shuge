@@ -1462,6 +1462,37 @@ function initEvents() {
     if (!tabs) return;
     tabs.scrollBy({ left: direction * Math.max(260, tabs.clientWidth * .72), behavior: 'smooth' });
   };
+  const collectionTabs = $('#collectionTabs');
+  if (collectionTabs) {
+    let dragStartX = 0;
+    let dragStartScroll = 0;
+    let isDragging = false;
+    collectionTabs.addEventListener('pointerdown', event => {
+      if (event.pointerType === 'mouse' && event.button !== 0) return;
+      dragStartX = event.clientX;
+      dragStartScroll = collectionTabs.scrollLeft;
+      isDragging = true;
+      collectionTabs.classList.add('is-dragging');
+      collectionTabs.setPointerCapture?.(event.pointerId);
+    });
+    collectionTabs.addEventListener('pointermove', event => {
+      if (!isDragging) return;
+      collectionTabs.scrollLeft = dragStartScroll - (event.clientX - dragStartX);
+    });
+    const stopCollectionDrag = event => {
+      if (!isDragging) return;
+      isDragging = false;
+      collectionTabs.classList.remove('is-dragging');
+      if (event.pointerId !== undefined) collectionTabs.releasePointerCapture?.(event.pointerId);
+    };
+    collectionTabs.addEventListener('pointerup', stopCollectionDrag);
+    collectionTabs.addEventListener('pointercancel', stopCollectionDrag);
+    collectionTabs.addEventListener('wheel', event => {
+      if (Math.abs(event.deltaY) <= Math.abs(event.deltaX)) return;
+      event.preventDefault();
+      collectionTabs.scrollLeft += event.deltaY;
+    }, { passive: false });
+  }
   $('#collectionPrev')?.addEventListener('click', () => scrollCollections(-1));
   $('#collectionNext')?.addEventListener('click', () => scrollCollections(1));
   $('#collectionBack')?.addEventListener('click', () => {
