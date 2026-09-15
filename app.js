@@ -1257,6 +1257,16 @@ function initSectionTransitions() {
 
 function initEvents() {
   const particleIntro = initParticleIntro();
+  const deepLink = window.location.hash && window.location.hash !== '#top';
+  if (deepLink) {
+    const intro = $('#intro');
+    document.body.classList.remove('intro-open');
+    if (intro) {
+      intro.hidden = true;
+      intro.setAttribute('aria-hidden', 'true');
+    }
+    particleIntro.destroy();
+  }
   let introOpening = false;
   $('#introEnter').addEventListener('click', () => {
     if (introOpening) return;
