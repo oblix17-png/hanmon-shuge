@@ -799,9 +799,6 @@ dialog h2 { margin: 0; color: var(--cobalt-deep); font-family: var(--serif); fon
 .agreement input { margin-top: 5px; accent-color: var(--cobalt); }
 .toast { position: fixed; z-index: 500; left: 50%; bottom: 24px; max-width: calc(100vw - 32px); padding: 11px 16px; color: var(--paper-bright); background: var(--ink); border-left: 4px solid var(--jade); box-shadow: var(--shadow); transform: translate(-50%, 24px); opacity: 0; pointer-events: none; transition: opacity .2s ease, transform .2s ease; }
 .toast.is-visible { opacity: 1; transform: translate(-50%, 0); }
-.companion-fallback { position: fixed; z-index: 1100; right: 22px; bottom: 22px; width: 52px; height: 52px; display: grid; place-items: center; color: var(--paper-bright); background: var(--rust); border: 2px solid rgba(248, 244, 234, .82); border-radius: 50%; box-shadow: 0 8px 22px rgba(30, 51, 79, .22); cursor: pointer; transition: transform .2s ease, background .2s ease; }
-.companion-fallback:hover { background: var(--cobalt-deep); transform: translateY(-3px); }
-.companion-fallback svg { width: 23px; height: 23px; }
 
 /* Large-section entrance: an understated paper reveal with staggered editorial content. */
 .has-section-transitions .section-enter { position: relative; opacity: 0; transform: translateY(28px); clip-path: inset(7% 0 0); transition: opacity .8s ease, transform .8s cubic-bezier(.2, .7, .2, 1), clip-path .95s cubic-bezier(.2, .7, .2, 1); }

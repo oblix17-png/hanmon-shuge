@@ -1306,7 +1306,6 @@ function initEvents() {
     setTimeout(() => $('#catalogSearch').focus(), 500);
   });
   $('.account-button').addEventListener('click', () => showToast('读者证登录将在真实系统接入后启用'));
-  $('#companionFallback')?.addEventListener('click', () => showToast('馆员助手：可以帮你查找馆藏、座位与馆内路线'));
 
   $$('.service-tab').forEach(button => button.addEventListener('click', () => switchService(button.dataset.service)));
   $$('[data-open-service]').forEach(button => button.addEventListener('click', () => {
