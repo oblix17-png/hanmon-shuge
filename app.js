@@ -1257,16 +1257,21 @@ function initSectionTransitions() {
 
 function initEvents() {
   const particleIntro = initParticleIntro();
+  const dismissIntro = () => {
+    const intro = $('#intro');
+    if (!intro || intro.hidden) return;
+    document.body.classList.remove('intro-open');
+    intro.hidden = true;
+    intro.setAttribute('aria-hidden', 'true');
+    particleIntro.destroy();
+  };
   const deepLink = window.location.hash && window.location.hash !== '#top';
   if (deepLink) {
-    const intro = $('#intro');
-    document.body.classList.remove('intro-open');
-    if (intro) {
-      intro.hidden = true;
-      intro.setAttribute('aria-hidden', 'true');
-    }
-    particleIntro.destroy();
+    dismissIntro();
   }
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 8) dismissIntro();
+  }, { passive: true, once: true });
   let introOpening = false;
   $('#introEnter').addEventListener('click', () => {
     if (introOpening) return;
