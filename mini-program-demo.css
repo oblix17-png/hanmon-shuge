@@ -84,6 +84,7 @@ img { display: block; max-width: 100%; }
 .pulse-dot { width: 8px; height: 8px; flex: none; border-radius: 50%; background: var(--jade); box-shadow: 0 0 0 5px rgba(115,167,160,.14); }
 .today-strip > button { grid-column: 1 / -1; min-height: 25px; display: flex; align-items: center; justify-content: flex-end; gap: 5px; padding: 7px 0 0; color: var(--rust); background: none; border: 0; font-size: 10px; }
 .today-strip > button svg { width: 13px; color: inherit; }
+.mini-focus-card { display: flex; align-items: center; justify-content: space-between; gap: 14px; margin: 18px 16px 0; padding: 15px; color: var(--paper-bright); background: linear-gradient(135deg, var(--cobalt-deep), #426b83); border-left: 3px solid var(--jade); }.mini-focus-card small { color: var(--jade-pale); font-size: 9px; }.mini-focus-card h2 { margin: 4px 0 2px; font: 600 17px/1.2 var(--serif); }.mini-focus-card p { margin: 0; color: rgba(248,244,234,.74); font-size: 10px; }.mini-focus-card div > span { display: block; margin-top: 4px; color: var(--jade-pale); font-size: 9px; }.mini-focus-card div > span b { color: var(--paper-bright); }.mini-focus-card > strong { font: 600 25px/1 var(--sans); letter-spacing: .04em; }
 
 .section-block { padding: 29px 16px 3px; }
 .section-title { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; margin-bottom: 15px; }

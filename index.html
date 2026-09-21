@@ -5,22 +5,22 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="榆林市图书馆读书服务与古典藏书数字文化体验原型">
   <title>榆林市图书馆 · 书中见城</title>
-  <link rel="stylesheet" href="styles.css?v=20260915-scroll-unlock-final">
+  <link rel="stylesheet" href="styles.css?v=20260921-study-focus-v2">
   <script defer src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
   <script async src="https://ec2f7ed6b49b4925ad310be1c4b0ed88.app.workbuddy.link/companion.js?size=160"></script>
-  <script defer src="app.js?v=20260915-scroll-unlock-final"></script>
+  <script defer src="app.js?v=20260921-study-companion-v3"></script>
   <script defer src="title-motion.js"></script>
 </head>
 <body class="intro-open theme-liquid-glass">
   <a class="skip-link" href="#mainContent">跳到主要内容</a>
 
   <div class="intro" id="intro" role="region" aria-label="榆林市图书馆开场">
+    <video class="intro__video" autoplay muted loop playsinline preload="auto" aria-hidden="true">
+      <source src="assets/video/yulin-opening.mp4" type="video/mp4">
+    </video>
     <div class="intro__panel intro__panel--left" aria-hidden="true"></div>
     <div class="intro__panel intro__panel--right" aria-hidden="true"></div>
-    <div class="intro__paper-crumple" aria-hidden="true">
-      <span></span><span></span><span></span><span></span>
-    </div>
     <canvas class="intro__particles" id="introParticles" role="img" aria-label="粒子汇聚成榆林开卷印记">
       榆林开卷
     </canvas>
@@ -185,6 +185,10 @@
           <button class="study-overview__action" type="button" data-book-seat data-floor="一层" data-time="09:00-12:00"><i data-lucide="calendar-check" aria-hidden="true"></i>预约座位</button>
         </div>
 
+        <a class="study-companion study-companion--link" href="study-focus.html" aria-label="进入陪伴学习与专注计时">
+          <div class="study-companion__copy"><p class="eyebrow">FOCUS TOGETHER · 陪伴学习</p><h3 id="studyCompanionTitle">和小伙伴一起专注</h3><p>进入独立陪伴学习页面，自定义时长并同步到小程序。</p><span>点击进入专注空间</span></div><i data-lucide="arrow-up-right" aria-hidden="true"></i>
+        </a>
+
         <div class="study-room-grid">
           <article class="study-room">
             <div class="study-room__top"><span>01</span><i data-lucide="book-open" aria-hidden="true"></i></div>
@@ -331,13 +335,14 @@
 
         <div class="glasses-status" id="glassesStatus" hidden><span><i></i>设备 R-063 已分配</span><b id="glassesSession">14:00-15:00 · 古典藏书旗舰路线</b><button class="icon-button" id="closeGlasses" type="button" aria-label="结束眼镜导览"><i data-lucide="x"></i></button></div>
 
+        <input class="collection-open-toggle" id="collectionOpen" type="checkbox" aria-label="打开古典藏书详情">
         <div class="collection-carousel" id="collectionCarousel">
           <button class="collection-arrow collection-arrow--prev" id="collectionPrev" type="button" aria-label="查看上一个藏书分类"><i data-lucide="chevron-left" aria-hidden="true"></i></button>
-          <div class="collection-tabs" id="collectionTabs" role="tablist" aria-label="古典藏书分类">
-          <button class="collection-tab--featured is-active" id="sikuCollectionTab" type="button" role="tab" aria-selected="true" aria-controls="classicalCollectionPanel" data-collection="四库全书"><span>壹</span><b>四库全书</b><small>古典藏书核心专题 · 经史子集</small></button>
-          <button id="gazetteerCollectionTab" type="button" role="tab" aria-selected="false" aria-controls="classicalCollectionPanel" data-collection="榆林地方志"><span>贰</span><b>榆林地方志</b><small>一城之记</small></button>
-          <button id="rareCollectionTab" type="button" role="tab" aria-selected="false" aria-controls="classicalCollectionPanel" data-collection="古籍善本"><span>叁</span><b>古籍善本</b><small>珍本遗珍</small></button>
-          <button id="rubbingCollectionTab" type="button" role="tab" aria-selected="false" aria-controls="classicalCollectionPanel" data-collection="金石拓本"><span>肆</span><b>金石拓本</b><small>碑刻留声</small></button>
+          <div class="collection-tabs" id="collectionTabs" aria-label="古典藏书分类">
+            <a class="collection-item collection-tab-link collection-tab--featured" href="./collection-detail.html?v=20260920-inner-v2#siku" aria-label="进入四库全书详情页" data-figure><b>四库全书</b><small>汇四部典籍，循经史子集<br>展开古今知识谱系</small><img class="collection-figure collection-figure--one" src="assets/circle-figure-1.png" alt="" aria-hidden="true"></a>
+            <a class="collection-item collection-tab-link" href="./collection-detail.html?v=20260920-inner-v2#gazetteer" aria-label="进入榆林地方志详情页"><b>榆林地方志</b><small>循城垣、边塞与民生旧事<br>读一座城的前世今生</small></a>
+            <a class="collection-item collection-tab-link" href="./collection-detail.html?v=20260920-inner-v2#rare" aria-label="进入古籍善本详情页" data-figure><b>古籍善本</b><small>观版刻、装帧与递藏印记<br>寻典籍流传的文脉</small><img class="collection-figure collection-figure--three" src="assets/circle-figure-3.png" alt="" aria-hidden="true"></a>
+            <a class="collection-item collection-tab-link" href="./collection-detail.html?v=20260920-inner-v2#rubbing" aria-label="进入金石拓本详情页"><b>金石拓本</b><small>从碑刻拓片辨识文字<br>聆听金石留下的回声</small></a>
           </div>
           <button class="collection-arrow collection-arrow--next" id="collectionNext" type="button" aria-label="查看下一个藏书分类"><i data-lucide="chevron-right" aria-hidden="true"></i></button>
         </div>
@@ -418,6 +423,7 @@
     </section>
 
     <section class="memory-section" id="memory" aria-labelledby="memoryTitle">
+      <div class="memory-landform" aria-hidden="true"></div>
       <div class="memory__inner">
         <header class="memory__header">
           <div>
@@ -451,7 +457,7 @@
   </div>
 
   <footer class="site-footer">
-    <div class="brand brand--footer"><img class="brand__mark" src="assets/branding/yulin-mark.png" alt="榆" width="38" height="38"><span><b>榆林市图书馆</b><small>YULIN LIBRARY</small></span></div>
+    <div class="brand brand--footer"><img class="brand__mark brand__mark--horizontal" src="assets/branding/yulin-horizontal.png" alt="榆见你·榆林市图书馆" width="146" height="49"><span><b>榆林市图书馆</b><small>YULIN LIBRARY</small></span></div>
     <p>首版交互原型 · 馆藏、座位与社区数据为演示内容</p>
     <a href="#top">回到页首 <i data-lucide="arrow-up"></i></a>
   </footer>
@@ -530,5 +536,21 @@
   </dialog>
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <dialog class="assistant-prompt-dialog" id="assistantPromptDialog" aria-label="向小人提问">
+    <form method="dialog" id="assistantPromptForm">
+      <p>可以问路，也可以了解榆林文化。</p>
+      <input id="assistantPromptInput" type="text" maxlength="80" placeholder="例如：少儿阅览区在哪里？" autocomplete="off">
+      <div><button value="cancel" type="submit">取消</button><button class="primary-button" id="assistantPromptSubmit" value="default" type="submit">提问</button></div>
+    </form>
+  </dialog>
+  <dialog class="scene-video-dialog" id="sceneVideoDialog" aria-labelledby="sceneVideoTitle">
+    <button class="dialog-close icon-button" type="button" id="closeSceneVideo" aria-label="关闭段落场景视频"><i data-lucide="x" aria-hidden="true"></i></button>
+    <p class="eyebrow">PARAGRAPH SCENE · 段落场景</p>
+    <h2 id="sceneVideoTitle">远方来学</h2>
+    <video id="sceneVideo" controls playsinline preload="metadata">
+      <source src="assets/video/paragraph-scene.mp4" type="video/mp4">
+    </video>
+  </dialog>
+
 </body>
 </html>
