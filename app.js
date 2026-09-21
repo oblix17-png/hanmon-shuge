@@ -801,9 +801,15 @@ function renderManuscript() {
   $('#volumeMeta').textContent = item.meta;
   const overview = $('#volumeOverview');
   if (overview) overview.textContent = `${item.section} · 从原文、今译与典故三个层次进入本册，沿“${item.chapter}”继续探索相关人物与地点。`;
-  $('#chapterMark').textContent = item.chapter;
-  $('#originalText').textContent = item.text;
-  $('#annotationText').textContent = item.notes[activeNote];
+  const noteViews = {
+    original: { main: item.text, note: item.notes.original },
+    translation: { main: item.notes.translation, note: '今译将原文转换为当代汉语，保留人物、地点与语气线索，方便继续阅读。' },
+    allusion: { main: item.notes.allusion, note: '典故层补充这句话的出处、用法与榆林阅读场景，点击“展开段落场景”可继续观看。' }
+  };
+  const view = noteViews[activeNote] || noteViews.original;
+  $('#chapterMark').textContent = activeNote === 'translation' ? `${item.chapter} · 今译` : activeNote === 'allusion' ? `${item.chapter} · 典故` : item.chapter;
+  $('#originalText').textContent = view.main;
+  $('#annotationText').textContent = view.note;
   $('#storyPlace').textContent = item.story.place;
   $('#storyPerson').textContent = item.story.person;
   $('#storyTitle').textContent = item.story.title;
@@ -924,7 +930,7 @@ function initParticleIntro() {
 
   function makeWordmarkPoints() {
     const mobile = width <= 560;
-    stampSize = Math.round(Math.max(210, Math.min(mobile ? width * .8 : width * .42, height * .56, mobile ? 330 : 560)));
+    stampSize = Math.round(Math.max(190, Math.min(mobile ? width * .7 : width * .36, height * .48, mobile ? 290 : 480)));
     stampCenterY = height * (mobile ? .35 : .36);
     const mask = document.createElement('canvas');
     mask.width = stampSize;
@@ -1235,6 +1241,45 @@ function initScrollReveals() {
   observer.observe(gateway);
 }
 
+function initStudyCompanion() {
+  const state = $('#studyTimerState');
+  const timeInput = $('#studyTimerTimeInput');
+  const totalDisplay = $('#studyTotalDisplay');
+  const start = $('#studyTimerStart');
+  const reset = $('#studyTimerReset');
+  if (!timeInput || !state || !start || !reset) return;
+  const key = 'yulin-study-session-v1';
+  let timerId = null;
+  let remaining = 0;
+  let totalSeconds = 0;
+  let sessionSeconds = 0;
+  let running = false;
+  const format = seconds => `${String(Math.floor(seconds / 60)).padStart(2, '0')}:${String(seconds % 60).padStart(2, '0')}`;
+  const sync = () => {
+    const payload = { remaining, running, totalSeconds, sessionSeconds, updatedAt: Date.now() };
+    localStorage.setItem(key, JSON.stringify(payload));
+    timeInput.value = format(remaining);
+    state.textContent = running ? '专注进行中 · 小程序同步中' : (remaining === 0 && sessionSeconds ? '本轮完成' : '设置时长后开始');
+    totalDisplay.textContent = format(totalSeconds);
+    start.querySelector('span').textContent = running ? '暂停专注' : '开始专注';
+    start.querySelector('i')?.setAttribute('data-lucide', running ? 'pause' : 'play');
+    refreshIcons();
+  };
+  const tick = () => {
+    if (!running) return;
+    remaining = Math.max(0, remaining - 1);
+    totalSeconds += 1;
+    if (!remaining) { running = false; sessionSeconds = 0; window.clearInterval(timerId); timerId = null; }
+    sync();
+  };
+  const readTimeInput = () => { const match = String(timeInput.value).trim().match(/^(\d{1,3}):([0-5]\d)$/); const parsed = match ? Math.min(240 * 60, Number(match[1]) * 60 + Number(match[2])) : 0; return parsed || 25 * 60; };
+  timeInput.addEventListener('change', () => { if (!running) { remaining = readTimeInput(); sessionSeconds = remaining; sync(); } });
+  start.addEventListener('click', () => { if (!running) { if (!remaining) { sessionSeconds = readTimeInput(); remaining = sessionSeconds; } running = true; timerId = window.setInterval(tick, 1000); } else { running = false; window.clearInterval(timerId); timerId = null; } sync(); });
+  reset.addEventListener('click', () => { running = false; window.clearInterval(timerId); timerId = null; remaining = readTimeInput(); sessionSeconds = remaining; sync(); });
+  try { const saved = JSON.parse(localStorage.getItem(key) || 'null'); if (saved) { remaining = Number(saved.remaining) || readTimeInput(); totalSeconds = Number(saved.totalSeconds) || 0; sessionSeconds = Number(saved.sessionSeconds) || remaining; } } catch {}
+  sync();
+}
+
 function initSectionTransitions() {
   const sections = $$('.reading-section, .zones-section, .special-section, .mini-program-section, .memory-section');
   if (!sections.length) return;
@@ -1255,8 +1300,63 @@ function initSectionTransitions() {
   sections.forEach(section => observer.observe(section));
 }
 
+function openCollectionSelection(button) {
+  if (!button) return;
+  const specialSection = $('#special');
+  if (specialSection?.classList.contains('is-collection-transitioning')) return;
+  activeCollection = button.dataset.collection;
+  activeClassicalItem = 0;
+  $$('#collectionTabs button').forEach(candidate => {
+    const active = candidate === button;
+    candidate.classList.toggle('is-active', active);
+    candidate.setAttribute('aria-selected', String(active));
+  });
+  button.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+  renderClassicsNav();
+  renderManuscript();
+  button.classList.add('is-entering');
+  specialSection?.classList.add('is-collection-transitioning');
+  const collectionPanel = $('#classicalCollectionPanel');
+  if (!collectionPanel) return;
+  const transitionDuration = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 520;
+  window.setTimeout(() => {
+    collectionPanel.classList.remove('is-awaiting-selection');
+    collectionPanel.classList.add('is-collection-open', 'is-single-book');
+    specialSection?.classList.remove('is-collection-transitioning');
+    specialSection?.classList.add('is-collection-entered');
+    button.classList.remove('is-entering');
+    $('#collectionCarousel')?.setAttribute('hidden', '');
+    $('#collectionTabs')?.setAttribute('hidden', '');
+    collectionPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, transitionDuration);
+}
+window.openCollectionSelection = openCollectionSelection;
+
 function initEvents() {
+  if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+  const navigationEntry = performance.getEntriesByType?.('navigation')?.[0];
+  const isReload = navigationEntry?.type === 'reload';
+  if (isReload) {
+    history.replaceState({}, document.title, `${window.location.pathname}${window.location.search}`);
+    window.scrollTo(0, 0);
+    window.setTimeout(() => window.scrollTo(0, 0), 0);
+  }
   const particleIntro = initParticleIntro();
+  const dismissIntro = () => {
+    const intro = $('#intro');
+    if (!intro || intro.hidden) return;
+    document.body.classList.remove('intro-open');
+    intro.hidden = true;
+    intro.setAttribute('aria-hidden', 'true');
+    particleIntro.destroy();
+  };
+  const deepLink = window.location.hash && window.location.hash !== '#top';
+  if (deepLink && !isReload) {
+    dismissIntro();
+  }
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 8) dismissIntro();
+  }, { passive: true, once: true });
   let introOpening = false;
   $('#introEnter').addEventListener('click', () => {
     if (introOpening) return;
@@ -1264,25 +1364,22 @@ function initEvents() {
     const intro = $('#intro');
     const enterButton = $('#introEnter');
     const scatterDuration = particleIntro.reduced ? 0 : 260;
-    const crumpleDuration = particleIntro.reduced ? 0 : 1160;
-    const exitDuration = particleIntro.reduced ? 80 : 620;
+    const curtainDuration = particleIntro.reduced ? 80 : 1080;
     enterButton.disabled = true;
     enterButton.setAttribute('aria-busy', 'true');
     intro.classList.add('is-scattering');
     particleIntro.burst();
     setTimeout(() => {
-      intro.classList.add('is-crumpling');
+      intro.classList.add('is-opening');
       document.body.classList.remove('intro-open');
     }, scatterDuration);
-    setTimeout(() => {
-      intro.classList.add('is-opening');
-    }, scatterDuration + crumpleDuration);
     setTimeout(() => {
       particleIntro.destroy();
       intro.hidden = true;
       intro.setAttribute('aria-hidden', 'true');
+      window.scrollTo(0, 0);
       $('#globalSearch').focus({ preventScroll: true });
-    }, scatterDuration + crumpleDuration + exitDuration);
+    }, scatterDuration + curtainDuration);
   });
 
   $$('[data-scroll]').forEach(button => button.addEventListener('click', () => {
@@ -1316,6 +1413,14 @@ function initEvents() {
     renderSeats();
     updateSeatSummary();
     openDialog($('#seatDialog'));
+  }));
+  $$('[data-study-map]').forEach(button => button.addEventListener('click', () => {
+    openVenueGuide({
+      floor: button.dataset.mapFloor,
+      target: button.dataset.mapTarget,
+      label: button.dataset.mapLabel,
+      finalStep: `按官方楼层图前往${button.dataset.mapLabel}，以现场标识为准`
+    });
   }));
   $('#openVenueGuide').addEventListener('click', () => openVenueGuide());
   $('#venueFloorTabs').addEventListener('click', event => {
@@ -1414,46 +1519,58 @@ function initEvents() {
     showToast(`预约成功：${$('#seatDate').value} ${selectedFloor} ${String(reserved).padStart(2, '0')}号座位`);
   });
 
-  $('#collectionTabs').addEventListener('click', event => {
-    const button = event.target.closest('[data-collection]');
-    if (!button) return;
-    const specialSection = $('#special');
-    if (specialSection?.classList.contains('is-collection-transitioning')) return;
-    activeCollection = button.dataset.collection;
-    activeClassicalItem = 0;
-    $$('#collectionTabs button').forEach(candidate => {
-      const active = candidate === button;
-      candidate.classList.toggle('is-active', active);
-      candidate.setAttribute('aria-selected', String(active));
-    });
-    button.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
-    renderClassicsNav();
-    renderManuscript();
-    button.classList.add('is-entering');
-    specialSection?.classList.add('is-collection-transitioning');
-    const collectionPanel = $('#classicalCollectionPanel');
-    if (collectionPanel) {
-      const transitionDuration = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 520;
-      window.setTimeout(() => {
-        collectionPanel.classList.remove('is-awaiting-selection');
-        collectionPanel.classList.add('is-collection-open');
-        collectionPanel.classList.add('is-single-book');
-        specialSection?.classList.remove('is-collection-transitioning');
-        specialSection?.classList.add('is-collection-entered');
-        button.classList.remove('is-entering');
-        const collectionCarousel = $('#collectionCarousel');
-        if (collectionCarousel) collectionCarousel.hidden = true;
-        const collectionTabs = $('#collectionTabs');
-        if (collectionTabs) collectionTabs.hidden = true;
-        collectionPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }, transitionDuration);
-    }
-  });
   const scrollCollections = direction => {
     const tabs = $('#collectionTabs');
     if (!tabs) return;
     tabs.scrollBy({ left: direction * Math.max(260, tabs.clientWidth * .72), behavior: 'smooth' });
   };
+  const collectionTabs = $('#collectionTabs');
+  if (collectionTabs) {
+    let dragStartX = 0;
+    let dragStartScroll = 0;
+    let isDragging = false;
+    collectionTabs.addEventListener('pointerdown', event => {
+      if (event.pointerType === 'mouse' && event.button !== 0) return;
+      if (event.target.closest('a, button')) return;
+      dragStartX = event.clientX;
+      dragStartScroll = collectionTabs.scrollLeft;
+      isDragging = true;
+      collectionTabs.classList.add('is-dragging');
+    });
+    collectionTabs.addEventListener('pointermove', event => {
+      if (!isDragging) return;
+      collectionTabs.scrollLeft = dragStartScroll - (event.clientX - dragStartX);
+    });
+    const stopCollectionDrag = event => {
+      if (!isDragging) return;
+      isDragging = false;
+      collectionTabs.classList.remove('is-dragging');
+    };
+    collectionTabs.addEventListener('pointerup', stopCollectionDrag);
+    collectionTabs.addEventListener('pointercancel', stopCollectionDrag);
+    collectionTabs.addEventListener('wheel', event => {
+      if (Math.abs(event.deltaY) <= Math.abs(event.deltaX)) return;
+      event.preventDefault();
+      collectionTabs.scrollLeft += event.deltaY;
+    }, { passive: false });
+    const reduceFigureMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    $$('[data-figure]', collectionTabs).forEach(item => {
+      item.addEventListener('pointermove', event => {
+        if (event.pointerType === 'touch' || reduceFigureMotion.matches) return;
+        const bounds = item.getBoundingClientRect();
+        const x = Math.max(-1, Math.min(1, (event.clientX - bounds.left - bounds.width / 2) / (bounds.width / 2)));
+        const y = Math.max(-1, Math.min(1, (event.clientY - bounds.top - bounds.height / 2) / (bounds.height / 2)));
+        item.style.setProperty('--figure-shift-x', `${(x * 5).toFixed(2)}px`);
+        item.style.setProperty('--figure-shift-y', `${(y * 3).toFixed(2)}px`);
+        item.style.setProperty('--figure-rotate', `${(x * 4).toFixed(2)}deg`);
+      });
+      item.addEventListener('pointerleave', () => {
+        item.style.removeProperty('--figure-shift-x');
+        item.style.removeProperty('--figure-shift-y');
+        item.style.removeProperty('--figure-rotate');
+      });
+    });
+  }
   $('#collectionPrev')?.addEventListener('click', () => scrollCollections(-1));
   $('#collectionNext')?.addEventListener('click', () => scrollCollections(1));
   $('#collectionBack')?.addEventListener('click', () => {
@@ -1487,7 +1604,19 @@ function initEvents() {
     const stage = $('#narrativeStage');
     stage.classList.remove('is-playing');
     requestAnimationFrame(() => requestAnimationFrame(() => stage.classList.add('is-playing')));
+    const sceneVideoDialog = $('#sceneVideoDialog');
+    const sceneVideo = $('#sceneVideo');
+    if (sceneVideoDialog && sceneVideo) {
+      sceneVideoDialog.showModal();
+      sceneVideo.currentTime = 0;
+      sceneVideo.play().catch(() => {});
+    }
     showToast(`正在展开「${activeManuscript().story.title}」段落场景`);
+  });
+  $('#closeSceneVideo')?.addEventListener('click', () => {
+    const sceneVideo = $('#sceneVideo');
+    sceneVideo?.pause();
+    closeDialog($('#sceneVideoDialog'));
   });
 
   $('#danmakuToggle').addEventListener('change', renderDanmaku);
@@ -1543,6 +1672,209 @@ function initEvents() {
   }));
 }
 
+function initLibraryAssistant() {
+  const observed = new WeakSet();
+  const answered = new WeakSet();
+  const companionResponses = new WeakMap();
+  const companionPromptActive = new WeakSet();
+  const companionResetTimers = new WeakMap();
+  const companionAnswerTimers = new WeakMap();
+  const companionHintTimers = new WeakMap();
+  const companionCycleTimers = new WeakMap();
+  const companionCycleIndex = new WeakMap();
+  const companionCycleMessages = ['我在听', '戳一戳，向我提问吧', '我可以帮你找书、找座位', '也可以带你认识榆林文化'];
+  const stopCompanionCycle = companion => {
+    const timer = companionCycleTimers.get(companion);
+    if (timer) window.clearInterval(timer);
+    companionCycleTimers.delete(companion);
+  };
+  const startCompanionCycle = companion => {
+    if (!companion || companionCycleTimers.has(companion)) return;
+    stopCompanionCycle(companion);
+    companionCycleIndex.set(companion, 0);
+    const update = () => {
+      if (companionPromptActive.has(companion)) return;
+      const bubble = companion.querySelector('.bubble');
+      if (!bubble) return;
+      const index = companionCycleIndex.get(companion) || 0;
+      bubble.textContent = companionCycleMessages[index];
+      companionCycleIndex.set(companion, (index + 1) % companionCycleMessages.length);
+    };
+    update();
+    companionCycleTimers.set(companion, window.setInterval(update, 2600));
+  };
+  const watchCompanion = companion => {
+    if (!companion || companion.dataset.libraryAssistantReady === 'true') return;
+    companion.dataset.libraryAssistantReady = 'true';
+    startCompanionCycle(companion);
+  };
+  const promptDialog = $('#assistantPromptDialog');
+  const promptInput = $('#assistantPromptInput');
+  let promptCompanion = null;
+  let promptPositionFrame = 0;
+  const positionPromptBesideCompanion = () => {
+    if (!promptDialog?.open || !promptCompanion?.isConnected) return;
+    const companionBounds = promptCompanion.getBoundingClientRect();
+    const promptBounds = promptDialog.getBoundingClientRect();
+    const viewportPadding = 12;
+    const companionGap = 12;
+    const roomOnRight = window.innerWidth - companionBounds.right - companionGap - viewportPadding;
+    const roomOnLeft = companionBounds.left - companionGap - viewportPadding;
+    const placeOnLeft = roomOnRight < promptBounds.width && roomOnLeft >= promptBounds.width;
+    const desiredLeft = placeOnLeft
+      ? companionBounds.left - promptBounds.width - companionGap
+      : companionBounds.right + companionGap;
+    const roomAbove = companionBounds.top - companionGap - viewportPadding;
+    const placeAbove = roomAbove >= promptBounds.height;
+    const desiredTop = placeAbove
+      ? companionBounds.top - promptBounds.height - companionGap
+      : companionBounds.top + (companionBounds.height - promptBounds.height) / 2;
+    const maxLeft = Math.max(viewportPadding, window.innerWidth - promptBounds.width - viewportPadding);
+    const maxTop = Math.max(viewportPadding, window.innerHeight - promptBounds.height - viewportPadding);
+    promptDialog.style.left = `${Math.min(Math.max(desiredLeft, viewportPadding), maxLeft)}px`;
+    promptDialog.style.top = `${Math.min(Math.max(desiredTop, viewportPadding), maxTop)}px`;
+  };
+  const trackPromptPosition = () => {
+    window.cancelAnimationFrame(promptPositionFrame);
+    const update = () => {
+      positionPromptBesideCompanion();
+      if (promptDialog?.open) promptPositionFrame = window.requestAnimationFrame(update);
+    };
+    promptPositionFrame = window.requestAnimationFrame(update);
+  };
+  const answerQuestion = query => {
+    if (/自习|座位/.test(query)) {
+      $('#studySeats')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      return '自习座位主要在一层 24 小时城市书房、二层自修区和三层自修区，已为你打开座位专区。';
+    }
+    if (/导航|怎么走|在哪里|位置|楼层|服务台|少儿|报刊/.test(query)) {
+      window.setTimeout(() => $('#openVenueGuide')?.click(), 120);
+      return '已为你打开馆内地图，可以切换楼层并查看建议路线。';
+    }
+    if (/开放|时间|几点|闭馆|营业/.test(query)) return '开放时间为周一至周日 09:00–21:30；节假日及特殊活动请以馆方公告为准。';
+    if (/镇北台|长城|边塞/.test(query)) return '镇北台位于榆林城北，是明长城沿线的重要军事瞭望设施。';
+    if (/红石峡|峡谷|摩崖/.test(query)) return '红石峡以红色砂岩峡谷和摩崖石刻闻名，是榆林重要的边塞文化地标。';
+    if (/窑洞|地貌|黄土|剪纸|民俗/.test(query)) return '榆林北接毛乌素沙地、南连黄土高原，窑洞、剪纸和信天游都与当地地貌和生活方式紧密相连。';
+    if (/古籍|四库|地方志|善本|金石|藏书/.test(query)) return '古典藏书包含《四库全书》、榆林地方志、古籍善本和金石拓本，均为馆内阅览。';
+    return '我可以帮你导航，也能回答榆林地貌、镇北台、红石峡、窑洞、剪纸和古典藏书等问题。';
+  };
+  const setCompanionPrompt = companion => {
+    const bubble = companion.querySelector('.bubble');
+    if (!bubble) return;
+    companionPromptActive.add(companion);
+    stopCompanionCycle(companion);
+    companion.dataset.promptActive = 'true';
+    const response = companionResponses.get(companion);
+    if (response) {
+      answered.add(companion);
+      if (bubble.textContent !== response) bubble.textContent = response;
+    } else {
+      answered.delete(companion);
+    }
+    if (!observed.has(companion)) {
+      observed.add(companion);
+      const observer = new MutationObserver(() => {
+        const currentBubble = companion.querySelector('.bubble');
+        if (!currentBubble) return;
+        const response = companionResponses.get(companion);
+        if (response && companionPromptActive.has(companion)) {
+          if (currentBubble.textContent !== response) currentBubble.textContent = response;
+          return;
+        }
+        if (companionPromptActive.has(companion)) return;
+        if (/我在听/.test(currentBubble.textContent) && !companionHintTimers.has(companion)) {
+          const hintTimer = window.setTimeout(() => {
+            companionHintTimers.delete(companion);
+            const nextBubble = companion.querySelector('.bubble');
+            if (!companionPromptActive.has(companion) && nextBubble && /我在听/.test(nextBubble.textContent)) {
+              nextBubble.textContent = '戳一戳，向我提问吧';
+            }
+          }, 900);
+          companionHintTimers.set(companion, hintTimer);
+        }
+      });
+      observer.observe(companion, { childList: true, characterData: true, subtree: true });
+    }
+    promptCompanion = companion;
+    promptInput.value = '';
+    promptDialog?.show();
+    positionPromptBesideCompanion();
+    trackPromptPosition();
+    window.setTimeout(() => promptInput?.focus(), 0);
+  };
+  const resumeCompanionCycle = companion => {
+    if (!companion) return;
+    companionPromptActive.delete(companion);
+    delete companion.dataset.promptActive;
+    delete companion.dataset.answerActive;
+    startCompanionCycle(companion);
+    answered.delete(companion);
+    companionResponses.delete(companion);
+    const resetTimer = companionResetTimers.get(companion);
+    if (resetTimer) window.clearTimeout(resetTimer);
+    companionResetTimers.delete(companion);
+    const answerTimer = companionAnswerTimers.get(companion);
+    if (answerTimer) window.clearInterval(answerTimer);
+    companionAnswerTimers.delete(companion);
+    const bubble = companion.querySelector('.bubble');
+    if (bubble && !/我在听|戳一戳/.test(bubble.textContent)) bubble.textContent = '我在听';
+  };
+  const closePromptAndResume = () => {
+    const companion = promptCompanion;
+    promptDialog?.close();
+    resumeCompanionCycle(companion);
+  };
+  promptDialog?.addEventListener('cancel', event => {
+    event.preventDefault();
+    closePromptAndResume();
+  });
+  promptDialog?.addEventListener('close', () => {
+    window.cancelAnimationFrame(promptPositionFrame);
+    promptPositionFrame = 0;
+  });
+  window.addEventListener('resize', positionPromptBesideCompanion, { passive: true });
+  $('#assistantPromptForm')?.addEventListener('submit', event => {
+    event.preventDefault();
+    if (!promptCompanion || !promptInput.value.trim()) { closePromptAndResume(); return; }
+    const bubble = promptCompanion.querySelector('.bubble');
+    answered.add(promptCompanion);
+    const response = answerQuestion(promptInput.value.trim());
+    companionResponses.set(promptCompanion, response);
+    if (bubble) bubble.textContent = response;
+    promptDialog?.close();
+    delete promptCompanion.dataset.promptActive;
+    promptCompanion.dataset.answerActive = 'true';
+    if (bubble) {
+      bubble.style.visibility = 'visible';
+      bubble.style.opacity = '1';
+      bubble.style.pointerEvents = 'auto';
+      bubble.textContent = response;
+    }
+    const companion = promptCompanion;
+    const answerTimer = window.setInterval(() => {
+      if (!companionPromptActive.has(companion)) return;
+      const currentBubble = companion.querySelector('.bubble');
+      if (currentBubble && currentBubble.textContent !== response) currentBubble.textContent = response;
+    }, 120);
+    companionAnswerTimers.set(companion, answerTimer);
+    const resetTimer = window.setTimeout(() => resumeCompanionCycle(companion), 4200);
+    companionResetTimers.set(companion, resetTimer);
+  });
+  document.addEventListener('dblclick', event => {
+    const path = typeof event.composedPath === 'function' ? event.composedPath() : [];
+    const companion = event.target?.closest?.('#wbCompanion') || path.find(node => node?.id === 'wbCompanion');
+    if (!companion) return;
+    setCompanionPrompt(companion);
+  }, true);
+  const companionObserver = new MutationObserver(() => {
+    const companion = document.querySelector('#wbCompanion');
+    if (companion) watchCompanion(companion);
+  });
+  companionObserver.observe(document.body, { childList: true, subtree: true });
+  const existingCompanion = document.querySelector('#wbCompanion');
+  if (existingCompanion) watchCompanion(existingCompanion);
+}
+
 function init() {
   $('#classicalCollectionPanel')?.classList.add('is-awaiting-selection');
   $('#seatDate').value = localDateValue();
@@ -1557,7 +1889,9 @@ function init() {
   renderClassicsNav();
   renderManuscript();
   initEvents();
+  initLibraryAssistant();
   initMiniProgramBridge();
+  initStudyCompanion();
   initScrollReveals();
   initSectionTransitions();
   updateGlassesAvailability();

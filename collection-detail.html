@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>古典藏书内页 · 榆林市图书馆</title>
+  <link rel="stylesheet" href="styles.css?v=20260920-collection-links-v7">
+</head>
+<body class="theme-liquid-glass collection-detail-page">
+  <main class="site-main">
+    <section class="special" aria-labelledby="detailTitle">
+      <div class="special__inner">
+        <div class="collection-detail-head">
+          <a class="collection-back collection-back--detail" href="index.html#special"><span aria-hidden="true">←</span> 返回古典藏书入口</a>
+          <p class="eyebrow">NON-CIRCULATING COLLECTION · 不外借古典藏书</p>
+          <h1 id="detailTitle">从地方文脉，走入古今万卷</h1>
+          <p>馆内特藏阅读内页 · 请选择左侧篇章，阅读对应的典籍线索与今人笺注。</p>
+        </div>
+        <div class="siku-layout is-collection-open is-single-book" id="classicalCollectionPanel" role="region" aria-label="古典藏书篇章阅读区">
+          <nav class="siku-nav" id="classicsNav" aria-label="经史子集篇章">
+            <button class="siku-tab is-active" type="button" data-siku="经"><strong>经</strong><span>义理与经典<small>CLASSICS</small></span></button>
+            <button class="siku-tab" type="button" data-siku="史"><strong>史</strong><span>制度与山河<small>HISTORY</small></span></button>
+            <button class="siku-tab" type="button" data-siku="子"><strong>子</strong><span>百家与技艺<small>MASTERS</small></span></button>
+            <button class="siku-tab" type="button" data-siku="集"><strong>集</strong><span>文章与诗心<small>LITERATURE</small></span></button>
+          </nav>
+          <article class="manuscript" aria-labelledby="volumeTitle">
+            <a class="collection-back collection-back--inline" href="index.html#special"><span aria-hidden="true">←</span> 返回分类</a>
+            <header class="manuscript__head"><div><span id="volumeLabel">经部 · 四书类</span><h2 id="volumeTitle">《论语集注》</h2><p id="volumeMeta">宋 · 朱熹集注　特藏索书号 SK-J-008</p></div><span class="restricted-mark">馆内阅览</span></header>
+            <div class="manuscript-overview"><div><span class="eyebrow">VOLUME GUIDE · 本册导览</span><p id="volumeOverview">从经典原文、今译与典故三个层次进入本册，沿段落场景继续探索人物与地点。</p></div><div class="manuscript-tags"><span>馆内阅览</span><span>数字注释</span><span>场景导览</span></div></div>
+            <div class="reader-controls"><div class="segmented" id="annotationSwitch" aria-label="注释层"><button class="is-active" type="button" data-note="original">原文</button><button type="button" data-note="translation">今译</button><button type="button" data-note="allusion">典故</button></div><button class="scene-button" id="sceneTrigger" type="button">展开段落场景</button></div>
+            <div class="reader-copy"><p class="chapter-mark" id="chapterMark">学而第一</p><blockquote id="originalText">子曰：“学而时习之，不亦说乎？有朋自远方来，不亦乐乎？”</blockquote><div class="annotation" id="annotationText">“习”不只是温习，也有实践、践行之意。经典从来不是停在书页上的文字。</div></div>
+            <div class="narrative-stage" id="narrativeStage" aria-live="polite"><div class="narrative-stage__image"></div><div class="narrative-stage__wash"></div><div class="story-caption"><small>段落动画</small><strong id="storyTitle">远方来学</strong><p id="storyText">书页化作行旅，远来的书友在此相逢。</p></div></div>
+          </article>
+          <aside class="marginalia"><div class="marginalia__head"><div><p class="eyebrow">LIVE NOTES</p><h3>今人笺注</h3></div><label class="switch"><input id="danmakuToggle" type="checkbox" checked><span aria-hidden="true"></span><b>显示</b></label></div><p class="marginalia__intro">留言会绑定当前篇章；在此记录阅读时想到的榆林、人物与地点。</p><div class="danmaku-window" id="danmakuWindow"><div class="danmaku-item"><b>馆员笺注</b><span>特藏原件不外借，请在三层阅览区使用数字导览。</span></div><div class="danmaku-item"><b>读者回声</b><span>从一处注记出发，也能回到榆林这座城的现场。</span></div></div><form class="note-form" id="noteForm"><label for="noteInput">写一条笺注</label><div><input id="noteInput" maxlength="42" placeholder="这一句让你想到什么？"><button class="icon-button" type="submit" aria-label="发送笺注">→</button></div></form><div class="curator-note"><p><b>馆员提示</b>特藏原件不外借，请使用凝视或手势触发虚拟标记。Rokid Max 可凭预约码在一层 AR 设备服务台领取。</p></div></aside>
+        </div>
+      </div>
+    </section>
+  </main>
+  <dialog class="scene-video-dialog" id="sceneVideoDialog" aria-labelledby="sceneVideoTitle">
+    <button class="dialog-close icon-button" type="button" id="closeSceneVideo" aria-label="关闭段落场景视频">×</button>
+    <p class="eyebrow">PARAGRAPH SCENE · 段落场景</p>
+    <h2 id="sceneVideoTitle">远方来学</h2>
+    <video id="sceneVideo" controls playsinline preload="metadata">
+      <source src="assets/video/paragraph-scene.mp4" type="video/mp4">
+    </video>
+  </dialog>
+  <script>
+    const content = { siku:{label:'经部 · 四书类',title:'《论语集注》',meta:'宋 · 朱熹集注　特藏索书号 SK-J-008',overview:'从经典原文、今译与典故三个层次进入本册，沿段落场景继续探索人物与地点。',chapter:'学而第一',quote:'子曰：“学而时习之，不亦说乎？有朋自远方来，不亦乐乎？”',note:'“习”不只是温习，也有实践、践行之意。经典从来不是停在书页上的文字。',scene:'远方来学',story:'书页化作行旅，远来的书友在此相逢。'}, gazetteer:{label:'史部 · 地方志类',title:'《延绥镇志》',meta:'明 · 谭吉璁修　特藏索书号 GJ-DFZ-018',overview:'从城垣、山川与人物条目进入榆林地方志，沿一座边城的旧地图寻找今日城市的来处。',chapter:'建置沿革',quote:'延绥镇，关中之襟喉，河套之屏障也。',note:'方志将城门、河流与人名并置，让地方历史从纸面回到榆林的街巷。',scene:'城垣与河流',story:'旧地图铺开，镇北台与边塞线索逐一点亮。'}, rare:{label:'子部 · 古籍善本类',title:'《古籍善本选粹》',meta:'清刻本　特藏索书号 GJ-RB-006',overview:'观察版刻、装帧与递藏印记，了解一部古籍如何被抄写、刊刻、收藏并传阅。',chapter:'版刻与递藏',quote:'纸墨有年，印记有迹，书页亦保存着人的来处。',note:'每一道墨色、每一枚印记，都是典籍穿越时间留下的证词。',scene:'墨色留痕',story:'版心、鱼尾与藏印在光影中逐层显现。'}, rubbing:{label:'集部 · 金石拓本类',title:'《榆林金石拓本》',meta:'近现代拓本　特藏索书号 GJ-JS-021',overview:'从碑额、笔画与石面风化辨识文字，在金石留下的回声中寻找边塞历史线索。',chapter:'碑刻与题记',quote:'石可立，字可传；一纸拓片，保存风雨中的声音。',note:'拓片把石上的时间带回书页，也把文字重新交还给今天的读者。',scene:'碑影入纸',story:'拓纸轻覆石面，风化的笔画重新变得清晰。'} };
+    const item = content[location.hash.slice(1)] || content.siku;
+    const fields = {volumeLabel:'label',volumeTitle:'title',volumeMeta:'meta',volumeOverview:'overview',chapterMark:'chapter',originalText:'quote',annotationText:'note',storyTitle:'scene',storyText:'story'};
+    const chapterContent = {
+      经: { label:'经部 · 四书类', title:'《论语集注》', meta:'宋 · 朱熹集注　特藏索书号 SK-J-008', overview:'从经典原文、今译与典故三个层次进入本册，沿段落场景继续探索人物与地点。', chapter:'学而第一', quote:'子曰：“学而时习之，不亦说乎？有朋自远方来，不亦乐乎？”', note:'“习”不只是温习，也有实践、践行之意。经典从来不是停在书页上的文字。', scene:'远方来学', story:'书页化作行旅，远来的书友在此相逢。' },
+      史: { label:'史部 · 地方志类', title:'《延绥镇志》', meta:'明 · 谭吉璁修　特藏索书号 GJ-DFZ-018', overview:'从城垣、山川与人物条目进入榆林地方志，沿一座边城的旧地图寻找今日城市的来处。', chapter:'建置沿革', quote:'延绥镇，关中之襟喉，河套之屏障也。', note:'方志将城门、河流与人名并置，让地方历史从纸面回到榆林的街巷。', scene:'城垣与河流', story:'旧地图铺开，镇北台与边塞线索逐一点亮。' },
+      子: { label:'子部 · 百家与技艺类', title:'《梦溪笔谈》', meta:'宋 · 沈括　特藏索书号 GJ-Z-014', overview:'从器物、天文与工艺的记录进入古人的观察方法，在细节中理解知识如何生长。', chapter:'器物与巧思', quote:'凡人不可不学，学不可不博。', note:'器物、天文与工艺并不遥远，古人的观察力也能成为今天的阅读方法。', scene:'格物寻理', story:'纸上的器物轮廓渐亮，知识从细节中生长出来。' },
+      集: { label:'集部 · 文章与诗心类', title:'《杜工部集》', meta:'唐 · 杜甫　特藏索书号 GJ-J-027', overview:'从诗歌、山河与行旅的交叠处进入集部，让文字成为抵达榆林与远方的另一条路。', chapter:'诗心与山河', quote:'会当凌绝顶，一览众山小。', note:'诗歌把山河、行旅与人的心事叠在一起，读者也因此抵达更远的地方。', scene:'诗行入境', story:'墨线铺成山河，诗句沿着远处的风声展开。' }
+    };
+    const applyFields = values => Object.entries(fields).forEach(([id,key]) => { if (values[key] !== undefined) document.getElementById(id).textContent = values[key]; });
+    applyFields(item);
+    const initialChapter = ({ siku:'经', gazetteer:'史', rare:'子', rubbing:'集' })[location.hash.slice(1)] || '经';
+    document.querySelectorAll('[data-siku]').forEach(button => button.classList.toggle('is-active', button.dataset.siku === initialChapter));
+    if (content[location.hash.slice(1)]) applyFields(chapterContent[initialChapter]);
+    document.querySelectorAll('[data-siku]').forEach(button => button.addEventListener('click', () => {
+      document.querySelectorAll('[data-siku]').forEach(candidate => candidate.classList.toggle('is-active', candidate === button));
+      applyFields(chapterContent[button.dataset.siku]);
+      updateNote();
+      document.getElementById('narrativeStage').classList.remove('is-visible');
+      document.getElementById('sceneTrigger').textContent = '展开段落场景';
+    }));
+    let activeNote = 'original';
+    const updateNote = () => {
+      const key = document.querySelector('[data-siku].is-active')?.dataset.siku || initialChapter;
+      const current = chapterContent[key];
+      const views = {
+        original: { mark: current.chapter, main: current.quote, note: current.note },
+        translation: { mark: `${current.chapter} · 今译`, main: current.quote.replace('子曰：', '孔子说：').replace('不亦说乎？', '不也是令人欣喜的吗？').replace('不亦乐乎？', '不也是快乐的吗？'), note: '今译将原文转换为当代汉语，保留人物、地点与语气线索，方便继续阅读。' },
+        allusion: { mark: `${current.chapter} · 典故`, main: current.note, note: '典故层补充这句话的出处、用法与榆林阅读场景，点击“展开段落场景”可继续观看。' }
+      };
+      const view = views[activeNote] || views.original;
+      document.getElementById('chapterMark').textContent = view.mark;
+      document.getElementById('originalText').textContent = view.main;
+      document.getElementById('annotationText').textContent = view.note;
+    };
+    updateNote();
+    document.querySelectorAll('[data-note]').forEach(button => button.addEventListener('click', () => { activeNote = button.dataset.note; document.querySelectorAll('[data-note]').forEach(candidate => candidate.classList.toggle('is-active', candidate === button)); updateNote(); }));
+    document.getElementById('sceneTrigger').addEventListener('click', () => { const stage = document.getElementById('narrativeStage'); stage.classList.add('is-visible'); const dialog = document.getElementById('sceneVideoDialog'); const video = document.getElementById('sceneVideo'); if (dialog && video) { dialog.showModal(); video.currentTime = 0; video.play().catch(() => {}); } });
+    document.getElementById('closeSceneVideo').addEventListener('click', () => { const video = document.getElementById('sceneVideo'); video.pause(); document.getElementById('sceneVideoDialog').close(); });
+    document.getElementById('noteForm').addEventListener('submit', event => { event.preventDefault(); const input = document.getElementById('noteInput'); if (!input.value.trim()) return; const note = document.createElement('div'); note.className = 'danmaku-item'; note.innerHTML = '<b>我的笺注</b><span></span>'; note.querySelector('span').textContent = input.value.trim(); document.getElementById('danmakuWindow').append(note); input.value = ''; });
+  </script>
+</body>
+</html>

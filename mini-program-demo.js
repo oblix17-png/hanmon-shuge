@@ -5,6 +5,13 @@
   const headerBack = document.querySelector('#headerBack');
   const miniBrand = document.querySelector('.mini-brand');
   const toast = document.querySelector('#toast');
+  const focusTime = document.querySelector('#miniFocusTime');
+  const focusStatus = document.querySelector('#miniFocusStatus');
+  const focusTotal = document.querySelector('#miniFocusTotal');
+  const focusKey = 'yulin-study-session-v1';
+  const syncFocus = () => { try { const data = JSON.parse(localStorage.getItem(focusKey) || 'null'); if (!data) return; const total = Math.max(0, Number(data.totalSeconds) || 0); const format = value => `${String(Math.floor(value / 60)).padStart(2, '0')}:${String(value % 60).padStart(2, '0')}`; focusTotal.textContent = format(total); focusStatus.textContent = '小程序独立计时 · 累计时长已同步'; } catch {} };
+  window.addEventListener('storage', event => { if (event.key === focusKey) syncFocus(); });
+  syncFocus();
   let activePage = 'home';
   let toastTimer;
 
