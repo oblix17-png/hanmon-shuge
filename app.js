@@ -1334,6 +1334,13 @@ window.openCollectionSelection = openCollectionSelection;
 
 function initEvents() {
   if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+  const introVideo = $('.intro__video');
+  if (introVideo) {
+    introVideo.load();
+    const startIntroVideo = () => introVideo.play().catch(() => {});
+    if (introVideo.readyState >= 2) startIntroVideo();
+    else introVideo.addEventListener('loadeddata', startIntroVideo, { once: true });
+  }
   const navigationEntry = performance.getEntriesByType?.('navigation')?.[0];
   const isReload = navigationEntry?.type === 'reload';
   if (isReload) {
