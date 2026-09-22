@@ -34,6 +34,56 @@ html, body {
   overflow-y: auto !important;
   overflow-x: hidden !important;
 }
+
+/* Final focus picker overrides after the shared dialog theme. */
+.theme-liquid-glass .focus-customizer { background: rgba(11,25,39,.84) !important; border: 1px solid rgba(255,255,255,.28) !important; border-top: 1px solid rgba(255,255,255,.28) !important; }
+.theme-liquid-glass .focus-customizer::backdrop { background: rgba(8,18,28,.14) !important; backdrop-filter: blur(8px) !important; }
+
+/* Companion merit ladder: a compact reward surface that stays beside the helper. */
+.companion-reward-widget { position: relative; z-index: 2; width: min(100%, 860px); margin: -10px auto 30px; color: #17344d; font-family: var(--sans); pointer-events: none; }
+.companion-reward-toggle { position: relative; display: flex; align-items: center; gap: 12px; width: 100%; min-height: 92px; padding: 20px 28px; color: #285b60; background: rgba(222,239,235,.94); border: 1px solid rgba(87,139,136,.34); border-radius: 4px; box-shadow: 0 10px 24px rgba(46,91,91,.1); cursor: pointer; text-align: left; pointer-events: auto; }
+.companion-reward-toggle:hover { filter: saturate(1.06) brightness(1.01); }
+.companion-reward-toggle > span:nth-child(2) { display: grid; gap: 1px; min-width: 0; }
+.companion-reward-toggle b { overflow: hidden; font: 700 .92rem/1.3 var(--serif); text-overflow: ellipsis; white-space: nowrap; }
+.companion-reward-toggle small { color: #66706b; font-size: .68rem; }
+.companion-reward-toggle > svg { width: 18px; margin-left: auto; color: #315b61; transition: transform .2s ease; }
+.companion-reward-widget.is-open .companion-reward-toggle > svg { transform: rotate(180deg); }
+.companion-reward-crown { display: inline-grid; place-items: center; width: 34px; height: 34px; color: #fff; background: linear-gradient(145deg, #8eb8af, #527d7c); border: 1px solid rgba(255,255,255,.78); border-radius: 50%; box-shadow: 0 3px 10px rgba(66,111,107,.18); font-size: .95rem; flex: none; }
+.companion-reward-panel { display: none; margin-top: 7px; padding: 24px 28px 27px; color: #315f62; background: rgba(222,239,235,.94); border: 1px solid rgba(87,139,136,.34); border-radius: 4px; box-shadow: 0 10px 24px rgba(46,91,91,.1); pointer-events: auto; }
+.companion-reward-widget.is-open .companion-reward-panel { display: block; animation: reward-panel-in .18s ease-out; }
+.companion-reward-heading { display: flex; align-items: end; justify-content: space-between; gap: 10px; }
+.companion-reward-heading .eyebrow { margin: 0 0 2px; color: #43807e; font-size: .55rem; letter-spacing: .08em; }
+.companion-reward-heading h3 { margin: 0; color: #285b60; font: 700 1rem/1.2 var(--serif); }
+.companion-reward-heading > span { max-width: 145px; color: #4b7776; font-size: .59rem; line-height: 1.35; text-align: right; }
+.companion-reward-track { height: 4px; margin: 12px 0 11px; overflow: hidden; background: rgba(54,112,111,.16); border-radius: 99px; }
+.companion-reward-track i { display: block; width: 8%; height: 100%; background: linear-gradient(90deg, #4d8985, #78aaa4); border-radius: inherit; transition: width .3s ease; }
+.companion-reward-list { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px; }
+.reward-outfit { display: grid; justify-items: center; gap: 2px; min-width: 0; padding: 7px 2px 6px; color: #477270; background: transparent; border: 1px solid transparent; border-radius: 4px; cursor: pointer; }
+.reward-outfit.is-unlocked:hover, .reward-outfit.is-selected { color: #285d60; background: rgba(255,255,255,.36); border-color: rgba(73,133,130,.48); }
+.reward-outfit.is-locked { color: rgba(66,111,109,.44); cursor: not-allowed; }
+.reward-outfit__seal { display: grid; place-items: center; width: 21px; height: 21px; color: #fff; background: #538b87; border-radius: 50%; font-size: .6rem; }
+.reward-outfit.is-locked .reward-outfit__seal { color: rgba(57,101,99,.48); background: rgba(71,121,118,.12); }
+.reward-outfit b { font-size: .62rem; line-height: 1; }
+.reward-outfit small { font-size: .48rem; line-height: 1; }
+#wbCompanion { --companion-merit-hue: 0deg; }
+#wbCompanion[data-reward-outfit="juren"] { filter: hue-rotate(7deg) saturate(1.06); }
+#wbCompanion[data-reward-outfit="gongsheng"] { filter: hue-rotate(18deg) saturate(1.1); }
+#wbCompanion[data-reward-outfit="jinshi"] { filter: hue-rotate(330deg) saturate(1.12); }
+#wbCompanion[data-reward-outfit="tanhua"] { filter: hue-rotate(38deg) saturate(1.14); }
+#wbCompanion[data-reward-outfit="bangyan"] { filter: hue-rotate(205deg) saturate(1.12); }
+#wbCompanion[data-reward-outfit="zhuangyuan"] { filter: hue-rotate(48deg) saturate(1.2); }
+.companion-rank-badge { position: absolute; right: -8px; bottom: 10px; min-width: 29px; height: 21px; padding: 0 6px; color: #285b60; background: rgba(207,232,227,.96); border: 1px solid rgba(92,148,143,.48); border-radius: 999px; box-shadow: 0 4px 10px rgba(46,91,91,.15); font: 700 .55rem/19px var(--sans); cursor: pointer; pointer-events: auto; }
+body.intro-open .companion-reward-widget { opacity: 0; pointer-events: none; }
+@keyframes reward-panel-in { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+@media (max-width: 600px) { .companion-reward-widget { width: 100%; margin: -8px 0 22px; }.companion-reward-toggle { min-height: 82px; padding: 16px 18px; gap: 8px; }.companion-reward-toggle b { font-size: .78rem; }.companion-reward-toggle small { font-size: .58rem; }.companion-reward-crown { width: 29px; height: 29px; }.companion-reward-panel { padding: 18px 14px 20px; }.companion-reward-heading > span { max-width: 125px; } }
+
+/* Keep the Rokid film clear: the video itself supplies the visual treatment. */
+.rokid-feature__video { opacity: 1 !important; filter: none !important; }
+.rokid-feature__media::after { display: none !important; }
+
+/* Keep the focus background picker dark and lightweight after the global dialog theme. */
+.theme-liquid-glass .focus-customizer { background: rgba(11,25,39,.84) !important; border: 1px solid rgba(255,255,255,.28) !important; border-top: 1px solid rgba(255,255,255,.28) !important; }
+.theme-liquid-glass .focus-customizer::backdrop { background: rgba(8,18,28,.14) !important; backdrop-filter: blur(8px) !important; }
 body:has(dialog[open]:not(#assistantPromptDialog)) { overflow: hidden !important; }
 body.classics-transitioning { overflow: hidden !important; }
 
@@ -115,6 +165,36 @@ body.intro-open #wbCompanion {
 button, input { font: inherit; }
 button { color: inherit; }
 a { color: inherit; text-decoration: none; }
+
+/* Immersive focus scene: the chosen image is the whole workspace. */
+body.focus-mode { min-height: 100svh; overflow: hidden; background: #101b27; }
+.focus-mode .study-focus-page { width: 100%; height: 100svh; min-height: 0; margin: 0; padding: 0; }
+.focus-mode .study-focus-card { position: relative; display: block; width: 100%; height: 100%; min-height: 0; margin: 0; padding: 0; overflow: hidden; border: 0; border-radius: 0; box-shadow: none; background: var(--focus-bg) center / cover no-repeat; }
+.focus-mode .study-focus-card::before { z-index: 0; background: linear-gradient(180deg, rgba(8,19,29,.18), rgba(8,19,29,.58)); }
+.focus-mode .study-focus-content { position: absolute; z-index: 1; inset: 50% auto auto 50%; display: grid; justify-items: center; gap: 10px; width: min(440px, calc(100% - 32px)); margin: 0; padding: 18px 20px; transform: translate(-50%, -50%); color: #fff; text-align: center; }
+.focus-mode .study-focus-time { width: min(360px, 100%); color: #fff; text-shadow: 0 3px 18px rgba(0,0,0,.4); font-size: clamp(3.6rem, 13vw, 7.2rem); }
+.focus-mode .study-focus-time:focus { outline: 1px solid rgba(255,255,255,.8); outline-offset: 8px; }
+.focus-mode .study-focus-card p { margin: 0; color: rgba(255,255,255,.9); text-shadow: 0 2px 8px rgba(0,0,0,.45); }
+.focus-mode .study-focus-card > .study-focus-content > span { color: rgba(255,255,255,.82); text-shadow: 0 2px 8px rgba(0,0,0,.45); }
+.focus-mode .study-focus-card > .study-focus-content > span b { color: #fff; }
+.focus-actions { display: flex; gap: 8px; margin-top: 8px; }
+.focus-action { display: inline-flex; align-items: center; gap: 6px; min-height: 34px; padding: 0 13px; color: #fff; background: rgba(12,25,39,.3); border: 1px solid rgba(255,255,255,.5); border-radius: 999px; cursor: pointer; backdrop-filter: blur(8px); }
+.focus-action--primary { background: rgba(255,255,255,.88); color: #19314a; border-color: rgba(255,255,255,.95); }
+.focus-action svg, .focus-custom-trigger svg, .focus-back svg { width: 15px; height: 15px; }
+.focus-back { position: absolute; z-index: 3; top: 20px; left: 20px; display: inline-flex; align-items: center; justify-content: center; width: 38px; height: 38px; color: #fff; background: rgba(12,25,39,.26); border: 1px solid rgba(255,255,255,.45); border-radius: 50%; backdrop-filter: blur(8px); }
+.focus-custom-trigger { position: absolute; z-index: 3; right: 22px; bottom: 20px; display: inline-flex; align-items: center; gap: 6px; min-height: 34px; padding: 0 13px; color: #fff; background: rgba(12,25,39,.3); border: 1px solid rgba(255,255,255,.5); border-radius: 999px; cursor: pointer; backdrop-filter: blur(8px); }
+.focus-customizer { position: fixed; z-index: 20; inset: auto 22px 68px auto; width: min(290px, calc(100vw - 44px)); margin: 0; padding: 12px; overflow: visible; background: rgba(11,25,39,.78); border: 1px solid rgba(255,255,255,.28); border-radius: 14px; box-shadow: 0 18px 40px rgba(0,0,0,.3); backdrop-filter: blur(18px); }
+.focus-customizer::backdrop { background: transparent; }
+.focus-customizer-close { position: absolute; top: -13px; right: -13px; display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; color: #fff; background: rgba(11,25,39,.84); border: 1px solid rgba(255,255,255,.36); border-radius: 50%; cursor: pointer; }
+.focus-customizer-close svg { width: 14px; height: 14px; }
+.focus-customizer-grid { display: grid; grid-template-columns: repeat(4, 1fr) 42px; gap: 7px; align-items: center; }
+.focus-scene-choice { width: 100%; aspect-ratio: 1.25; padding: 0; overflow: hidden; background: transparent; border: 2px solid transparent; border-radius: 7px; cursor: pointer; }
+.focus-scene-choice.is-active { border-color: #fff; box-shadow: 0 0 0 2px rgba(255,255,255,.2); }
+.focus-scene-choice img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.focus-upload { display: inline-flex; align-items: center; justify-content: center; width: 42px; aspect-ratio: 1; color: #fff; background: rgba(255,255,255,.12); border: 1px dashed rgba(255,255,255,.55); border-radius: 7px; cursor: pointer; }
+.focus-upload svg { width: 16px; height: 16px; }
+.focus-upload input { position: absolute; width: 1px; height: 1px; opacity: 0; }
+@media (max-width: 600px) { .focus-customizer-grid { grid-template-columns: repeat(4, 1fr); }.focus-upload { width: auto; aspect-ratio: auto; min-height: 38px; grid-column: 1 / -1; }.focus-customizer { right: 14px; bottom: 64px; } }
 img { display: block; max-width: 100%; }
 [hidden] { display: none !important; }
 
@@ -1391,3 +1471,7 @@ dialog h2 { margin: 0; color: var(--cobalt-deep); font-family: var(--serif); fon
   .siku-layout.is-single-book .marginalia { width: 100%; grid-column: 1; }
   .siku-layout.is-single-book .marginalia { display: block; }
 }
+
+/* Final focus picker overrides after the shared dialog theme. */
+.theme-liquid-glass .focus-customizer { background: rgba(11,25,39,.84) !important; border: 1px solid rgba(255,255,255,.28) !important; border-top: 1px solid rgba(255,255,255,.28) !important; }
+.theme-liquid-glass .focus-customizer::backdrop { background: rgba(8,18,28,.14) !important; backdrop-filter: blur(8px) !important; }

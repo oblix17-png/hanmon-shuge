@@ -1875,6 +1875,69 @@ function initLibraryAssistant() {
   if (existingCompanion) watchCompanion(existingCompanion);
 }
 
+function initCompanionRewards() {
+  const storageKey = 'yulin-study-session-v1';
+  const outfitKey = 'yulin-companion-outfit-v1';
+  const ranks = [
+    { id: 'scholar', name: '秀才', hours: 0, look: '青衿初学' },
+    { id: 'juren', name: '举人', hours: 10, look: '月白长衫' },
+    { id: 'gongsheng', name: '贡生', hours: 30, look: '玉带书生' },
+    { id: 'jinshi', name: '进士', hours: 80, look: '绛色官袍' },
+    { id: 'tanhua', name: '探花', hours: 150, look: '金枝探花' },
+    { id: 'bangyan', name: '榜眼', hours: 250, look: '云纹榜眼' },
+    { id: 'zhuangyuan', name: '状元', hours: 400, look: '翰墨状元' }
+  ];
+  const readSeconds = () => {
+    try { return Math.max(0, Number(JSON.parse(localStorage.getItem(storageKey) || '{}').totalSeconds) || 0); } catch { return 0; }
+  };
+  const readOutfit = () => localStorage.getItem(outfitKey) || 'scholar';
+  const rankFor = seconds => ranks.reduce((current, rank) => seconds >= rank.hours * 3600 ? rank : current, ranks[0]);
+  const formatHours = seconds => `${Math.floor(seconds / 3600)}小时${Math.floor((seconds % 3600) / 60)}分`;
+  const render = () => {
+    const seconds = readSeconds();
+    const current = rankFor(seconds);
+    const unlocked = ranks.filter(rank => seconds >= rank.hours * 3600);
+    let selected = ranks.find(rank => rank.id === readOutfit()) || current;
+    if (!unlocked.some(rank => rank.id === selected.id)) { selected = current; localStorage.setItem(outfitKey, selected.id); }
+    const widget = document.querySelector('#companionRewardWidget');
+    if (!widget) return;
+    widget.dataset.rank = current.id;
+    widget.querySelector('[data-reward-current]').textContent = `${selected.name} · ${selected.look}`;
+    widget.querySelector('[data-reward-hours]').textContent = `累计专注 ${formatHours(seconds)}`;
+    widget.querySelector('[data-reward-next]').textContent = current.id === ranks[ranks.length - 1].id ? '已解锁全部功名装扮' : `下一阶：${ranks[ranks.findIndex(rank => rank.id === current.id) + 1].name} · 还需 ${formatHours(Math.max(0, (ranks.find(rank => rank.hours > current.hours)?.hours || current.hours) * 3600 - seconds))}`;
+    widget.querySelector('[data-reward-progress]').style.width = `${Math.min(100, Math.max(6, ((seconds - current.hours * 3600) / Math.max(1, (((ranks.find(rank => rank.hours > current.hours)?.hours || current.hours + 1) - current.hours) * 3600))) * 100))}%`;
+    widget.querySelector('[data-reward-list]').innerHTML = ranks.map(rank => `<button type="button" class="reward-outfit ${unlocked.includes(rank) ? 'is-unlocked' : 'is-locked'} ${selected.id === rank.id ? 'is-selected' : ''}" data-outfit="${rank.id}" ${unlocked.includes(rank) ? '' : 'disabled'}><span class="reward-outfit__seal">${unlocked.includes(rank) ? '◆' : '·'}</span><b>${rank.name}</b><small>${rank.hours ? `${rank.hours}小时` : '起步'}</small></button>`).join('');
+    widget.querySelectorAll('[data-outfit]').forEach(button => button.addEventListener('click', () => { localStorage.setItem(outfitKey, button.dataset.outfit); render(); applyToCompanion(); }));
+  };
+  const applyToCompanion = () => {
+    const companion = document.querySelector('#wbCompanion');
+    if (!companion) return;
+    const seconds = readSeconds();
+    const current = rankFor(seconds);
+    const selected = ranks.find(rank => rank.id === readOutfit()) || current;
+    companion.dataset.rewardRank = current.id;
+    companion.dataset.rewardOutfit = selected.id;
+    let badge = companion.querySelector('.companion-rank-badge');
+    if (!badge) { badge = document.createElement('button'); badge.type = 'button'; badge.className = 'companion-rank-badge'; badge.setAttribute('aria-label', '查看小人学习等级与装扮'); companion.appendChild(badge); badge.addEventListener('click', event => { event.stopPropagation(); document.querySelector('#companionRewardWidget')?.classList.toggle('is-open'); }); }
+    badge.textContent = selected.name;
+  };
+  const root = document.createElement('aside');
+  root.id = 'companionRewardWidget'; root.className = 'companion-reward-widget'; root.innerHTML = `<button class="companion-reward-toggle" type="button" aria-expanded="false"><span class="companion-reward-crown">✦</span><span><b data-reward-current>秀才 · 青衿初学</b><small data-reward-hours>累计专注 0小时</small></span><i data-lucide="chevron-up" aria-hidden="true"></i></button><div class="companion-reward-panel"><div class="companion-reward-heading"><div><p class="eyebrow">STUDY MERIT · 学习功名</p><h3>装扮进阶</h3></div><span data-reward-next>下一阶：举人</span></div><div class="companion-reward-track"><i data-reward-progress></i></div><div class="companion-reward-list" data-reward-list></div></div>`;
+  const studyCompanionCard = document.querySelector('.study-companion--link');
+  if (studyCompanionCard?.parentElement) studyCompanionCard.insertAdjacentElement('afterend', root);
+  else document.body.appendChild(root);
+  refreshIcons();
+  const toggle = root.querySelector('.companion-reward-toggle');
+  toggle.addEventListener('click', () => { const open = root.classList.toggle('is-open'); toggle.setAttribute('aria-expanded', String(open)); });
+  render(); applyToCompanion();
+  // The companion script updates its own subtree frequently; watching the whole
+  // document makes every bubble animation trigger a full reward pass. A light
+  // polling loop is enough to catch the companion when it is injected.
+  const observer = new MutationObserver(() => applyToCompanion()); observer.observe(document.body, { childList: true });
+  window.addEventListener('storage', event => { if (event.key === storageKey || event.key === outfitKey) { render(); applyToCompanion(); } });
+  window.setInterval(() => { render(); applyToCompanion(); }, 10000);
+}
+
 function init() {
   $('#classicalCollectionPanel')?.classList.add('is-awaiting-selection');
   $('#seatDate').value = localDateValue();
@@ -1890,6 +1953,7 @@ function init() {
   renderManuscript();
   initEvents();
   initLibraryAssistant();
+  initCompanionRewards();
   initMiniProgramBridge();
   initStudyCompanion();
   initScrollReveals();
