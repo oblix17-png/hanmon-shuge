@@ -1336,10 +1336,20 @@ function initEvents() {
   if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
   const introVideo = $('.intro__video');
   if (introVideo) {
+    introVideo.muted = true;
+    introVideo.defaultMuted = true;
+    const startIntroVideo = () => {
+      if ($('#intro')?.hidden) return;
+      introVideo.play().catch(() => {});
+    };
+    introVideo.addEventListener('loadeddata', startIntroVideo);
+    introVideo.addEventListener('canplay', startIntroVideo);
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden) startIntroVideo();
+    });
+    window.addEventListener('pageshow', startIntroVideo);
     introVideo.load();
-    const startIntroVideo = () => introVideo.play().catch(() => {});
-    if (introVideo.readyState >= 2) startIntroVideo();
-    else introVideo.addEventListener('loadeddata', startIntroVideo, { once: true });
+    startIntroVideo();
   }
   const navigationEntry = performance.getEntriesByType?.('navigation')?.[0];
   const isReload = navigationEntry?.type === 'reload';
